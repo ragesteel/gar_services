@@ -1,7 +1,11 @@
 syntax: glob
 
-fias/xsd/*.xsd
-fias/data/*.XML
+fias/xsd/
+fias/data/
 target
+
+# IDEA
+.idea
+*.iml
 
 
