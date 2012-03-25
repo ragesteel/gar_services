@@ -10,7 +10,8 @@ public enum Fias {
     ESTSTAT(EstateStatuses.class),
     CENTERST(CenterStatuses.class),
     OPERSTAT(OperationStatuses.class),
-    HSTSTAT(HouseStateStatuses.class);
+    HSTSTAT(HouseStateStatuses.class),
+    CURENTST(CurrentStatuses.class);
 
     /** Класс обёртки. */
     public final Class<?> wrapper;
