@@ -29,6 +29,7 @@ public class Main {
             
             for (File file : files) {
                 Object unmarshal = unmarshaller.unmarshal(file);
+                // FIXME Добавить валидацию!
                 System.out.println(unmarshal);
             }
         }

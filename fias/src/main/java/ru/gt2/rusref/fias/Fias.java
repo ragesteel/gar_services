@@ -11,7 +11,8 @@ public enum Fias {
     CENTERST(CenterStatuses.class),
     OPERSTAT(OperationStatuses.class),
     HSTSTAT(HouseStateStatuses.class),
-    CURENTST(CurrentStatuses.class);
+    CURENTST(CurrentStatuses.class),
+    SOCRBASE(AddressObjectTypes.class);
 
     /** Класс обёртки. */
     public final Class<?> wrapper;
