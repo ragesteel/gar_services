@@ -8,6 +8,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Описание место расположения имущественных объектов.
@@ -69,19 +70,19 @@ public class Landmark {
     @NotNull
     @Size(min = 36, max = 36)
     @XmlAttribute(name = "LANDID", required = true)
-    private String landId;
+    private UUID landId;
     
     /** Глобальный уникальный идентификатор ориентира. */
     @NotNull
     @Size(min = 36, max = 36)
     @XmlAttribute(name = "LANDGUID", required = true)
-    private String landGuid;
+    private UUID landGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
     @NotNull
     @Size(min = 36, max = 36)
     @XmlAttribute(name = "AOGUID", required = true)
-    private String aoGuid;
+    private UUID aoGuid;
 
     /** Начало действия записи. */
     @NotNull
@@ -96,6 +97,6 @@ public class Landmark {
     /** Внешний ключ на нормативный документ. */
     @Size(min = 36, max = 36)
     @XmlAttribute(name = "NORMDOC")
-    private String normDoc;
+    private UUID normDoc;
 
 }
