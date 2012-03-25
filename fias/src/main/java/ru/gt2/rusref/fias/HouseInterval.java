@@ -100,6 +100,7 @@ public class HouseInterval {
     private Date endDate;
     
     /** Статус интервала (обычный, четный, нечетный). */
+    // FIXME Добавить ссылку на @XmlTransient IntervalStatus
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTSTATUS", required = true)
