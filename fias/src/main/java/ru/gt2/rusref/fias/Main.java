@@ -13,6 +13,7 @@ public class Main {
     
     public static void main(String... args) throws JAXBException {
         File xmlDir = new File("data/XML-2012-03-02");
+        // FIXME Использовать Enum Fias для создания контекста с одним классом и выбор для parsing'а конкретного файла.
         JAXBContext jaxbContext = JAXBContext.newInstance(StructureStatuses.class, ActualStatuses.class,
                 IntervalStatuses.class, EstateStatuses.class, CenterStatuses.class,
                 OperationStatuses.class, HouseStateStatuses.class);
