@@ -9,12 +9,6 @@ import java.nio.file.Files;
 
 /**
  * Основной метод импорта.
- *
- * FIXME Пройтись по всем классам и сделать имена, соответствующие общим (например везде использовать name и shortName).
- * FIXME Реализовать свой конвертор и валидатор для GUID.
- * FIXME Включить валидацию с использованием BeanValidation.
- * FIXME Сделать все типы сериализуемыми.
- * FIXME Проверка конвертации путём обратного преобразования в xml-строку.
  */
 public class Main {
     private static final String FILE_PREFIX = "AS_";

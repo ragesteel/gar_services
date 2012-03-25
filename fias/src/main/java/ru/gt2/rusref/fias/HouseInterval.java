@@ -11,19 +11,12 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Описание места расположения имущественных объектов.
+ * Интервал домов.
  *
  * @author rage
  */
 @ToString
-public class Landmark {
-    /**
-     * Месторасположение ориентира
-     */
-    @NotNull
-    @Size(min = 1, max = 500)
-    @XmlAttribute(name = "LOCATION", required = true)
-    private String location;
+public class HouseInterval {
 
     /** Почтовый индекс. */
     @Size(min = 6, max = 6)
@@ -65,18 +58,30 @@ public class Landmark {
     @Past
     @XmlAttribute(name = "UPDATEDATE", required = true)
     private Date updateDate;
-    
-    /** Уникальный идентификатор записи ориентира. */
+
+    /** Значение начала интервала */
+    @NotNull
+    @Digits(integer = 10, fraction = 0)
+    @XmlAttribute(name = "INTSTART", required = true)
+    private Integer intStart;
+
+    /** Значение окончания интервала */
+    @NotNull
+    @Digits(integer = 10, fraction = 0)
+    @XmlAttribute(name = "INTEND", required = true)
+    private Integer intEnd;
+
+    /** Иидентификатор записи интервала домов. */
     @NotNull
     @Size(min = 36, max = 36)
-    @XmlAttribute(name = "LANDID", required = true)
-    private UUID landId;
+    @XmlAttribute(name = "HOUSEINTID", required = true)
+    private UUID houseIntId;
     
-    /** Глобальный уникальный идентификатор ориентира. */
+    /** Глобальный уникальный идентификатор интервала домов. */
     @NotNull
     @Size(min = 36, max = 36)
-    @XmlAttribute(name = "LANDGUID", required = true)
-    private UUID landGuid;
+    @XmlAttribute(name = "INTGUID", required = true)
+    private UUID intGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
     @NotNull
@@ -93,6 +98,12 @@ public class Landmark {
     @NotNull
     @XmlAttribute(name = "ENDDATE", required = true)
     private Date endDate;
+    
+    /** Статус интервала (обычный, четный, нечетный). */
+    @NotNull
+    @Digits(integer = 10, fraction = 0)
+    @XmlAttribute(name = "INTSTATUS", required = true)
+    private Integer intStatus;
 
     /** Внешний ключ на нормативный документ. */
     @Size(min = 36, max = 36)

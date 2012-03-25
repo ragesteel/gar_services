@@ -13,7 +13,11 @@ public enum Fias {
     HSTSTAT(HouseStateStatuses.class),
     CURENTST(CurrentStatuses.class),
     SOCRBASE(AddressObjectTypes.class),
-    LANDMARK(Landmarks.class);
+    LANDMARK(Landmarks.class),
+    HOUSEINT(HouseIntervals.class);
+    // NORMDOC(NormativeDocumentes.class),
+    // ADDROBJ(AddressObjects.class),
+    // HOUSE(Houses.class);
 
     /** Класс обёртки. */
     public final Class<?> wrapper;
