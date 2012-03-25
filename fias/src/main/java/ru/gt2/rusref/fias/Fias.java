@@ -14,8 +14,8 @@ public enum Fias {
     CURENTST(CurrentStatuses.class),
     SOCRBASE(AddressObjectTypes.class),
     LANDMARK(Landmarks.class),
-    HOUSEINT(HouseIntervals.class);
-    // NORMDOC(NormativeDocumentes.class),
+    HOUSEINT(HouseIntervals.class),
+    NORMDOC(NormativeDocumentes.class);
     // ADDROBJ(AddressObjects.class),
     // HOUSE(Houses.class);
 
