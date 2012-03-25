@@ -5,15 +5,12 @@
 	<groupId>ru.gt2.rusref</groupId>
 	<artifactId>rus-ref-fias</artifactId>
 	<version>0.0-SNAPSHOT</version>
-	<name>rus-ref-fias</name>
+    <properties>
+        <java.version>1.6</java.version>
+    </properties>
+    <name>rus-ref-fias</name>
 	
 	<dependencies>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.2.5-b10</version>
-		</dependency>
-
 		<!-- Bean Validation -->
 
 		<dependency>
@@ -21,6 +18,8 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 		</dependency>
+
+        <!-- Project lombok -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -32,23 +31,11 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<version>0.8.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
