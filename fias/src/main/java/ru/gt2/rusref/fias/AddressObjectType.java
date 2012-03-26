@@ -6,10 +6,12 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Тип адресного объекта.
  */
+@XmlType(propOrder = {"level", "scName", "socrName", "kodTSt"})
 @ToString
 public class AddressObjectType {
     /** Уровень адресного объекта. */

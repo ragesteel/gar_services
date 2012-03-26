@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,6 +18,10 @@ import java.util.UUID;
  *
  * @author rage
  */
+@XmlType(propOrder = {"aoGuid", "formalName", "regionCode", "autoCode", "areaCode", "cityCode", "ctarCode", "placeCode",
+    "streetCode", "extrCode", "sextCode", "offName", "postalCode", "ifnsFl", "terrIfnsFl", "ifnsUl", "terrIfnsUl",
+    "okato", "oktmo", "updateDate", "shortName", "aoLevel", "parentGuid", "aoId", "prevId", "nextId", "code",
+    "plainCode", "actStatus", "centStatus", "operStatus", "currStatus", "startDate", "endDate", "normDoc"})
 @ToString
 public class AddressObject {
 

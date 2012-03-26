@@ -6,10 +6,12 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Статус центра.
  */
+@XmlType(propOrder = {"centerStId", "name"})
 @ToString
 public class CenterStatus {
     /** Идентификатор статуса (ключ) */

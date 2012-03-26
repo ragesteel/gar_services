@@ -6,12 +6,14 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Статус актуальности КЛАДР 4.0.
  *
  * В XSD также же упоминания идентификаторов, только не особо точные.
  */
+@XmlType(propOrder = {"curentStId", "name"})
 @ToString
 public class CurrentStatus {
     /** Идентификатор статуса (ключ) */

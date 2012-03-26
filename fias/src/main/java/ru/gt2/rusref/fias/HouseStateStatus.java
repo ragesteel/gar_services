@@ -6,6 +6,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Статус состояния домов.
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  * @author rage
  */
+@XmlType(propOrder = {"houseStId", "name"})
 @ToString
 public class HouseStateStatus {
     /**

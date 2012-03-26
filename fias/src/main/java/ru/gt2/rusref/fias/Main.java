@@ -46,7 +46,7 @@ public class Main {
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
         for (File file : files) {
-            processFile(unmarshaller, file);
+            // processFile(unmarshaller, file);
         }
     }
 
