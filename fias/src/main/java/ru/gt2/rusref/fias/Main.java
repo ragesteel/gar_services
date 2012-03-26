@@ -21,13 +21,13 @@ public class Main {
     }
 
     private static File[] findFiles(final Fias fias) {
-        File xmlDir = new File("data/XML-2012-03-02");;
+        File xmlDir = new File("data/XML-2012-03-02");
         final String prefix = FILE_PREFIX + fias.name() + "_";
-        final int namelen = prefix.length() + FILE_SUFFIX.length() + 36 + 8 + 1;
+        final int nameLen = prefix.length() + FILE_SUFFIX.length() + 36 + 8 + 1;
         return xmlDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if (namelen != name.length()) {
+                if (nameLen != name.length()) {
                     return false;
                 }
                 String upperName = name.toUpperCase();
