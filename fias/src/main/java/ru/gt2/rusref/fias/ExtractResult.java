@@ -8,7 +8,7 @@ import lombok.ToString;
  * Представление результата импорта.
  */
 @RequiredArgsConstructor
-@ToString
+@ToString(exclude = "filename")
 public class ExtractResult {
     /** Исходный файл. */
     private final String filename;

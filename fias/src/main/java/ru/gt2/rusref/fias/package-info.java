@@ -13,6 +13,10 @@
  *
  * FIXME Проверка конвертации путём обратного преобразования в xml-строку.
  *
- * FIXME Сделать общего предка для Landmark и HouseInterval.
+ * FIXME Сделать общего предка для Landmark, HouseInterval, AddressObject и House.
+ *
+ * FIXME Паралелизация обработки (JAXBContext — он ThreadSafe, а Marshaller — нет).
+ *
+ * FIXME Статистика — максимальное значение элемента (для цифр)/максимальная длина (для строк).
  */
 package ru.gt2.rusref.fias;

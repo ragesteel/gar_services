@@ -1,8 +1,7 @@
 package ru.gt2.rusref.fias;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
@@ -23,11 +22,16 @@ public class Main {
 
     private static File[] findFiles(final Fias fias) {
         File xmlDir = new File("data/XML-2012-03-02");;
+        final String prefix = FILE_PREFIX + fias.name() + "_";
+        final int namelen = prefix.length() + FILE_SUFFIX.length() + 36 + 8 + 1;
         return xmlDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
+                if (namelen != name.length()) {
+                    return false;
+                }
                 String upperName = name.toUpperCase();
-                return upperName.startsWith(FILE_PREFIX + fias.name()) && upperName.endsWith(FILE_SUFFIX);
+                return upperName.startsWith(prefix) && upperName.endsWith(FILE_SUFFIX);
             }
         });
     }
@@ -38,6 +42,7 @@ public class Main {
         }
 
         JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
+        
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
         for (File file : files) {
@@ -48,7 +53,7 @@ public class Main {
     private static void processFile(Unmarshaller unmarshaller, File file) throws JAXBException {
         String filename = file.getName();
         final ExtractResult extractResult = new ExtractResult(filename);
-
+        System.out.println("Processing file: " + filename);
         unmarshaller.setListener(new Unmarshaller.Listener() {
             @Override
             public void afterUnmarshal(Object target, Object parent) {
@@ -63,6 +68,8 @@ public class Main {
                     list = ((NormativeDocumentes) parent).normativeDocument;
                 } else if (parent instanceof AddressObjects) {
                     list = ((AddressObjects) parent).addressObject;
+                } else if (parent instanceof Houses) {
+                    list = ((Houses) parent).house;
                 }
 
                 if (null == list) {

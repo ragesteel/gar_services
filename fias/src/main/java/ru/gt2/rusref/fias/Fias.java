@@ -16,8 +16,8 @@ public enum Fias {
     LANDMARK(Landmarks.class),
     HOUSEINT(HouseIntervals.class),
     NORMDOC(NormativeDocumentes.class),
-    ADDROBJ(AddressObjects.class);
-    // HOUSE(Houses.class);
+    ADDROBJ(AddressObjects.class),
+    HOUSE(Houses.class);
 
     /** Класс обёртки. */
     public final Class<?> wrapper;
