@@ -13,5 +13,5 @@ import java.util.List;
 @ToString
 public class NormativeDocumentes {
     @XmlElement(name = "NormativeDocument", required = true)
-    private List<NormativeDocument> normativeDocument;
+    protected List<NormativeDocument> normativeDocument;
 }

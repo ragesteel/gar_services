@@ -15,8 +15,8 @@ public enum Fias {
     SOCRBASE(AddressObjectTypes.class),
     LANDMARK(Landmarks.class),
     HOUSEINT(HouseIntervals.class),
-    NORMDOC(NormativeDocumentes.class);
-    // ADDROBJ(AddressObjects.class),
+    NORMDOC(NormativeDocumentes.class),
+    ADDROBJ(AddressObjects.class);
     // HOUSE(Houses.class);
 
     /** Класс обёртки. */

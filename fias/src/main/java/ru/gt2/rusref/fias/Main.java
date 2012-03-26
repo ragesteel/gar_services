@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.List;
 
 /**
  * Основной метод импорта.
@@ -55,6 +56,21 @@ public class Main {
                     return;
                 }
                 extractResult.increaceItemCount();
+
+                // FIXME Грязный хак, пока мы не начали делать по правильному
+                List<?> list = null;
+                if (parent instanceof NormativeDocumentes) {
+                    list = ((NormativeDocumentes) parent).normativeDocument;
+                } else if (parent instanceof AddressObjects) {
+                    list = ((AddressObjects) parent).addressObject;
+                }
+
+                if (null == list) {
+                    return;
+                }
+                if (list.size() > 1000) {
+                    list.clear();
+                }
             }
         });
         Object unmarshal = unmarshaller.unmarshal(file);
