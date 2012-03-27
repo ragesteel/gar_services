@@ -17,14 +17,23 @@ import java.util.*;
  * Тип поля.
  */
 public enum FieldType {
-    INTEGER(Integer.class, Collections.<Class<? extends Annotation>>singleton(Digits.class)),
-    STRING(String.class, Collections.<Class<? extends Annotation>>singleton(Size.class)),
-    DATE(Date.class, ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)),
-    GUID(UUID.class, Collections.<Class<? extends Annotation>>emptySet());
+    INTEGER(Integer.class,
+        Collections.<Class<? extends Annotation>>singleton(Digits.class),
+        Collections.<Class<? extends Annotation>>emptySet()),
+    STRING(String.class,
+        Collections.<Class<? extends Annotation>>singleton(Size.class),
+        Collections.<Class<? extends Annotation>>emptySet()),
+    DATE(Date.class,
+        Collections.<Class<? extends Annotation>>emptySet(),
+        ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)),
+    GUID(UUID.class,
+        Collections.<Class<? extends Annotation>>emptySet(),
+        Collections.<Class<? extends Annotation>>emptySet());
 
     public final Class<?> type;
     public final ImmutableSet<Class<? extends Annotation>> required;
     public final ImmutableSet<Class<? extends Annotation>> optional;
+    public final ImmutableSet<Class<? extends Annotation>> all;
     
     public static final ImmutableMap<Class<?>, FieldType> FROM_TYPE;
 
@@ -36,11 +45,13 @@ public enum FieldType {
         FROM_TYPE = ImmutableMap.copyOf(fromType);
     }
 
-    private FieldType(Class<?> type, 
+    private FieldType(Class<?> type,
+                      Set<Class<? extends Annotation>> required,
                       Set<Class<? extends Annotation>> optional) {
         this.type = type;
         
-        this.required = ImmutableSet.<Class<? extends Annotation>>of(XmlAttribute.class);
+        this.required = ImmutableSet.copyOf(Sets.union(required, Collections.singleton(XmlAttribute.class)));
         this.optional = ImmutableSet.copyOf(Sets.union(optional, Collections.singleton(NotNull.class)));
+        this.all = ImmutableSet.copyOf(Sets.union(this.required, this.optional));
     }
 }

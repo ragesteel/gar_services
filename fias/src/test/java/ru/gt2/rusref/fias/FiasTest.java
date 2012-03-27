@@ -41,33 +41,6 @@ public class FiasTest {
         }
     };
 
-    private static final ImmutableSet<Class<? extends Annotation>> COMMON_CONSTRAINS =
-            ImmutableSet.of(NotNull.class, XmlAttribute.class);
-
-    private static final ImmutableMultimap<Class<?>, Class<? extends Annotation>> CONSTRAINS_BY_TYPE;
-
-    static {
-        // FIXME Отдельный класс, с разделением на обязательные и необязательные, FieldType
-        Multimap<Class<?>, Class<? extends Annotation>> initial = Multimaps.newSetMultimap(
-                Maps.<Class<?>, Collection<Class<? extends Annotation>>>newHashMap(),
-                new Supplier<Set<Class<? extends Annotation>>>() {
-                    @Override
-                    public Set<Class<? extends Annotation>> get() {
-                        return Sets.newHashSet();
-                    }
-                });
-
-        initial.put(String.class, Size.class);
-        initial.put(Integer.class, Digits.class);
-        initial.putAll(Date.class, Arrays.asList(Past.class, Future.class));
-        for (Class<?> type : initial.keySet()) {
-            initial.putAll(type, COMMON_CONSTRAINS);
-        }
-        initial.putAll(UUID.class, COMMON_CONSTRAINS);
-
-        CONSTRAINS_BY_TYPE = ImmutableMultimap.copyOf(initial);
-    }
-
     /**
      * Проверка налаичия всех полей в propOrder и propOrder на укакзания на поля.
      * Дубликаты propOrder также нужно удалять.
@@ -100,7 +73,6 @@ public class FiasTest {
     }
 
     private void testFieldsInPropOrder(Fias fias) {
-
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
         Assert.assertEquals(propOrderArr.length, propOrder.size());
@@ -129,14 +101,20 @@ public class FiasTest {
         List<Field> fields = getAllFields(fias);
         for (Field field : fields) {
             Class<?> type = field.getType();
-            ImmutableCollection<Class<? extends Annotation>> allowedAnnotations = CONSTRAINS_BY_TYPE.get(type);
-            Assert.assertFalse("Type " + type + " does not contains in supported types",
-                    allowedAnnotations.isEmpty());
+            FieldType fieldType = FieldType.FROM_TYPE.get(type);
+            Assert.assertNotNull("Type " + type + " does not contains in supported types",
+                    fieldType);
             Annotation[] annotations = field.getAnnotations();
             ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
                     (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
-            Sets.SetView<Class<? extends Annotation>> difference = 
-                    Sets.difference(annotationClasses, ImmutableSet.copyOf(allowedAnnotations));
+            ImmutableSet<Class<? extends Annotation>> requiredAnnotations = fieldType.required;
+            Sets.SetView<Class<? extends Annotation>> intersectionWithRequired = 
+                    Sets.intersection(requiredAnnotations, annotationClasses);
+            Assert.assertEquals("Missing required annotations " +
+                    Sets.difference(requiredAnnotations, annotationClasses),
+                    requiredAnnotations.size(), intersectionWithRequired.size());
+            Sets.SetView<Class<? extends Annotation>> difference =
+                    Sets.difference(annotationClasses, ImmutableSet.copyOf(fieldType.all));
             Assert.assertTrue("Field " + field + " contains annotation(s) that not allowed: " + difference,
                     difference.isEmpty());
         }
@@ -160,5 +138,4 @@ public class FiasTest {
         }
         return fields;
     }
-
 }
