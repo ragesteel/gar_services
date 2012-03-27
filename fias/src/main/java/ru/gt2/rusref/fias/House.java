@@ -91,19 +91,16 @@ public class House {
 
     /** Уникальный идентификатор записи дома. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "HOUSEID", required = true)
     private UUID houseId;
     
     /** Глобальный уникальный идентификатор интервала домов. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "HOUSEGUID", required = true)
     private UUID houseGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
 
@@ -125,7 +122,6 @@ public class House {
     private Integer statStatus;
 
     /** Внешний ключ на нормативный документ. */
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

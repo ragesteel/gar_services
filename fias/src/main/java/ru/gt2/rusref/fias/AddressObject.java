@@ -27,7 +27,6 @@ public class AddressObject {
 
     /** Глобальный уникальный идентификатор адресного объекта. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
 
@@ -217,7 +216,6 @@ public class AddressObject {
     private Date endDate;
     
     /** Внешний ключ на нормативный документ. */
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

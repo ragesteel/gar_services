@@ -71,19 +71,16 @@ public class Landmark {
     
     /** Уникальный идентификатор записи ориентира. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "LANDID", required = true)
     private UUID landId;
     
     /** Глобальный уникальный идентификатор ориентира. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "LANDGUID", required = true)
     private UUID landGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
 
@@ -98,7 +95,6 @@ public class Landmark {
     private Date endDate;
 
     /** Внешний ключ на нормативный документ. */
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

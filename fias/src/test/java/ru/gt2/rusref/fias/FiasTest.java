@@ -2,12 +2,9 @@ package ru.gt2.rusref.fias;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.*;
 import lombok.RequiredArgsConstructor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,11 +19,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Тест для проверки соответствия аннотаций моим пожеланиям к классам.
@@ -39,14 +32,41 @@ public class FiasTest {
             return field.getName();
         }
     };
-    
-    private static final ImmutableMap<Class<?>, ImmutableSet<Class<? extends Annotation>>> CONSTRAINS_BY_TYPES =
-        ImmutableMap.<Class<?>, ImmutableSet<Class<? extends Annotation>>>builder()
-            .put(String.class, ImmutableSet.of(NotNull.class, Size.class))
-            .put(Integer.class, ImmutableSet.of(NotNull.class, Digits.class))
-            .put(UUID.class, ImmutableSet.<Class<? extends Annotation>>of(NotNull.class))
-            .put(Date.class, ImmutableSet.of(NotNull.class, Past.class, Future.class))
-            .build();
+
+    private static Function<Annotation, Class<? extends Annotation>> ANNOTATION_CLASS =
+            new Function<Annotation, Class<? extends Annotation>>() {
+        @Override
+        public Class<? extends Annotation> apply(@Nullable Annotation annotation) {
+            return annotation.annotationType();
+        }
+    };
+
+    private static final ImmutableSet<Class<? extends Annotation>> COMMON_CONSTRAINS =
+            ImmutableSet.of(NotNull.class, XmlAttribute.class);
+
+    private static final ImmutableMultimap<Class<?>, Class<? extends Annotation>> CONSTRAINS_BY_TYPE;
+
+    static {
+        // FIXME Отдельный класс, с разделением на обязательные и необязательные.
+        Multimap<Class<?>, Class<? extends Annotation>> initial = Multimaps.newSetMultimap(
+                Maps.<Class<?>, Collection<Class<? extends Annotation>>>newHashMap(),
+                new Supplier<Set<Class<? extends Annotation>>>() {
+                    @Override
+                    public Set<Class<? extends Annotation>> get() {
+                        return Sets.newHashSet();
+                    }
+                });
+
+        initial.put(String.class, Size.class);
+        initial.put(Integer.class, Digits.class);
+        initial.putAll(Date.class, Arrays.asList(Past.class, Future.class));
+        for (Class<?> type : initial.keySet()) {
+            initial.putAll(type, COMMON_CONSTRAINS);
+        }
+        initial.putAll(UUID.class, COMMON_CONSTRAINS);
+
+        CONSTRAINS_BY_TYPE = ImmutableMultimap.copyOf(initial);
+    }
 
     /**
      * Проверка налаичия всех полей в propOrder и propOrder на укакзания на поля.
@@ -80,6 +100,7 @@ public class FiasTest {
     }
 
     private void testFieldsInPropOrder(Fias fias) {
+
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
         Assert.assertEquals(propOrderArr.length, propOrder.size());
@@ -108,15 +129,16 @@ public class FiasTest {
         List<Field> fields = getAllFields(fias);
         for (Field field : fields) {
             Class<?> type = field.getType();
-            ImmutableSet<Class<? extends Annotation>> constrains = CONSTRAINS_BY_TYPES.get(type);
-            Assert.assertNotNull("Type " + type + " does not contains in supported types",
-                    constrains);
-            
-            System.out.println(field.getAnnotations());
-            
-            
-
-            
+            ImmutableCollection<Class<? extends Annotation>> allowedAnnotations = CONSTRAINS_BY_TYPE.get(type);
+            Assert.assertFalse("Type " + type + " does not contains in supported types",
+                    allowedAnnotations.isEmpty());
+            Annotation[] annotations = field.getAnnotations();
+            ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
+                    (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
+            Sets.SetView<Class<? extends Annotation>> difference = 
+                    Sets.difference(annotationClasses, ImmutableSet.copyOf(allowedAnnotations));
+            Assert.assertTrue("Field " + field + " contains annotation(s) that not allowed: " + difference,
+                    difference.isEmpty());
         }
     }
     

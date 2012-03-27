@@ -22,7 +22,6 @@ public class NormativeDocument {
 
     /** Внешний ключ на нормативный документ. */
     @NotNull
-    @Size(min = 36, max = 36)
     @XmlAttribute(name = "NORMDOCID", required = true)
     private UUID normDoc;
 
