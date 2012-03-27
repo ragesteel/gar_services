@@ -47,7 +47,7 @@ public class FiasTest {
     private static final ImmutableMultimap<Class<?>, Class<? extends Annotation>> CONSTRAINS_BY_TYPE;
 
     static {
-        // FIXME Отдельный класс, с разделением на обязательные и необязательные.
+        // FIXME Отдельный класс, с разделением на обязательные и необязательные, FieldType
         Multimap<Class<?>, Class<? extends Annotation>> initial = Multimaps.newSetMultimap(
                 Maps.<Class<?>, Collection<Class<? extends Annotation>>>newHashMap(),
                 new Supplier<Set<Class<? extends Annotation>>>() {

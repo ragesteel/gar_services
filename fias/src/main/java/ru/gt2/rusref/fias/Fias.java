@@ -1,8 +1,12 @@
 package ru.gt2.rusref.fias;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Все файлы ФИАС.
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Fias {
     STRSTAT(StructureStatuses.class, StructureStatus.class),
     ACTSTAT(ActualStatuses.class, ActualStatus.class),
@@ -24,8 +28,4 @@ public enum Fias {
     /** Внутренний класс. */
     public final Class<?> item;
     
-    private Fias(Class<?> wrapper, Class<?> item) {
-        this.wrapper = wrapper;
-        this.item = item;
-    }
 }
