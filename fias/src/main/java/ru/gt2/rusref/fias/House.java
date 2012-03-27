@@ -86,7 +86,7 @@ public class House {
 
     /** Признак строения. */
     @Digits(integer = 10, fraction = 0)
-    @XmlAttribute(name = "STRSTATUS", required = true)
+    @XmlAttribute(name = "STRSTATUS")
     private Integer strStatus;
 
     /** Уникальный идентификатор записи дома. */

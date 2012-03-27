@@ -14,7 +14,7 @@ public class Main {
     private static final String FILE_SUFFIX = ".XML";
     
     public static void main(String... args) throws JAXBException {
-        for (final Fias fias : Fias.values()) {
+        for (Fias fias : Fias.values()) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
         }
@@ -46,7 +46,7 @@ public class Main {
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
         for (File file : files) {
-            // processFile(unmarshaller, file);
+            processFile(unmarshaller, file);
         }
     }
 
