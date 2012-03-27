@@ -25,8 +25,11 @@ public class NormativeDocument {
     @XmlAttribute(name = "NORMDOCID", required = true)
     private UUID normDoc;
 
-    /** Наименование документа. */
-    @Size(min = 1)
+    /**
+     * Наименование документа.
+     * Ограничения на максимум в оригинальной схеме нет, надеюсь 500 символов хватит.
+     */
+    @Size(min = 1, max = 500)
     @XmlAttribute(name = "DOCNAME")
     private String docName;
     

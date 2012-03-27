@@ -26,6 +26,8 @@ import java.util.*;
  */
 public class FiasTest {
 
+    private static final String DEFAULT = "##default";
+    
     private static Function<Field, String> FIELD_NAME = new Function<Field, String>() {
         @Override
         public String apply(@Nullable Field field) {
@@ -117,6 +119,28 @@ public class FiasTest {
                     Sets.difference(annotationClasses, ImmutableSet.copyOf(fieldType.all));
             Assert.assertTrue("Field " + field + " contains annotation(s) that not allowed: " + difference,
                     difference.isEmpty());
+
+            for (Annotation annotation : annotations) {
+                Class<? extends Annotation> annotationType = annotation.annotationType();
+                if (Size.class.equals(annotationType)) {
+                    Size size = (Size) annotation;
+                    Assert.assertTrue(field + ", Size min must be >= 0",
+                            size.min() >= 0);
+                    Assert.assertTrue(field + ", Size max must be < Integer.MAX_VALUE",
+                            size.max() < Integer.MAX_VALUE);
+                    Assert.assertTrue(field + ", Size min must be <= max",
+                            size.min() <= size.max());
+                } else if (XmlAttribute.class.equals(annotationType)) {
+                    XmlAttribute xmlAttribute = (XmlAttribute) annotation;
+                    Assert.assertFalse(field + ", name must be Set" + xmlAttribute.name(),
+                            DEFAULT.equals(xmlAttribute.name()));
+                } else if (Digits.class.equals(annotationType)) {
+                    Digits digits = (Digits) annotation;
+                    if (Integer.class.equals(field.getType())) {
+                        Assert.assertEquals(field + ", fraction must be set to 0 for Integer", 0, digits.fraction());
+                    }
+                }
+            }
         }
     }
     
