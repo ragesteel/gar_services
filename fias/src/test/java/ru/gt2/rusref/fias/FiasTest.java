@@ -2,6 +2,7 @@ package ru.gt2.rusref.fias;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
+import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.*;
@@ -27,7 +28,25 @@ import java.util.*;
 public class FiasTest {
 
     private static final String DEFAULT = "##default";
-    
+
+    private static final ImmutableMap<Fias, String> SCHEME_BY_FIAS =
+        ImmutableMap.<Fias, String>builder()
+            .put(Fias.ADDROBJ, "AS_ADDROBJ_2_250_01_04_01_01")
+            .put(Fias.HOUSE, "AS_HOUSE_2_250_02_04_01_01")
+            .put(Fias.HOUSEINT, "AS_HOUSEINT_2_250_03_04_01_01")
+            .put(Fias.LANDMARK, "AS_LANDMARK_2_250_04_04_01_01")
+            .put(Fias.NORMDOC, "AS_NORMDOC_2_250_05_04_01_01")
+            .put(Fias.SOCRBASE, "AS_SOCRBASE_2_250_06_04_01_01")
+            .put(Fias.CURENTST, "AS_CURENTST_2_250_07_04_01_01")
+            .put(Fias.ACTSTAT, "AS_ACTSTAT_2_250_08_04_01_01")
+            .put(Fias.OPERSTAT, "AS_OPERSTAT_2_250_09_04_01_01")
+            .put(Fias.CENTERST, "AS_CENTERST_2_250_10_04_01_01")
+            .put(Fias.INTVSTAT, "AS_INTVSTAT_2_250_11_04_01_01")
+            .put(Fias.HSTSTAT, "AS_HSTSTAT_2_250_12_04_01_01")
+            .put(Fias.ESTSTAT, "AS_ESTSTAT_2_250_13_04_01_01")
+            .put(Fias.STRSTAT, "AS_STRSTAT_2_250_14_04_01_01")
+            .build();
+
     private static Function<Field, String> FIELD_NAME = new Function<Field, String>() {
         @Override
         public String apply(@Nullable Field field) {
@@ -74,6 +93,16 @@ public class FiasTest {
         }
     }
 
+    @Test
+    public void testSchemeNames() {
+        for (Fias fias : Fias.values()) {
+            String scheme = SCHEME_BY_FIAS.get(fias);
+            Assert.assertNotNull(scheme);
+            String schemePrefix = scheme.substring(0, scheme.length() - 2);
+            Assert.assertEquals(schemePrefix, fias.schemePrefix);
+        }
+    }
+    
     private void testFieldsInPropOrder(Fias fias) {
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
