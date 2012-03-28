@@ -6,6 +6,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -21,6 +22,7 @@ public class EstateStatus {
      */
     @NotNull
     @Digits(integer = 10, fraction = 0)
+    @XmlID
     @XmlAttribute(name = "ESTSTATID", required = true)
     private Integer estStatId;
 

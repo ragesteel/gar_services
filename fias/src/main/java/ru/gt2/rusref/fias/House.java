@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
@@ -94,8 +95,9 @@ public class House {
     @XmlAttribute(name = "HOUSEID", required = true)
     private UUID houseId;
     
-    /** Глобальный уникальный идентификатор интервала домов. */
+    /** Глобальный уникальный идентификатор дома. */
     @NotNull
+    @XmlID
     @XmlAttribute(name = "HOUSEGUID", required = true)
     private UUID houseGuid;
 

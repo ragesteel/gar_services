@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public class AddressObject {
 
     /** Глобальный уникальный идентификатор адресного объекта. */
     @NotNull
+    @XmlID
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
 

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
@@ -76,6 +77,7 @@ public class Landmark {
     
     /** Глобальный уникальный идентификатор ориентира. */
     @NotNull
+    @XmlID
     @XmlAttribute(name = "LANDGUID", required = true)
     private UUID landGuid;
 
