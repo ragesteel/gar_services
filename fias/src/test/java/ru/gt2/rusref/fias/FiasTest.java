@@ -108,15 +108,14 @@ public class FiasTest {
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
         Assert.assertEquals(propOrderArr.length, propOrder.size());
         
-        List<Field> fields = getAllFields(fias);
+        List<Field> fields = fias.itemFields;
         Set<String> fieldNames = Sets.newHashSet(Iterables.transform(fields, FIELD_NAME));
         Assert.assertEquals(fields.size(), fieldNames.size());
         Assert.assertEquals(fias.name(), fieldNames, propOrder);
     }
 
     private void testFieldsNullable(Fias fias) {
-        List<Field> fields = getAllFields(fias);
-        for (Field field : fields) {
+        for (Field field : fias.itemFields) {
             XmlAttribute xmlAttribute = field.getAnnotation(XmlAttribute.class);
             Assert.assertNotNull(xmlAttribute);
             NotNull notNull = field.getAnnotation(NotNull.class);
@@ -129,8 +128,7 @@ public class FiasTest {
     }
 
     private void testFieldsConstrainsByType(Fias fias) {
-        List<Field> fields = getAllFields(fias);
-        for (Field field : fields) {
+        for (Field field : fias.itemFields) {
             Class<?> type = field.getType();
             FieldType fieldType = FieldType.FROM_TYPE.get(type);
             Assert.assertNotNull("Type " + type + " does not contains in supported types",
@@ -180,15 +178,5 @@ public class FiasTest {
         XmlType xmlType = item.getAnnotation(XmlType.class);
         Assert.assertNotNull(xmlType);
         return xmlType.propOrder();
-    }
-    
-    private List<Field> getAllFields(Fias fias) {
-        Class<?> item = fias.item;
-        List<Field> fields = Lists.newArrayList();
-        while (!Object.class.equals(item)) {
-            fields.addAll(Arrays.asList(item.getDeclaredFields()));
-            item = item.getSuperclass();
-        }
-        return fields;
     }
 }

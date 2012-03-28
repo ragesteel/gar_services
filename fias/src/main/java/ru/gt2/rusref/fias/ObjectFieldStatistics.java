@@ -10,12 +10,8 @@ import java.util.Date;
  */
 public class ObjectFieldStatistics<T> {
     private final Field field;
-    private int nullCount;
-    private int notNullCount;
-    
-    public int getCount() {
-        return nullCount + notNullCount;
-    }
+    protected int nullCount;
+    protected int notNullCount;
     
     public final void updateStatistics(Object obj) {
         try {
@@ -83,7 +79,7 @@ public class ObjectFieldStatistics<T> {
         @Override
         protected Objects.ToStringHelper getToStringHelper() {
             Objects.ToStringHelper toStringHelper = super.getToStringHelper();
-            if (getCount() > 0) {
+            if (notNullCount > 0) {
                 toStringHelper = toStringHelper
                         .add("min", min)
                         .add("max", max);
@@ -115,7 +111,7 @@ public class ObjectFieldStatistics<T> {
         @Override
         protected Objects.ToStringHelper getToStringHelper() {
             Objects.ToStringHelper toStringHelper = super.getToStringHelper();
-            if (getCount() > 0) {
+            if (notNullCount > 0) {
                 toStringHelper = toStringHelper
                         .add("minLen", minLen)
                         .add("maxLen", maxLen);
@@ -156,7 +152,7 @@ public class ObjectFieldStatistics<T> {
         @Override
         protected Objects.ToStringHelper getToStringHelper() {
             Objects.ToStringHelper toStringHelper = super.getToStringHelper();
-            if (getCount() > 0) {
+            if (notNullCount > 0) {
                 toStringHelper = toStringHelper
                         .add("min", min)
                         .add("max", max);

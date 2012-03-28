@@ -46,13 +46,13 @@ public class Main {
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
         for (File file : files) {
-            processFile(unmarshaller, file);
+            processFile(fias, unmarshaller, file);
         }
     }
 
-    private static void processFile(Unmarshaller unmarshaller, File file) throws JAXBException {
+    private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException {
         String filename = file.getName();
-        final ExtractResult extractResult = new ExtractResult(filename);
+        final ExtractResult extractResult = new ExtractResult(fias);
         System.out.println("Processing file: " + filename);
         unmarshaller.setListener(new Unmarshaller.Listener() {
             @Override
@@ -60,7 +60,7 @@ public class Main {
                 if (null == parent) {
                     return;
                 }
-                extractResult.increaceItemCount();
+                extractResult.updateStatistics(target);
 
                 // FIXME Грязный хак, пока мы не начали делать по правильному
                 List<?> list = null;
@@ -83,6 +83,7 @@ public class Main {
         Object unmarshal = unmarshaller.unmarshal(file);
 
         // FIXME Добавить валидацию!
+        // FIXME Более «красивый» вывод статистики, каждое поле на своей строке — отдельный метод для вывода.
         System.out.println(extractResult);
     }
 

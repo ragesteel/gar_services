@@ -1,7 +1,13 @@
 package ru.gt2.rusref.fias;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Все файлы ФИАС.
@@ -26,6 +32,8 @@ public enum Fias {
     public final Class<?> wrapper;
     /** Внутренний класс. */
     public final Class<?> item;
+    /** Поля внутреннего класса. */
+    public final ImmutableList<Field> itemFields;
     /** Название файла со схемой. */
     public final String schemePrefix;
 
@@ -33,6 +41,17 @@ public enum Fias {
         this.wrapper = wrapper;
         this.item = item;
         this.schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
+        this.itemFields = getAllFields(item);
+    }
+
+    private static ImmutableList<Field> getAllFields(Class<?> item) {
+        // FIXME Упорядочить поля по XmlType.propOrder
+        List<Field> fields = Lists.newArrayList();
+        while (!Object.class.equals(item)) {
+            fields.addAll(Arrays.asList(item.getDeclaredFields()));
+            item = item.getSuperclass();
+        }
+        return ImmutableList.copyOf(fields);
     }
 
 }
