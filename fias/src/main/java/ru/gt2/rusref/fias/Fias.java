@@ -1,13 +1,18 @@
 package ru.gt2.rusref.fias;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Все файлы ФИАС.
@@ -45,13 +50,38 @@ public enum Fias {
     }
 
     private static ImmutableList<Field> getAllFields(Class<?> item) {
-        // FIXME Упорядочить поля по XmlType.propOrder
-        List<Field> fields = Lists.newArrayList();
+        String[] propOrder = getPropOrder(item);
+
+        Map<String, Field> fieldByName = Maps.newHashMap();
         while (!Object.class.equals(item)) {
-            fields.addAll(Arrays.asList(item.getDeclaredFields()));
+            for (Field field : item.getDeclaredFields()) {
+                fieldByName.put(field.getName(), field);
+            }
             item = item.getSuperclass();
+        }
+        
+        if (0 == propOrder.length) {
+            return ImmutableList.copyOf(fieldByName.values());
+        }
+        // Упорядочить поля по XmlType.propOrder, если есть.
+
+        List<Field> fields = Lists.newArrayListWithCapacity(propOrder.length);
+        for (String name : propOrder) {
+            Field field = fieldByName.get(name);
+            if (null == field) {
+                throw new IllegalArgumentException("Field: " + name + " not found");
+            }
+            fields.add(field);
         }
         return ImmutableList.copyOf(fields);
     }
 
+    private static String[] getPropOrder(Class<?> item) {
+        XmlType xmlType = item.getAnnotation(XmlType.class);
+        String[] propOrder = null;
+        if (null != xmlType) {
+            propOrder = xmlType.propOrder();
+        }
+        return Objects.firstNonNull(propOrder, new String[0]);
+    }
 }
