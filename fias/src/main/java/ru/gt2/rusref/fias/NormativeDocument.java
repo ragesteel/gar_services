@@ -2,12 +2,12 @@ package ru.gt2.rusref.fias;
 
 import lombok.ToString;
 
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
@@ -21,8 +21,8 @@ import java.util.UUID;
 @ToString
 public class NormativeDocument {
     /** Внешний ключ на нормативный документ. */
+    @Id
     @NotNull
-    @XmlID
     @XmlAttribute(name = "NORMDOCID", required = true)
     private UUID normDoc;
 

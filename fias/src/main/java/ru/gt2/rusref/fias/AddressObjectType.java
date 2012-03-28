@@ -2,11 +2,11 @@ package ru.gt2.rusref.fias;
 
 import lombok.ToString;
 
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -34,9 +34,9 @@ public class AddressObjectType {
     private String socrName;
 
     /** Ключевое поле. */
+    @Id
     @NotNull
     @Size(min = 1, max = 3)
-    @XmlID
     @XmlAttribute(name = "KOD_T_ST", required = true)
     private String kodTSt;
 }

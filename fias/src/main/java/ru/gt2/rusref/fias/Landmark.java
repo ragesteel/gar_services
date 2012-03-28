@@ -2,6 +2,7 @@ package ru.gt2.rusref.fias;
 
 import lombok.ToString;
 
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -76,8 +77,8 @@ public class Landmark {
     private UUID landId;
     
     /** Глобальный уникальный идентификатор ориентира. */
+    @Id
     @NotNull
-    @XmlID
     @XmlAttribute(name = "LANDGUID", required = true)
     private UUID landGuid;
 

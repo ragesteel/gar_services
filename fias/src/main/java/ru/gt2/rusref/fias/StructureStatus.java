@@ -2,11 +2,11 @@ package ru.gt2.rusref.fias;
 
 import lombok.ToString;
 
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -20,9 +20,9 @@ public class StructureStatus {
     /**
      * Признак строения
      */
+    @Id
     @NotNull
     @Digits(integer = 10, fraction = 0)
-    @XmlID
     @XmlAttribute(name = "STRSTATID", required = true)
     private Integer strStatId;
 
