@@ -2,6 +2,7 @@ package ru.gt2.rusref.fias;
 
 import com.google.common.base.Objects;
 
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.Date;
 
@@ -37,6 +38,14 @@ public class ObjectFieldStatistics<T> {
     @Override
     public String toString() {
         return getToStringHelper().toString();
+    }
+
+    public void print(PrintStream printStream) {
+        printStream.print("notNullCount = " + notNullCount + ", nullCount = " + nullCount);
+    }
+    
+    public String getFieldName() {
+        return field.getName();
     }
 
     protected void doUpdateStatistics(T value) {
@@ -90,6 +99,15 @@ public class ObjectFieldStatistics<T> {
         public IntegerFieldStatistics(Field field) {
             super(field);
         }
+
+        @Override
+        public void print(PrintStream printStream) {
+            super.print(printStream);
+            if (0 == notNullCount) {
+                return;
+            }
+            printStream.print(", range = " + min + " … " + max);
+        }
     }
 
     public static class StringFieldStatistics extends ObjectFieldStatistics<String> {
@@ -121,6 +139,15 @@ public class ObjectFieldStatistics<T> {
 
         public StringFieldStatistics(Field field) {
             super(field);
+        }
+
+        @Override
+        public void print(PrintStream printStream) {
+            super.print(printStream);
+            if (0 == notNullCount) {
+                return;
+            }
+            printStream.print(", length range = " + minLen + " … " + maxLen);
         }
     }
 
@@ -162,6 +189,15 @@ public class ObjectFieldStatistics<T> {
 
         public DateFieldStatistics(Field field) {
             super(field);
+        }
+
+        @Override
+        public void print(PrintStream printStream) {
+            super.print(printStream);
+            if (0 == notNullCount) {
+                return;
+            }
+            printStream.print(", range = " + min + " … " + max);
         }
     }
 }

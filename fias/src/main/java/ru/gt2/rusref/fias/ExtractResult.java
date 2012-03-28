@@ -3,6 +3,7 @@ package ru.gt2.rusref.fias;
 import com.google.common.collect.Maps;
 import lombok.ToString;
 
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -28,6 +29,15 @@ public class ExtractResult {
         itemCount++;
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             fieldStatistics.updateStatistics(item);
+        }
+    }
+
+    public void print(PrintStream printStream) {
+        printStream.println("Total item count: " + itemCount);
+        for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
+            printStream.print("  " + fieldStatistics.getFieldName() + ": ");
+            fieldStatistics.print(printStream);
+            printStream.println();
         }
     }
 }

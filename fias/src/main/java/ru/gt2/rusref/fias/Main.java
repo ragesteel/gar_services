@@ -80,11 +80,10 @@ public class Main {
                 }
             }
         });
-        Object unmarshal = unmarshaller.unmarshal(file);
+        unmarshaller.unmarshal(file);
 
         // FIXME Добавить валидацию!
-        // FIXME Более «красивый» вывод статистики, каждое поле на своей строке — отдельный метод для вывода.
-        System.out.println(extractResult);
+        extractResult.print(System.out);
     }
 
 }
