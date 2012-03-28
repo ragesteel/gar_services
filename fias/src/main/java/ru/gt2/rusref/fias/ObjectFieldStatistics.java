@@ -136,13 +136,13 @@ public class ObjectFieldStatistics<T> {
                 return;
             }
 
-            if (min == null) {
+            if (null == min) {
                 min = value;
             } else {
                 min = value.before(min) ? value : min;
             }
             
-            if (max == null) {
+            if (null == max) {
                 max = value;
             } else {
                 max = value.after(max) ? value : max;
