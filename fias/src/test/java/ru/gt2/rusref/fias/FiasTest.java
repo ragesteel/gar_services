@@ -5,7 +5,10 @@ import com.google.common.base.Functions;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +23,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Тест для проверки соответствия аннотаций моим пожеланиям к классам.
@@ -137,7 +142,7 @@ public class FiasTest {
             ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
                     (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
             ImmutableSet<Class<? extends Annotation>> requiredAnnotations = fieldType.required;
-            Sets.SetView<Class<? extends Annotation>> intersectionWithRequired = 
+            Sets.SetView<Class<? extends Annotation>> intersectionWithRequired =
                     Sets.intersection(requiredAnnotations, annotationClasses);
             Assert.assertEquals("Missing required annotations " +
                     Sets.difference(requiredAnnotations, annotationClasses),

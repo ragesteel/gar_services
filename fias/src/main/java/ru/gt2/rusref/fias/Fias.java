@@ -8,9 +8,11 @@ import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,8 @@ public enum Fias {
     public final Class<?> item;
     /** Поля внутреннего класса. */
     public final ImmutableList<Field> itemFields;
+    /** Поле идентификатора внутреннего класса. */
+    public final Field idField;
     /** Название файла со схемой. */
     public final String schemePrefix;
 
@@ -47,6 +51,7 @@ public enum Fias {
         this.item = item;
         this.schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
         this.itemFields = getAllFields(item);
+        this.idField = getId(itemFields);
     }
 
     private static ImmutableList<Field> getAllFields(Class<?> item) {
@@ -84,4 +89,22 @@ public enum Fias {
         }
         return Objects.firstNonNull(propOrder, new String[0]);
     }
+    
+    private static Field getId(Collection<Field> fields) {
+        Field result = null;
+        for (Field field : fields) {
+            Id id = field.getAnnotation(Id.class);
+            if (null == id) {
+                continue;
+            }
+            if (null != result) {
+                throw new IllegalArgumentException("Duplication of id " + field);
+            }
+            result = field;
+        }
+        if (null == result) {
+            throw new IllegalArgumentException("Id field is not defined!");
+        }
+        return result;
+    } 
 }
