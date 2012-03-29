@@ -2,12 +2,15 @@ package ru.gt2.rusref.fias;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+import javax.annotation.Nullable;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
@@ -41,10 +44,19 @@ public enum Fias {
     public final Class<?> item;
     /** Поля внутреннего класса. */
     public final ImmutableList<Field> itemFields;
+    /** Поля, которые являются ссылками на другие. */
+    public final ImmutableList<Field> referenceFields;
     /** Поле идентификатора внутреннего класса. */
     public final Field idField;
     /** Название файла со схемой. */
     public final String schemePrefix;
+
+    private static final Predicate<Field> FIAS_REF = new Predicate<Field>() {
+        @Override
+        public boolean apply(@Nullable Field field) {
+            return (null != field.getAnnotation(FiasRef.class));
+        }
+    };
 
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
         this.wrapper = wrapper;
@@ -52,6 +64,7 @@ public enum Fias {
         this.schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
         this.itemFields = getAllFields(item);
         this.idField = getId(itemFields);
+        this.referenceFields = getReferences(itemFields);
     }
 
     private static ImmutableList<Field> getAllFields(Class<?> item) {
@@ -106,5 +119,9 @@ public enum Fias {
             throw new IllegalArgumentException("Id field is not defined!");
         }
         return result;
-    } 
+    }
+    
+    private static ImmutableList<Field> getReferences(Collection<Field> fields) {
+        return ImmutableList.copyOf(Collections2.filter(fields, FIAS_REF));
+    }
 }

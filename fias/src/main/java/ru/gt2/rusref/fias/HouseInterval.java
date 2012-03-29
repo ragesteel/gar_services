@@ -87,6 +87,7 @@ public class HouseInterval {
     private UUID intGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
+    @FiasRef(Fias.ADDROBJ)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
@@ -102,13 +103,14 @@ public class HouseInterval {
     private Date endDate;
     
     /** Статус интервала (обычный, четный, нечетный). */
-    // FIXME Добавить ссылку на @XmlTransient IntervalStatus
+    @FiasRef(Fias.INTVSTAT)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTSTATUS", required = true)
     private Integer intStatus;
 
     /** Внешний ключ на нормативный документ. */
+    @FiasRef(Fias.NORMDOC)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

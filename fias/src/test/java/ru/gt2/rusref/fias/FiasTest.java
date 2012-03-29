@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -128,6 +129,11 @@ public class FiasTest {
                 Assert.assertNotNull("Field " + field + " is required, must be notNull", notNull);
             } else {
                 Assert.assertNull(notNull);
+            }
+            
+            Id id = field.getAnnotation(Id.class);
+            if (null != id) {
+                Assert.assertNotNull("Field " + field + " is key, must be notNull", notNull);
             }
         }
     }

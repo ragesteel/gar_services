@@ -83,6 +83,7 @@ public class Landmark {
     private UUID landGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
+    @FiasRef(Fias.ADDROBJ)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
@@ -98,7 +99,7 @@ public class Landmark {
     private Date endDate;
 
     /** Внешний ключ на нормативный документ. */
+    @FiasRef(Fias.NORMDOC)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
-
 }

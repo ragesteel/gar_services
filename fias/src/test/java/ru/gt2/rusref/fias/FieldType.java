@@ -9,10 +9,18 @@ import lombok.RequiredArgsConstructor;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Id;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Тип поля.
@@ -20,16 +28,16 @@ import java.util.*;
 public enum FieldType {
     INTEGER(Integer.class,
         Collections.<Class<? extends Annotation>>singleton(Digits.class),
-        Collections.<Class<? extends Annotation>>singleton(Id.class)),
+        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)),
     STRING(String.class,
         Collections.<Class<? extends Annotation>>singleton(Size.class),
-        Collections.<Class<? extends Annotation>>singleton(Id.class)),
+            ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)),
     DATE(Date.class,
         Collections.<Class<? extends Annotation>>emptySet(),
         ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)),
     GUID(UUID.class,
         Collections.<Class<? extends Annotation>>emptySet(),
-        Collections.<Class<? extends Annotation>>singleton(Id.class));
+        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class));
 
     public final Class<?> type;
     public final ImmutableSet<Class<? extends Annotation>> required;

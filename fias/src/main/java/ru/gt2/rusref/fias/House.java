@@ -70,6 +70,7 @@ public class House {
     private String houseNum;
 
     /** Признак владения. */
+    @FiasRef(Fias.ESTSTAT)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "ESTSTATUS", required = true)
@@ -86,6 +87,7 @@ public class House {
     private String structNum;
 
     /** Признак строения. */
+    @FiasRef(Fias.STRSTAT)
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "STRSTATUS")
     private Integer strStatus;
@@ -102,6 +104,7 @@ public class House {
     private UUID houseGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
+    @FiasRef(Fias.ADDROBJ)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
@@ -117,13 +120,14 @@ public class House {
     private Date endDate;
     
     /** Состояние дома. */
-    // FIXME Добавить ссылку на @XmlTransient StructureStatus
+    @FiasRef(Fias.HSTSTAT)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "STATSTATUS", required = true)
     private Integer statStatus;
 
     /** Внешний ключ на нормативный документ. */
+    @FiasRef(Fias.NORMDOC)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 
