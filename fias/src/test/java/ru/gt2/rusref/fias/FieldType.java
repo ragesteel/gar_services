@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.Id;
 import javax.validation.constraints.*;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.lang.annotation.Annotation;
@@ -19,16 +20,16 @@ import java.util.*;
 public enum FieldType {
     INTEGER(Integer.class,
         Collections.<Class<? extends Annotation>>singleton(Digits.class),
-        Collections.<Class<? extends Annotation>>emptySet()),
+        Collections.<Class<? extends Annotation>>singleton(Id.class)),
     STRING(String.class,
         Collections.<Class<? extends Annotation>>singleton(Size.class),
-        Collections.<Class<? extends Annotation>>emptySet()),
+        Collections.<Class<? extends Annotation>>singleton(Id.class)),
     DATE(Date.class,
         Collections.<Class<? extends Annotation>>emptySet(),
         ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)),
     GUID(UUID.class,
         Collections.<Class<? extends Annotation>>emptySet(),
-        Collections.<Class<? extends Annotation>>emptySet());
+        Collections.<Class<? extends Annotation>>singleton(Id.class));
 
     public final Class<?> type;
     public final ImmutableSet<Class<? extends Annotation>> required;
