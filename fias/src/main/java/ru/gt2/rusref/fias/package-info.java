@@ -14,10 +14,11 @@
  * FIXME Сделать общего предка для Landmark, HouseInterval, AddressObject и House.
  *
  * FIXME Паралелизация обработки (JAXBContext — он ThreadSafe, а Marshaller — нет).
+ * http://stackoverflow.com/questions/1134189/can-jaxb-parse-large-xml-files-in-chunks
  *
  * FIXME Спросить про метаданные для JAXB, аналогично JPA2.
  *
  * FIXME Отдельная страница по стилям, например порядок аннотация:
- * @FiasRef, JPA (то как будет в базе), BeanValidation (ограничения на поле), JAXB (то что было исходно), Lombok
+ * FiasRef, JPA (то как будет в базе), BeanValidation (ограничения на поле), JAXB (то что было исходно), Lombok
  */
 package ru.gt2.rusref.fias;
