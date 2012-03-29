@@ -87,7 +87,7 @@ public class HouseInterval {
     private UUID intGuid;
 
     /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
-    @FiasRef(Fias.ADDROBJ)
+    @FiasRef(AddressObject.class)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)
     private UUID aoGuid;
@@ -103,14 +103,14 @@ public class HouseInterval {
     private Date endDate;
     
     /** Статус интервала (обычный, четный, нечетный). */
-    @FiasRef(Fias.INTVSTAT)
+    @FiasRef(IntervalStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTSTATUS", required = true)
     private Integer intStatus;
 
     /** Внешний ключ на нормативный документ. */
-    @FiasRef(Fias.NORMDOC)
+    @FiasRef(NormativeDocument.class)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

@@ -151,7 +151,7 @@ public class AddressObject {
     private Integer aoLevel;
 
     /** Идентификатор объекта родительского объекта. */
-    @FiasRef(Fias.ADDROBJ)
+    @FiasRef(AddressObject.class)
     @XmlAttribute(name = "PARENTGUID")
     private UUID parentGuid;
 
@@ -161,12 +161,12 @@ public class AddressObject {
     private UUID aoId;
 
     /** Идентификатор записи связывания с предыдушей исторической записью. */
-    @FiasRef(Fias.ADDROBJ)
+    @FiasRef(AddressObject.class)
     @XmlAttribute(name = "PREVID")
     private UUID prevId;
 
     /** Идентификатор записи  связывания с последующей исторической записью. */
-    @FiasRef(Fias.ADDROBJ)
+    @FiasRef(AddressObject.class)
     @XmlAttribute(name = "NEXTID")
     private UUID nextId;
 
@@ -185,14 +185,14 @@ public class AddressObject {
      * Актуальный адрес на текущую дату.
      * Обычно последняя запись об адресном объекте.
      */
-    @FiasRef(Fias.ACTSTAT)
+    @FiasRef(ActualStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "ACTSTATUS", required = true)
     private Integer actStatus;
 
     /** Статус центра. */
-    @FiasRef(Fias.CENTERST)
+    @FiasRef(CenterStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "CENTSTATUS", required = true)
@@ -202,14 +202,14 @@ public class AddressObject {
      * Статус действия над записью – причина появления записи.
      * (см. описание таблицы OperationStatus)
      */
-    @FiasRef(Fias.OPERSTAT)
+    @FiasRef(OperationStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "OPERSTATUS", required = true)
     private Integer operStatus;
 
     /** Статус актуальности КЛАДР 4 (последние две цифры в коде). */
-    @FiasRef(Fias.CURENTST)
+    @FiasRef(CurrentStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "CURRSTATUS", required = true)
@@ -226,7 +226,7 @@ public class AddressObject {
     private Date endDate;
     
     /** Внешний ключ на нормативный документ. */
-    @FiasRef(Fias.NORMDOC)
+    @FiasRef(NormativeDocument.class)
     @XmlAttribute(name = "NORMDOC")
     private UUID normDoc;
 

@@ -13,12 +13,5 @@ import java.lang.reflect.Field;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FiasRef {
     /** Целевой справочник. */
-    Fias value();
-
-    static final Predicate<Field> FIAS_REF = new Predicate<Field>() {
-        @Override
-        public boolean apply(@Nullable Field field) {
-            return (null != field.getAnnotation(FiasRef.class));
-        }
-    };
+    Class<?> value();
 }

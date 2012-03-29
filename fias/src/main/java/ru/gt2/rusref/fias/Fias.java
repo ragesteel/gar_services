@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.AccessLevel;
@@ -44,20 +45,34 @@ public enum Fias {
     public final Class<?> item;
     /** Поля внутреннего класса. */
     public final ImmutableList<Field> itemFields;
-    /** Поля, которые являются ссылками на другие. */
-    private ImmutableList<Field> referenceFields;
     /** Поле идентификатора внутреннего класса. */
     public final Field idField;
     /** Название файла со схемой. */
     public final String schemePrefix;
 
-    public ImmutableList<Field> getReferenceFields() {
-        if (referenceFields == null) {
-            referenceFields = getReferences(itemFields);
+    public static final ImmutableMap<Class<?>, Fias> FROM_ITEM_CLASS;
+
+    private static final Predicate<Field> FIAS_REF;
+
+    static {
+        FIAS_REF = new Predicate<Field>() {
+            @Override
+            public boolean apply(@Nullable Field field) {
+                return (null != field.getAnnotation(FiasRef.class));
+            }
+        };
+
+        Map<Class<?>, Fias> fromType = Maps.newHashMap();
+        for (Fias fias : values()) {
+            fromType.put(fias.item, fias);
         }
-        return referenceFields;
+        FROM_ITEM_CLASS = ImmutableMap.copyOf(fromType);
     }
-    
+
+    public static ImmutableList<Field> getReferences(Collection<Field> fields) {
+        return ImmutableList.copyOf(Collections2.filter(fields, FIAS_REF));
+    }
+
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
         this.wrapper = wrapper;
         this.item = item;
@@ -119,8 +134,5 @@ public enum Fias {
         }
         return result;
     }
-    
-    private static ImmutableList<Field> getReferences(Collection<Field> fields) {
-        return ImmutableList.copyOf(Collections2.filter(fields, FiasRef.FIAS_REF));
-    }
+
 }
