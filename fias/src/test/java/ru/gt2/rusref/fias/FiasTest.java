@@ -108,7 +108,17 @@ public class FiasTest {
             Assert.assertEquals(schemePrefix, fias.schemePrefix);
         }
     }
-    
+
+    /**
+     * Проверка на типы ссылок.
+     */
+    @Test
+    public void testReferenceTypes() {
+        for (Fias fias : Fias.values()) {
+            testReferenceTypes(fias);
+        }
+    }
+
     private void testFieldsInPropOrder(Fias fias) {
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
@@ -179,6 +189,15 @@ public class FiasTest {
                     }
                 }
             }
+        }
+    }
+
+    private void testReferenceTypes(Fias fias) {
+        for (Field field : fias.getReferenceFields()) {
+            FiasRef fiasRef = field.getAnnotation(FiasRef.class);
+            Assert.assertNotNull(fiasRef);
+            Assert.assertEquals("Reference (" + field + ") and id field must be of the same type",
+                    fiasRef.value().idField.getType(), field.getType());
         }
     }
     

@@ -45,26 +45,25 @@ public enum Fias {
     /** Поля внутреннего класса. */
     public final ImmutableList<Field> itemFields;
     /** Поля, которые являются ссылками на другие. */
-    public final ImmutableList<Field> referenceFields;
+    private ImmutableList<Field> referenceFields;
     /** Поле идентификатора внутреннего класса. */
     public final Field idField;
     /** Название файла со схемой. */
     public final String schemePrefix;
 
-    private static final Predicate<Field> FIAS_REF = new Predicate<Field>() {
-        @Override
-        public boolean apply(@Nullable Field field) {
-            return (null != field.getAnnotation(FiasRef.class));
+    public ImmutableList<Field> getReferenceFields() {
+        if (referenceFields == null) {
+            referenceFields = getReferences(itemFields);
         }
-    };
-
+        return referenceFields;
+    }
+    
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
         this.wrapper = wrapper;
         this.item = item;
         this.schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
         this.itemFields = getAllFields(item);
         this.idField = getId(itemFields);
-        this.referenceFields = getReferences(itemFields);
     }
 
     private static ImmutableList<Field> getAllFields(Class<?> item) {
@@ -122,6 +121,6 @@ public enum Fias {
     }
     
     private static ImmutableList<Field> getReferences(Collection<Field> fields) {
-        return ImmutableList.copyOf(Collections2.filter(fields, FIAS_REF));
+        return ImmutableList.copyOf(Collections2.filter(fields, FiasRef.FIAS_REF));
     }
 }
