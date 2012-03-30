@@ -41,7 +41,7 @@ public class Main {
             return;
         }
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
+        JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper, AbstractAddressObject.class, AbstractHouse.class);
         
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 

@@ -84,28 +84,37 @@ public enum Fias {
     private static ImmutableList<Field> getAllFields(Class<?> item) {
         String[] propOrder = getPropOrder(item);
 
-        Map<String, Field> fieldByName = Maps.newHashMap();
-        while (!Object.class.equals(item)) {
-            for (Field field : item.getDeclaredFields()) {
-                fieldByName.put(field.getName(), field);
-            }
-            item = item.getSuperclass();
-        }
+        Map<String, Field> fieldByName = getAllFieldsMap(item);
         
         if (0 == propOrder.length) {
             return ImmutableList.copyOf(fieldByName.values());
         }
-        // Упорядочить поля по XmlType.propOrder, если есть.
 
+        // Упорядочить поля по XmlType.propOrder, если есть.
         List<Field> fields = Lists.newArrayListWithCapacity(propOrder.length);
         for (String name : propOrder) {
             Field field = fieldByName.get(name);
             if (null == field) {
-                throw new IllegalArgumentException("Field: " + name + " not found");
+                throw new IllegalArgumentException("Field: " + name + " not found, class " + item);
             }
             fields.add(field);
         }
         return ImmutableList.copyOf(fields);
+    }
+
+    private static Map<String, Field> getAllFieldsMap(Class<?> item) {
+        Map<String, Field> result = Maps.newHashMap();
+        while (!Object.class.equals(item)) {
+            for (Field field : item.getDeclaredFields()) {
+                Field existing = result.put(field.getName(), field);
+                if (null != existing) {
+                    throw new IllegalArgumentException("Duplicate field, trying to add: " + field
+                            + ", while " + existing + " is already exists");
+                }
+            }
+            item = item.getSuperclass();
+        }
+        return result;
     }
 
     private static String[] getPropOrder(Class<?> item) {

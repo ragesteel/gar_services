@@ -11,8 +11,6 @@
  *
  * FIXME Проверка конвертации путём обратного преобразования в xml-строку.
  *
- * FIXME Сделать общего предка для Landmark, HouseInterval, AddressObject и House.
- *
  * FIXME Паралелизация обработки (JAXBContext — он ThreadSafe, а Marshaller — нет).
  * http://stackoverflow.com/questions/1134189/can-jaxb-parse-large-xml-files-in-chunks
  *
