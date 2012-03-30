@@ -18,16 +18,18 @@ import java.util.Set;
 public class ExtractResult {
     /** Количество загруженных элементов. */
     private int itemCount;
+
     private int invalidCount;
 
     /** Статистика по полям. */
     private final Map<String, ObjectFieldStatistics> statistics;
+
     private final Validator validator;
 
     public ExtractResult(Fias fias, Validator validator) {
         statistics = Maps.newLinkedHashMap();
         for (Field field : fias.itemFields) {
-            statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field));
+            statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field, validator));
         }
 
         this.validator = validator;
@@ -40,14 +42,16 @@ public class ExtractResult {
             invalidCount++;
         }
 
-        // FIXME Добавить валидацию к отдельным полям.
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             fieldStatistics.updateStatistics(item);
         }
     }
 
     public void print(PrintStream printStream) {
-        printStream.println("Total item count: " + itemCount + ", not valid: " + invalidCount);
+        printStream.print("Total item count: " + itemCount);
+        if (0 != invalidCount) {
+            printStream.println(", not valid: " + invalidCount);
+        }
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             printStream.print("  " + fieldStatistics.getFieldName() + ": ");
             fieldStatistics.print(printStream);
