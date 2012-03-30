@@ -1,4 +1,4 @@
-package ru.gt2.rusref.fias;
+package ru.gt2.rusref.stat;
 
 import com.google.common.base.Objects;
 

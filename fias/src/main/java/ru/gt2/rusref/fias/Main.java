@@ -1,7 +1,13 @@
 package ru.gt2.rusref.fias;
 
-import javax.xml.bind.*;
-import javax.xml.namespace.QName;
+import ru.gt2.rusref.stat.ExtractResult;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
@@ -12,6 +18,8 @@ import java.util.List;
 public class Main {
     private static final String FILE_PREFIX = "AS_";
     private static final String FILE_SUFFIX = ".XML";
+    private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+    private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
     
     public static void main(String... args) throws JAXBException {
         for (Fias fias : Fias.values()) {
@@ -41,7 +49,7 @@ public class Main {
             return;
         }
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper, AbstractAddressObject.class, AbstractHouse.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
         
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
@@ -52,7 +60,7 @@ public class Main {
 
     private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException {
         String filename = file.getName();
-        final ExtractResult extractResult = new ExtractResult(fias);
+        final ExtractResult extractResult = new ExtractResult(fias, VALIDATOR);
         System.out.println("Processing file: " + filename);
         unmarshaller.setListener(new Unmarshaller.Listener() {
             @Override
@@ -82,7 +90,6 @@ public class Main {
         });
         unmarshaller.unmarshal(file);
 
-        // FIXME Добавить валидацию!
         extractResult.print(System.out);
     }
 
