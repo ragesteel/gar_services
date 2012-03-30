@@ -21,7 +21,7 @@ public class Main {
     }
 
     private static File[] findFiles(final Fias fias) {
-        File xmlDir = new File("data/XML-2012-03-02");
+        File xmlDir = new File("data/2012-03-22-xml");
         final String prefix = FILE_PREFIX + fias.name() + "_";
         final int nameLen = prefix.length() + FILE_SUFFIX.length() + 36 + 8 + 1;
         return xmlDir.listFiles(new FilenameFilter() {
