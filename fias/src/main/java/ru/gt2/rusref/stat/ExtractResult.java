@@ -50,8 +50,9 @@ public class ExtractResult {
     public void print(PrintStream printStream) {
         printStream.print("Total item count: " + itemCount);
         if (0 != invalidCount) {
-            printStream.println(", not valid: " + invalidCount);
+            printStream.print(", not valid: " + invalidCount);
         }
+        printStream.println();
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             printStream.print("  " + fieldStatistics.getFieldName() + ": ");
             fieldStatistics.print(printStream);
