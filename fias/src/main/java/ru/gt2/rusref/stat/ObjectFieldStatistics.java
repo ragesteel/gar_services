@@ -29,11 +29,14 @@ public class ObjectFieldStatistics<T> {
 
     protected int notValidCount;
     
-    public final void updateStatistics(Object obj) {
-        // FIXME Включить валидацию только при наличии ограничений.
-        Set<ConstraintViolation<Object>> constraintViolations = validator.validateProperty(obj, fieldName);
-        if (!constraintViolations.isEmpty()) {
-            notValidCount++;
+    public final void updateStatistics(Object obj, boolean validate) {
+        // FIXME Тут вообще не должно быть вызова валидации, т.к. все данные можно получить из
+        // родительского списка нарушений.
+        if (validate) {
+            Set<ConstraintViolation<Object>> constraintViolations = validator.validateProperty(obj, fieldName);
+            if (!constraintViolations.isEmpty()) {
+                notValidCount++;
+            }
         }
 
         try {

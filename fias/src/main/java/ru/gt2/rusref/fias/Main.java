@@ -80,6 +80,7 @@ public class Main {
                     list = ((Houses) parent).house;
                 }
 
+                // FIXME Добавить индикацию прогресса чтения
                 if (null == list) {
                     return;
                 }

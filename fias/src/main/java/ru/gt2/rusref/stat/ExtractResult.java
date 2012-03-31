@@ -13,6 +13,9 @@ import java.util.Set;
 
 /**
  * Представление результата импорта.
+ *
+ * Что-то включение валидации как-то серьёзно начало тормозить проект.
+ * FIXME Нужно попробовать не выполнять проверки на каждом поле, если валиден весь объект.
  */
 @ToString
 public class ExtractResult {
@@ -38,12 +41,13 @@ public class ExtractResult {
     public void updateStatistics(Object item) {
         itemCount++;
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(item);
-        if (!constraintViolations.isEmpty()) {
+        boolean notValid = !constraintViolations.isEmpty();
+        if (notValid) {
             invalidCount++;
         }
 
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
-            fieldStatistics.updateStatistics(item);
+            fieldStatistics.updateStatistics(item, notValid);
         }
     }
 
