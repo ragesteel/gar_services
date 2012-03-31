@@ -2,15 +2,12 @@ package ru.gt2.rusref.stat;
 
 import lombok.Getter;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Статистика по полю.
@@ -21,22 +18,15 @@ public class ObjectFieldStatistics<T> {
     @Getter
     private final String fieldName;
 
-    private final Validator validator;
-
     protected int nullCount;
 
     protected int notNullCount;
 
     protected int notValidCount;
     
-    public final void updateStatistics(Object obj, boolean validate) {
-        // FIXME Тут вообще не должно быть вызова валидации, т.к. все данные можно получить из
-        // родительского списка нарушений.
-        if (validate) {
-            Set<ConstraintViolation<Object>> constraintViolations = validator.validateProperty(obj, fieldName);
-            if (!constraintViolations.isEmpty()) {
-                notValidCount++;
-            }
+    public final void updateStatistics(Object obj, boolean violated) {
+        if (violated) {
+            notValidCount++;
         }
 
         try {
@@ -47,16 +37,16 @@ public class ObjectFieldStatistics<T> {
         }
     }
     
-    public static ObjectFieldStatistics<?> newFieldStatistics(Field field, Validator validator) {
+    public static ObjectFieldStatistics<?> newFieldStatistics(Field field) {
         Class<?> type = field.getType();
         if (Integer.class.equals(type)) {
-            return new IntegerFieldStatistics(field, validator);
+            return new IntegerFieldStatistics(field);
         } else if (String.class.equals(type)) {
-            return new StringFieldStatistics(field, validator);
+            return new StringFieldStatistics(field);
         } else if (Date.class.equals(type)) {
-            return new DateFieldStatistics(field, validator);
+            return new DateFieldStatistics(field);
         }
-        return new ObjectFieldStatistics<Object>(field, validator);
+        return new ObjectFieldStatistics<Object>(field);
     }
 
     public void print(PrintStream printStream) {
@@ -74,13 +64,12 @@ public class ObjectFieldStatistics<T> {
         }
     }
 
-    protected ObjectFieldStatistics(Field field, Validator validator) {
+    protected ObjectFieldStatistics(Field field) {
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
         this.field = field;
         fieldName = field.getName();
-        this.validator = validator;
     }
 
     protected BigDecimal getAverage(BigInteger sum) {

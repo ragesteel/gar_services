@@ -1,6 +1,5 @@
 package ru.gt2.rusref.stat;
 
-import javax.validation.Validator;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -30,8 +29,8 @@ public class DateFieldStatistics extends ObjectFieldStatistics<Date> {
         }
     }
 
-    public DateFieldStatistics(Field field, Validator validator) {
-        super(field, validator);
+    public DateFieldStatistics(Field field) {
+        super(field);
     }
 
     @Override

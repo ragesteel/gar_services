@@ -1,9 +1,13 @@
 package ru.gt2.rusref.stat;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import lombok.ToString;
 import ru.gt2.rusref.fias.Fias;
 
+import javax.annotation.Nullable;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.PrintStream;
@@ -29,10 +33,21 @@ public class ExtractResult {
 
     private final Validator validator;
 
+    private static final Function<ConstraintViolation<Object>, String> CONSTRAINT_VIOLATION_TO_PROPERTY_PATH =
+            new Function<ConstraintViolation<Object>, String>() {
+                @Override
+                public String apply(@Nullable ConstraintViolation<Object> constraintViolation) {
+                    if (null != constraintViolation) {
+                        return String.valueOf(constraintViolation.getPropertyPath());
+                    }
+                    return null;
+                }
+            };
+
     public ExtractResult(Fias fias, Validator validator) {
         statistics = Maps.newLinkedHashMap();
         for (Field field : fias.itemFields) {
-            statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field, validator));
+            statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field));
         }
 
         this.validator = validator;
@@ -41,13 +56,19 @@ public class ExtractResult {
     public void updateStatistics(Object item) {
         itemCount++;
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(item);
+        ImmutableSet<String> violatedFields;
         boolean notValid = !constraintViolations.isEmpty();
         if (notValid) {
             invalidCount++;
+            violatedFields = ImmutableSet.copyOf(
+                    Iterables.transform(constraintViolations, CONSTRAINT_VIOLATION_TO_PROPERTY_PATH));
+        } else {
+            violatedFields = ImmutableSet.of();
         }
 
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
-            fieldStatistics.updateStatistics(item, notValid);
+            boolean fieldViolated = violatedFields.contains(fieldStatistics.getFieldName());
+            fieldStatistics.updateStatistics(item, fieldViolated);
         }
     }
 

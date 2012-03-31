@@ -1,6 +1,5 @@
 package ru.gt2.rusref.stat;
 
-import javax.validation.Validator;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -24,8 +23,8 @@ public class StringFieldStatistics extends ObjectFieldStatistics<String> {
         sumLen = sumLen.add(BigInteger.valueOf(length));
     }
 
-    public StringFieldStatistics(Field field, Validator validator) {
-        super(field, validator);
+    public StringFieldStatistics(Field field) {
+        super(field);
     }
 
     @Override
