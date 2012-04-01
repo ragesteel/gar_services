@@ -1,5 +1,6 @@
 package ru.gt2.rusref.fias;
 
+import ru.gt2.rusref.Filenames;
 import ru.gt2.rusref.stat.ExtractResult;
 
 import javax.validation.Validation;
@@ -8,8 +9,12 @@ import javax.validation.ValidatorFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 /**
@@ -18,10 +23,11 @@ import java.util.List;
 public class Main {
     private static final String FILE_PREFIX = "AS_";
     private static final String FILE_SUFFIX = ".XML";
+    private static final String SERIALIZED_EXT = "serialized";
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
     private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
     
-    public static void main(String... args) throws JAXBException {
+    public static void main(String... args) throws JAXBException, IOException {
         for (Fias fias : Fias.values()) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
@@ -44,7 +50,7 @@ public class Main {
         });
     }
 
-    private static void processFiles(Fias fias, File[] files) throws JAXBException {
+    private static void processFiles(Fias fias, File[] files) throws JAXBException, IOException {
         if ((null == files) || (0 == files.length)) {
             return;
         }
@@ -58,8 +64,12 @@ public class Main {
         }
     }
 
-    private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException {
+    private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException, IOException {
         String filename = file.getName();
+        File serialized = new File(file.getParentFile(), Filenames.replaceExtension(filename, SERIALIZED_EXT));
+        final ObjectOutputStream objectOutputStream =
+                new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(serialized)));
+
         final ExtractResult extractResult = new ExtractResult(fias, VALIDATOR);
         System.out.println("Processing file: " + filename);
         unmarshaller.setListener(new Unmarshaller.Listener() {
@@ -69,6 +79,11 @@ public class Main {
                     return;
                 }
                 extractResult.updateStatistics(target);
+                try {
+                    objectOutputStream.writeObject(target);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
                 // FIXME Грязный хак, пока мы не начали делать по правильному
                 List<?> list = null;
@@ -90,7 +105,7 @@ public class Main {
             }
         });
         unmarshaller.unmarshal(file);
-
+        objectOutputStream.close();
         extractResult.print(System.out);
     }
 
