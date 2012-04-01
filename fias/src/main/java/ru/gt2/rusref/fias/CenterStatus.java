@@ -8,13 +8,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
  * Статус центра.
  */
 @XmlType(propOrder = {"centerStId", "name"})
 @ToString
-public class CenterStatus {
+public class CenterStatus implements Serializable {
     /** Идентификатор статуса (ключ) */
     @Id
     @NotNull

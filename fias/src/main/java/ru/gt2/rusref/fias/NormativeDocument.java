@@ -9,6 +9,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ import java.util.UUID;
  */
 @XmlType(propOrder = {"normDoc", "docName", "docDate", "docNum", "docType", "docImgId"})
 @ToString
-public class NormativeDocument {
+public class NormativeDocument implements Serializable {
     /** Внешний ключ на нормативный документ. */
     @Id
     @NotNull

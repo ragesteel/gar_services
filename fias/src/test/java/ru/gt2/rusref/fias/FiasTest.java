@@ -1,27 +1,21 @@
 package ru.gt2.rusref.fias;
 
 import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.base.Strings;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import lombok.RequiredArgsConstructor;
+import com.google.common.io.NullOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -55,7 +49,7 @@ public class FiasTest {
 
     private static Function<Field, String> FIELD_NAME = new Function<Field, String>() {
         @Override
-        public String apply(@Nullable Field field) {
+        public String apply(Field field) {
             return field.getName();
         }
     };
@@ -63,7 +57,7 @@ public class FiasTest {
     private static Function<Annotation, Class<? extends Annotation>> ANNOTATION_CLASS =
             new Function<Annotation, Class<? extends Annotation>>() {
         @Override
-        public Class<? extends Annotation> apply(@Nullable Annotation annotation) {
+        public Class<? extends Annotation> apply(Annotation annotation) {
             return annotation.annotationType();
         }
     };
@@ -116,6 +110,13 @@ public class FiasTest {
     public void testReferenceTypes() {
         for (Fias fias : Fias.values()) {
             testReferenceTypes(fias);
+        }
+    }
+
+    @Test
+    public void testSerializable() throws Exception {
+        for (Fias fias : Fias.values()) {
+            testSerializable(fias);
         }
     }
 
@@ -203,7 +204,16 @@ public class FiasTest {
                     fiasTarget.idField.getType(), field.getType());
         }
     }
-    
+
+    private void testSerializable(Fias fias) throws Exception {
+        Class<?> itemClass = fias.item;
+        Object item = itemClass.newInstance();
+        Assert.assertNotNull(item);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new NullOutputStream());
+        objectOutputStream.writeObject(item);
+        objectOutputStream.close();
+    }
+
     // internals
 
     private String[] getPropOrder(Fias fias) {

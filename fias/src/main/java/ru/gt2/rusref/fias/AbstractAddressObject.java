@@ -5,6 +5,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  * Общая часть для AddressObject и AbstractHouse.
  */
 @XmlTransient
-public abstract class AbstractAddressObject {
+public abstract class AbstractAddressObject implements Serializable {
     /** Почтовый индекс. */
     @Size(min = 6, max = 6)
     @XmlAttribute(name = "POSTALCODE")
