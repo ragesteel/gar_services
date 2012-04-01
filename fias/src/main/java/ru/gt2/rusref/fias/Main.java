@@ -80,7 +80,7 @@ public class Main {
                 }
                 extractResult.updateStatistics(target);
                 try {
-                    objectOutputStream.writeObject(target);
+                    objectOutputStream.writeUnshared(target);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -106,6 +106,7 @@ public class Main {
         });
         unmarshaller.unmarshal(file);
         objectOutputStream.close();
+
         extractResult.print(System.out);
     }
 
