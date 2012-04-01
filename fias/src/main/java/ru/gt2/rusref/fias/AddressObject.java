@@ -87,7 +87,7 @@ public class AddressObject extends AbstractAddressObject {
 
     /** Код подчиненного дополнительного адресообразующего элемента. */
     @NotNull
-    @Size(min = 4, max = 4)
+    @Size(min = 3, max = 3)
     @XmlAttribute(name = "SEXTCODE", required = true)
     private String sextCode;
 
