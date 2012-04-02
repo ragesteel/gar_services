@@ -1,6 +1,5 @@
 package ru.gt2.rusref.fias;
 
-import ru.gt2.rusref.Filenames;
 import ru.gt2.rusref.stat.ExtractResult;
 
 import javax.validation.Validation;
@@ -9,12 +8,9 @@ import javax.validation.ValidatorFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 /**
@@ -66,9 +62,6 @@ public class Main {
 
     private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException, IOException {
         String filename = file.getName();
-        File serialized = new File(file.getParentFile(), Filenames.replaceExtension(filename, SERIALIZED_EXT));
-        final ObjectOutputStream objectOutputStream =
-                new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(serialized)));
 
         final ExtractResult extractResult = new ExtractResult(fias, VALIDATOR);
         System.out.println("Processing file: " + filename);
@@ -79,18 +72,13 @@ public class Main {
                     return;
                 }
                 extractResult.updateStatistics(target);
-                try {
-                    objectOutputStream.writeUnshared(target);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
 
                 // FIXME Грязный хак, пока мы не начали делать по правильному
                 List<?> list = null;
                 if (parent instanceof NormativeDocumentes) {
-                    list = ((NormativeDocumentes) parent).normativeDocument;
+                    list = ((NormativeDocumentes) parent).list;
                 } else if (parent instanceof AddressObjects) {
-                    list = ((AddressObjects) parent).addressObject;
+                    list = ((AddressObjects) parent).list;
                 } else if (parent instanceof Houses) {
                     list = ((Houses) parent).house;
                 }
@@ -105,7 +93,6 @@ public class Main {
             }
         });
         unmarshaller.unmarshal(file);
-        objectOutputStream.close();
 
         extractResult.print(System.out);
     }

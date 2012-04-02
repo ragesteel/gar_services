@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import lombok.Getter;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,8 +10,8 @@ import java.util.List;
  * Внешний элемент для статуса центра.
  */
 @XmlRootElement(name = "HouseStateStatuses")
-@ToString
-public class HouseStateStatuses {
+@Getter
+public class HouseStateStatuses implements Container<HouseStateStatus> {
     @XmlElement(name = "HouseStateStatus", required = true)
-    private List<HouseStateStatus> houseStateStatus;
+    private List<HouseStateStatus> list;
 }

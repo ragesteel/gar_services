@@ -120,6 +120,13 @@ public class FiasTest {
         }
     }
 
+    @Test
+    public void testWrapperHasContainer() {
+        for (Fias fias : Fias.values()) {
+            testWrapperHasContainer(fias);
+        }
+    }
+
     private void testFieldsInPropOrder(Fias fias) {
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
@@ -212,6 +219,11 @@ public class FiasTest {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(new NullOutputStream());
         objectOutputStream.writeObject(item);
         objectOutputStream.close();
+    }
+
+    private void testWrapperHasContainer(Fias fias) {
+        fias.
+        Assert.assertTrue(fias.);
     }
 
     // internals
