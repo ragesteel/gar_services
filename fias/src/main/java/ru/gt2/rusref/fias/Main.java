@@ -75,12 +75,8 @@ public class Main {
 
                 // FIXME Грязный хак, пока мы не начали делать по правильному
                 List<?> list = null;
-                if (parent instanceof NormativeDocumentes) {
-                    list = ((NormativeDocumentes) parent).list;
-                } else if (parent instanceof AddressObjects) {
-                    list = ((AddressObjects) parent).list;
-                } else if (parent instanceof Houses) {
-                    list = ((Houses) parent).house;
+                if (parent instanceof Container<?>) {
+                    list = ((Container) parent).getList();
                 }
 
                 // FIXME Добавить индикацию прогресса чтения

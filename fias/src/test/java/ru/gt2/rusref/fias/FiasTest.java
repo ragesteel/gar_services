@@ -222,8 +222,7 @@ public class FiasTest {
     }
 
     private void testWrapperHasContainer(Fias fias) {
-        fias.
-        Assert.assertTrue(fias.);
+        Assert.assertTrue(Arrays.asList(fias.wrapper.getInterfaces()).contains(Container.class));
     }
 
     // internals
