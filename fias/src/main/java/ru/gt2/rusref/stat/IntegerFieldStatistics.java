@@ -35,4 +35,14 @@ public class IntegerFieldStatistics extends ObjectFieldStatistics<Integer> {
         printStream.print(", range = " + min + " … " + max);
         printStream.print(", average = " + getAverage(sum));
     }
+
+    @Override
+    public void fillReportParts(Object[] parts) {
+        super.fillReportParts(parts);
+        if (notNullCount > 0) {
+            parts[5] = min;
+            parts[6] = max;
+            parts[7] = getAverage(sum);
+        }
+    }
 }

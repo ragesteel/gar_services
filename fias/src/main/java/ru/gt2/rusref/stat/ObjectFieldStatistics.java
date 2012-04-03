@@ -1,7 +1,9 @@
 package ru.gt2.rusref.stat;
 
 import lombok.Getter;
+import ru.gt2.rusref.Joiners;
 
+import javax.annotation.Nullable;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -55,7 +57,15 @@ public class ObjectFieldStatistics<T> {
             printStream.print(", notValidCount = " + notValidCount);
         }
     }
-    
+
+    public void fillReportParts(Object[] parts) {
+        parts[2] = fieldName;
+        parts[3] = field.getType().getSimpleName();
+        if (notNullCount > 0) {
+            parts[4] = 'Y';
+        }
+    }
+
     protected void doUpdateStatistics(T value) {
         if (null == value) {
             nullCount++;
@@ -72,7 +82,11 @@ public class ObjectFieldStatistics<T> {
         fieldName = field.getName();
     }
 
+    @Nullable
     protected BigDecimal getAverage(BigInteger sum) {
+        if (0 == notNullCount) {
+            return null;
+        }
         return new BigDecimal(sum).divide(BigDecimal.valueOf(notNullCount), 2, RoundingMode.HALF_UP);
     }
 }

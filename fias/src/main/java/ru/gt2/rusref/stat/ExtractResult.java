@@ -5,12 +5,14 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import lombok.ToString;
+import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.fias.Fias;
 
 import javax.annotation.Nullable;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +25,8 @@ import java.util.Set;
  */
 @ToString
 public class ExtractResult {
+
+    private final Fias fias;
     /** Количество загруженных элементов. */
     private int itemCount;
 
@@ -45,6 +49,7 @@ public class ExtractResult {
             };
 
     public ExtractResult(Fias fias, Validator validator) {
+        this.fias = fias;
         statistics = Maps.newLinkedHashMap();
         for (Field field : fias.itemFields) {
             statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field));
@@ -82,6 +87,24 @@ public class ExtractResult {
             printStream.print("  " + fieldStatistics.getFieldName() + ": ");
             fieldStatistics.print(printStream);
             printStream.println();
+        }
+    }
+
+    public void writeReport(PrintWriter printWriter) {
+        // Файл,Элемент,Атрибут,Тип,null?,from,to,average
+        printWriter.println(Joiners.COMMA_SEPARATED.join(
+                fias.name(),
+                fias.item.getSimpleName(),
+                itemCount,
+                null,
+                null,
+                null,
+                null
+        ));
+        for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
+            Object[] parts = new Object[8];
+            fieldStatistics.fillReportParts(parts);
+            printWriter.println(Joiners.COMMA_SEPARATED.join(parts));
         }
     }
 }
