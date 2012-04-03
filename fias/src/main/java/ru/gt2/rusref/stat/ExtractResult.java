@@ -91,12 +91,12 @@ public class ExtractResult {
     }
 
     public void writeReport(PrintWriter printWriter) {
-        // Файл,Элемент,Атрибут,Тип,null?,from,to,average
+        // 0 Справочник 1 Элемент 2 Тип 3 NotNull 4 Мин	5 Макс 6 Средн.
         printWriter.println(Joiners.COMMA_SEPARATED.join(
                 fias.name(),
                 fias.item.getSimpleName(),
-                itemCount,
                 null,
+                itemCount,
                 null,
                 null,
                 null

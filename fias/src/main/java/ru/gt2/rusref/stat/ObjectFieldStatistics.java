@@ -59,11 +59,20 @@ public class ObjectFieldStatistics<T> {
     }
 
     public void fillReportParts(Object[] parts) {
-        parts[2] = fieldName;
-        parts[3] = field.getType().getSimpleName();
+        parts[1] = fieldName;
+        parts[2] = field.getType().getSimpleName();
         if (notNullCount > 0) {
-            parts[4] = 'Y';
+            parts[3] = notNullCount;
         }
+    }
+
+    public void fillRanges(Object[] parts, int min, int max, BigInteger sum) {
+        if (0 == notNullCount) {
+            return;
+        }
+        parts[4] = min;
+        parts[5] = max;
+        parts[6] = getAverage(sum);
     }
 
     protected void doUpdateStatistics(T value) {

@@ -40,8 +40,6 @@ public class StringFieldStatistics extends ObjectFieldStatistics<String> {
     @Override
     public void fillReportParts(Object[] parts) {
         super.fillReportParts(parts);
-        parts[5] = minLen;
-        parts[6] = maxLen;
-        parts[7] = getAverage(sumLen);
+        fillRanges(parts, minLen, maxLen, sumLen);
     }
 }

@@ -39,10 +39,6 @@ public class IntegerFieldStatistics extends ObjectFieldStatistics<Integer> {
     @Override
     public void fillReportParts(Object[] parts) {
         super.fillReportParts(parts);
-        if (notNullCount > 0) {
-            parts[5] = min;
-            parts[6] = max;
-            parts[7] = getAverage(sum);
-        }
+        fillRanges(parts, min, max, sum);
     }
 }
