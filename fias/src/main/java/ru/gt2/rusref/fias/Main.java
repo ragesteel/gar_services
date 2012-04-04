@@ -1,6 +1,7 @@
 package ru.gt2.rusref.fias;
 
 import com.google.common.base.Charsets;
+import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.stat.ExtractResult;
 
 import javax.validation.Validation;
@@ -36,6 +37,19 @@ public class Main {
         File csvFile = new File("report-stat.csv");
         CSV = new PrintWriter(new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(csvFile), Charsets.UTF_8)));
+        CSV.println(Joiners.COMMA_SEPARATED.join(
+                "Справочник",
+                "Элемент",
+                "Тип",
+                "Кол-во",
+                "Мин",
+                "Макс",
+                "Ср.",
+                "Разрядов",
+                "Мин длинна",
+                "Макс длинна"
+        ));
+
         for (Fias fias : Fias.values()) {
             File[] files = findFiles(fias);
             processFiles(fias, files);

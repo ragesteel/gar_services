@@ -1,6 +1,7 @@
 package ru.gt2.rusref.stat;
 
 import lombok.Getter;
+import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
 
 import javax.annotation.Nullable;
@@ -20,17 +21,20 @@ public class ObjectFieldStatistics<T> {
     @Getter
     private final String fieldName;
 
+    private final FieldType fieldType;
+
     protected int nullCount;
 
     protected int notNullCount;
 
     protected int notValidCount;
 
-    public ObjectFieldStatistics(Field field) {
+    public ObjectFieldStatistics(Field field, FieldType fieldType) {
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
         this.field = field;
+        this.fieldType = fieldType;
         fieldName = field.getName();
     }
 
@@ -60,6 +64,7 @@ public class ObjectFieldStatistics<T> {
         if (notNullCount > 0) {
             parts[3] = notNullCount;
         }
+        fieldType.fillFieldRestrictions(parts, field);
     }
 
     public void fillRanges(Object[] parts, int min, int max, BigInteger sum) {

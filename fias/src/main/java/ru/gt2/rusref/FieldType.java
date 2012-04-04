@@ -35,7 +35,7 @@ public enum FieldType {
 
         @Override
         public IntegerFieldStatistics createFieldStatistics(Field field) {
-            return new IntegerFieldStatistics(field);
+            return new IntegerFieldStatistics(field, this);
         }
     },
     STRING(String.class,
@@ -44,7 +44,7 @@ public enum FieldType {
 
         @Override
         public StringFieldStatistics createFieldStatistics(Field field) {
-            return new StringFieldStatistics(field);
+            return new StringFieldStatistics(field, this);
         }
     },
     DATE(Date.class,
@@ -53,7 +53,7 @@ public enum FieldType {
 
         @Override
         public DateFieldStatistics createFieldStatistics(Field field) {
-            return new DateFieldStatistics(field);
+            return new DateFieldStatistics(field, this);
         }
     },
     GUID(UUID.class,
@@ -76,7 +76,19 @@ public enum FieldType {
     }
 
     public ObjectFieldStatistics<?> createFieldStatistics(Field field) {
-        return new ObjectFieldStatistics<Object>(field);
+        return new ObjectFieldStatistics<Object>(field, this);
+    }
+
+    public void fillFieldRestrictions(Object[] parts, Field field) {
+        Digits digits = field.getAnnotation(Digits.class);
+        if (null != digits) {
+            parts[7] = digits.integer();
+        }
+        Size size = field.getAnnotation(Size.class);
+        if (null != size) {
+            parts[8] = size.min();
+            parts[9] = size.max();
+        }
     }
 
     private FieldType(Class<?> type,

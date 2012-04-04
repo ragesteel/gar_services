@@ -93,7 +93,6 @@ public class ExtractResult {
     }
 
     public void writeReport(PrintWriter printWriter) {
-        // 0 Справочник 1 Элемент 2 Тип 3 NotNull 4 Мин	5 Макс 6 Средн.
         printWriter.println(Joiners.COMMA_SEPARATED.join(
                 fias.name(),
                 fias.item.getSimpleName(),
@@ -104,7 +103,8 @@ public class ExtractResult {
                 null
         ));
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
-            Object[] parts = new Object[8];
+            // FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
+            Object[] parts = new Object[10];
             fieldStatistics.fillReportParts(parts);
             printWriter.println(Joiners.COMMA_SEPARATED.join(parts));
         }

@@ -1,5 +1,7 @@
 package ru.gt2.rusref.stat;
 
+import ru.gt2.rusref.FieldType;
+
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -22,8 +24,8 @@ public class IntegerFieldStatistics extends ObjectFieldStatistics<Integer> {
         sum = sum.add(BigInteger.valueOf(value));
     }
 
-    public IntegerFieldStatistics(Field field) {
-        super(field);
+    public IntegerFieldStatistics(Field field, FieldType fieldType) {
+        super(field, fieldType);
     }
 
     @Override
