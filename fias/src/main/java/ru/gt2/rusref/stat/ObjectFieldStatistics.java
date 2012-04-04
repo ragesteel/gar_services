@@ -25,7 +25,15 @@ public class ObjectFieldStatistics<T> {
     protected int notNullCount;
 
     protected int notValidCount;
-    
+
+    public ObjectFieldStatistics(Field field) {
+        if (!field.isAccessible()) {
+            field.setAccessible(true);
+        }
+        this.field = field;
+        fieldName = field.getName();
+    }
+
     public final void updateStatistics(Object obj, boolean violated) {
         if (violated) {
             notValidCount++;
@@ -39,18 +47,6 @@ public class ObjectFieldStatistics<T> {
         }
     }
     
-    public static ObjectFieldStatistics<?> newFieldStatistics(Field field) {
-        Class<?> type = field.getType();
-        if (Integer.class.equals(type)) {
-            return new IntegerFieldStatistics(field);
-        } else if (String.class.equals(type)) {
-            return new StringFieldStatistics(field);
-        } else if (Date.class.equals(type)) {
-            return new DateFieldStatistics(field);
-        }
-        return new ObjectFieldStatistics<Object>(field);
-    }
-
     public void print(PrintStream printStream) {
         printStream.print("notNullCount = " + notNullCount + ", nullCount = " + nullCount);
         if (notValidCount > 0) {
@@ -81,14 +77,6 @@ public class ObjectFieldStatistics<T> {
         } else {
             notNullCount++;
         }
-    }
-
-    protected ObjectFieldStatistics(Field field) {
-        if (!field.isAccessible()) {
-            field.setAccessible(true);
-        }
-        this.field = field;
-        fieldName = field.getName();
     }
 
     @Nullable

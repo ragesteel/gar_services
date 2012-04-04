@@ -1,13 +1,15 @@
-package ru.gt2.rusref.fias;
+package ru.gt2.rusref;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import ru.gt2.rusref.fias.FiasRef;
+import ru.gt2.rusref.stat.DateFieldStatistics;
+import ru.gt2.rusref.stat.IntegerFieldStatistics;
+import ru.gt2.rusref.stat.ObjectFieldStatistics;
+import ru.gt2.rusref.stat.StringFieldStatistics;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
@@ -16,6 +18,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -28,13 +31,31 @@ import java.util.UUID;
 public enum FieldType {
     INTEGER(Integer.class,
         Collections.<Class<? extends Annotation>>singleton(Digits.class),
-        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)),
+        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)) {
+
+        @Override
+        public IntegerFieldStatistics createFieldStatistics(Field field) {
+            return new IntegerFieldStatistics(field);
+        }
+    },
     STRING(String.class,
         Collections.<Class<? extends Annotation>>singleton(Size.class),
-            ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)),
+        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)) {
+
+        @Override
+        public StringFieldStatistics createFieldStatistics(Field field) {
+            return new StringFieldStatistics(field);
+        }
+    },
     DATE(Date.class,
         Collections.<Class<? extends Annotation>>emptySet(),
-        ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)),
+        ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)) {
+
+        @Override
+        public DateFieldStatistics createFieldStatistics(Field field) {
+            return new DateFieldStatistics(field);
+        }
+    },
     GUID(UUID.class,
         Collections.<Class<? extends Annotation>>emptySet(),
         ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class));
@@ -52,6 +73,10 @@ public enum FieldType {
             fromType.put(fieldType.type, fieldType);
         }
         FROM_TYPE = ImmutableMap.copyOf(fromType);
+    }
+
+    public ObjectFieldStatistics<?> createFieldStatistics(Field field) {
+        return new ObjectFieldStatistics<Object>(field);
     }
 
     private FieldType(Class<?> type,

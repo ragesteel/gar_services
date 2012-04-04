@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import lombok.ToString;
+import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.fias.Fias;
 
@@ -52,7 +53,8 @@ public class ExtractResult {
         this.fias = fias;
         statistics = Maps.newLinkedHashMap();
         for (Field field : fias.itemFields) {
-            statistics.put(field.getName(), ObjectFieldStatistics.newFieldStatistics(field));
+            FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
+            statistics.put(field.getName(), fieldType.createFieldStatistics(field));
         }
 
         this.validator = validator;

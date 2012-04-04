@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.NullOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
+import ru.gt2.rusref.FieldType;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;

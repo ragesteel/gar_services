@@ -9,6 +9,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.lang.annotation.Documented;
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @XmlType(propOrder = {"postalCode", "ifnsFl", "terrIfnsFl", "ifnsUl", "terrIfnsUl", "okato", "oktmo", "updateDate",
     "houseNum", "estStatus", "buildNum", "structNum", "strStatus", "houseId", "houseGuid", "aoGuid", "startDate",
     "endDate", "statStatus", "normDoc", "counter"})
+
 @ToString
 public class House extends AbstractHouse {
 
