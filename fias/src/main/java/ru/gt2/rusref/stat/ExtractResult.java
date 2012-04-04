@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.fias.Fias;
@@ -90,9 +91,11 @@ public class ExtractResult {
     }
 
     public void writeReport(PrintWriter printWriter) {
+        Class<?> item = fias.item;
         printWriter.println(Joiners.COMMA_SEPARATED.join(
                 fias.name(),
-                fias.item.getSimpleName(),
+                item.getSimpleName(),
+                item.getAnnotation(Description.class).value(),
                 null,
                 itemCount,
                 null,
@@ -101,7 +104,7 @@ public class ExtractResult {
         ));
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             // FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
-            Object[] parts = new Object[10];
+            Object[] parts = new Object[11];
             fieldStatistics.fillReportParts(parts);
             printWriter.println(Joiners.COMMA_SEPARATED.join(parts));
         }

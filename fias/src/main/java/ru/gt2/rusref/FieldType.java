@@ -82,12 +82,16 @@ public enum FieldType {
     public void fillFieldRestrictions(Object[] parts, Field field) {
         Digits digits = field.getAnnotation(Digits.class);
         if (null != digits) {
-            parts[7] = digits.integer();
+            parts[8] = digits.integer();
         }
         Size size = field.getAnnotation(Size.class);
         if (null != size) {
-            parts[8] = size.min();
-            parts[9] = size.max();
+            parts[9] = size.min();
+
+            int max = size.max();
+            if (max != Integer.MAX_VALUE) {
+                parts[10] = max;
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package ru.gt2.rusref.stat;
 
 import lombok.Getter;
+import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
 
@@ -60,9 +61,10 @@ public class ObjectFieldStatistics<T> {
 
     public void fillReportParts(Object[] parts) {
         parts[1] = fieldName;
-        parts[2] = field.getType().getSimpleName();
+        parts[2] = field.getAnnotation(Description.class).value();
+        parts[3] = field.getType().getSimpleName();
         if (notNullCount > 0) {
-            parts[3] = notNullCount;
+            parts[4] = notNullCount;
         }
         fieldType.fillFieldRestrictions(parts, field);
     }
@@ -71,9 +73,9 @@ public class ObjectFieldStatistics<T> {
         if (0 == notNullCount) {
             return;
         }
-        parts[4] = min;
-        parts[5] = max;
-        parts[6] = getAverage(sum);
+        parts[5] = min;
+        parts[6] = max;
+        parts[7] = getAverage(sum);
     }
 
     protected void doUpdateStatistics(T value) {

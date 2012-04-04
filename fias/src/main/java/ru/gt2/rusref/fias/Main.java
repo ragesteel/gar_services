@@ -40,6 +40,7 @@ public class Main {
         CSV.println(Joiners.COMMA_SEPARATED.join(
                 "Справочник",
                 "Элемент",
+                "Описание",
                 "Тип",
                 "Кол-во",
                 "Мин",

@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.NullOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
+import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 
 import javax.persistence.Id;
@@ -128,6 +129,13 @@ public class FiasTest {
         }
     }
 
+    @Test
+    public void testItemHasDescription() {
+        for (Fias fias : Fias.values()) {
+            testItemHasDescription(fias);
+        }
+    }
+
     private void testFieldsInPropOrder(Fias fias) {
         String[] propOrderArr = getPropOrder(fias);
         Set<String> propOrder = Sets.newHashSet(propOrderArr);
@@ -223,6 +231,11 @@ public class FiasTest {
     private void testWrapperHasContainer(Fias fias) {
         Assert.assertTrue("Wrapper of " + fias + " does not implement Container",
                 Arrays.asList(fias.wrapper.getInterfaces()).contains(Container.class));
+    }
+
+    private void testItemHasDescription(Fias fias) {
+        Assert.assertNotNull(fias.item + " must have @Description",
+                fias.item.getAnnotation(Description.class));
     }
 
     // internals
