@@ -10,6 +10,7 @@ import ru.gt2.rusref.stat.IntegerFieldStatistics;
 import ru.gt2.rusref.stat.ObjectFieldStatistics;
 import ru.gt2.rusref.stat.StringFieldStatistics;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
@@ -111,7 +112,7 @@ public enum FieldType {
         this.type = type;
         
         this.required = ImmutableSet.copyOf(Sets.union(required,
-                ImmutableSet.of(XmlAttribute.class, Description.class)));
+                ImmutableSet.of(XmlAttribute.class, Description.class, Column.class)));
         this.optional = ImmutableSet.copyOf(Sets.union(optional,
                 Collections.singleton(NotNull.class)));
         this.all = ImmutableSet.copyOf(Sets.union(this.required, this.optional));

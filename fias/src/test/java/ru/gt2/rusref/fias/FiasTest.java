@@ -11,6 +11,8 @@ import org.junit.Test;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -48,6 +50,9 @@ public class FiasTest {
             .put(Fias.ESTSTAT,   "AS_ESTSTAT_2_250_13_04_01_01")
             .put(Fias.STRSTAT,   "AS_STRSTAT_2_250_14_04_01_01")
             .build();
+
+    private static final ImmutableSet<Class<? extends Annotation>> REQUIRED_ANNOTATIONS =
+            ImmutableSet.of(Description.class, Entity.class, XmlType.class);
 
     private static Function<Field, String> FIELD_NAME = new Function<Field, String>() {
         @Override
@@ -130,9 +135,9 @@ public class FiasTest {
     }
 
     @Test
-    public void testItemHasDescription() {
+    public void testItemAnnotations() {
         for (Fias fias : Fias.values()) {
-            testItemHasDescription(fias);
+            testItemAnnotations(fias);
         }
     }
 
@@ -167,42 +172,70 @@ public class FiasTest {
 
     private void testFieldsConstrainsByType(Fias fias) {
         for (Field field : fias.itemFields) {
-            Class<?> type = field.getType();
-            FieldType fieldType = FieldType.FROM_TYPE.get(type);
-            Assert.assertNotNull("Type " + type + " does not contains in supported types",
-                    fieldType);
-            Annotation[] annotations = field.getAnnotations();
-            ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
-                    (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
-            ImmutableSet<Class<? extends Annotation>> requiredAnnotations = fieldType.required;
-            Sets.SetView<Class<? extends Annotation>> intersectionWithRequired =
-                    Sets.intersection(requiredAnnotations, annotationClasses);
-            Assert.assertEquals("Missing required annotations " +
-                    Sets.difference(requiredAnnotations, annotationClasses),
-                    requiredAnnotations.size(), intersectionWithRequired.size());
-            Sets.SetView<Class<? extends Annotation>> difference =
-                    Sets.difference(annotationClasses, ImmutableSet.copyOf(fieldType.all));
-            Assert.assertTrue("Field " + field + " contains annotation(s) that not allowed: " + difference,
-                    difference.isEmpty());
+            testFieldConstrainsByType(field);
+        }
+    }
 
-            for (Annotation annotation : annotations) {
-                Class<? extends Annotation> annotationType = annotation.annotationType();
-                if (Size.class.equals(annotationType)) {
-                    Size size = (Size) annotation;
-                    Assert.assertTrue(field + ", Size min must be >= 0",
-                            size.min() >= 0);
-                    Assert.assertTrue(field + ", Size min must be <= max",
-                            size.min() <= size.max());
-                } else if (XmlAttribute.class.equals(annotationType)) {
-                    XmlAttribute xmlAttribute = (XmlAttribute) annotation;
-                    Assert.assertFalse(field + ", name must be Set" + xmlAttribute.name(),
-                            DEFAULT.equals(xmlAttribute.name()));
-                } else if (Digits.class.equals(annotationType)) {
-                    Digits digits = (Digits) annotation;
-                    if (Integer.class.equals(field.getType())) {
-                        Assert.assertEquals(field + ", fraction must be set to 0 for Integer", 0, digits.fraction());
-                    }
+    private void testFieldConstrainsByType(Field field) {
+        Class<?> type = field.getType();
+        FieldType fieldType = FieldType.FROM_TYPE.get(type);
+        Assert.assertNotNull("Type " + type + " does not contains in supported types",
+                fieldType);
+        Annotation[] annotations = field.getAnnotations();
+        ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
+                (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
+        ImmutableSet<Class<? extends Annotation>> requiredAnnotations = fieldType.required;
+        Sets.SetView<Class<? extends Annotation>> intersectionWithRequired =
+                Sets.intersection(requiredAnnotations, annotationClasses);
+        Assert.assertEquals("Field " + field + " missing required annotations " +
+                Sets.difference(requiredAnnotations, annotationClasses),
+                requiredAnnotations.size(), intersectionWithRequired.size());
+        Sets.SetView<Class<? extends Annotation>> difference =
+                Sets.difference(annotationClasses, ImmutableSet.copyOf(fieldType.all));
+        Assert.assertTrue("Field " + field + " contains annotation(s) that not allowed: " + difference,
+                difference.isEmpty());
+
+        for (Annotation annotation : annotations) {
+            testFieldAnnotationConstrains(field, annotation);
+        }
+    }
+
+    private void testFieldAnnotationConstrains(Field field, Annotation annotation) {
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        if (Size.class.equals(annotationType)) {
+            Size size = (Size) annotation;
+            Assert.assertTrue(field + ", Size min must be >= 0",
+                    size.min() >= 0);
+            Assert.assertTrue(field + ", Size min must be <= max",
+                    size.min() <= size.max());
+        } else if (XmlAttribute.class.equals(annotationType)) {
+            XmlAttribute xmlAttribute = (XmlAttribute) annotation;
+            Assert.assertFalse(field + ", name must be Set" + xmlAttribute.name(),
+                    DEFAULT.equals(xmlAttribute.name()));
+        } else if (Digits.class.equals(annotationType)) {
+            Digits digits = (Digits) annotation;
+            if (Integer.class.equals(field.getType())) {
+                Assert.assertEquals(field + ", fraction must be set to 0 for Integer", 0, digits.fraction());
+            }
+        } else if (Column.class.equals(annotationType)) {
+            Column column = (Column) annotation;
+            Assert.assertTrue(field + ", nullable must be not set if NotNull present",
+                    column.nullable() == (null == field.getAnnotation(NotNull.class)));
+
+            Size size = field.getAnnotation(Size.class);
+            if (null != size) {
+                if (Integer.MAX_VALUE != size.max()) {
+                    Assert.assertEquals(field + ", Column.length != Size.max",
+                            size.max(), column.length());
                 }
+            }
+
+            Digits digits = field.getAnnotation(Digits.class);
+            if (null != digits) {
+                Assert.assertEquals(field + ", Column.scale != Digits.integer",
+                        digits.integer(), column.scale());
+                Assert.assertEquals(field + ", Column.precision != Digits.fraction",
+                        digits.fraction(), column.precision());
             }
         }
     }
@@ -233,9 +266,16 @@ public class FiasTest {
                 Arrays.asList(fias.wrapper.getInterfaces()).contains(Container.class));
     }
 
-    private void testItemHasDescription(Fias fias) {
-        Assert.assertNotNull(fias.item + " must have @Description",
-                fias.item.getAnnotation(Description.class));
+    private void testItemAnnotations(Fias fias) {
+        Class<?> item = fias.item;
+        Annotation[] annotations = item.getAnnotations();
+        ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
+                (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
+
+        for (Class<? extends Annotation> requiredAnnotation : REQUIRED_ANNOTATIONS) {
+            Annotation annotation = item.getAnnotation(requiredAnnotation);
+            Assert.assertNotNull(item + " must have @" + requiredAnnotation.getSimpleName(), annotation);
+        }
     }
 
     // internals

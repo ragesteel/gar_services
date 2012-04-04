@@ -20,6 +20,15 @@
             <version>1.1</version>
         </dependency>
 
+        <!-- Implementation: http://openjpa.apache.org/ -->
+
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <version>2.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
 		<!-- Bean Validation -->
 
 		<dependency>
@@ -27,6 +36,8 @@
 			<artifactId>geronimo-validation_1.0_spec</artifactId>
 			<version>1.1</version>
 		</dependency>
+
+        <!-- Implementation: http://bval.apache.org/ -->
 
         <dependency>
             <groupId>org.apache.bval</groupId>
