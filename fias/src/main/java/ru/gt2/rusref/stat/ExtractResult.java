@@ -92,7 +92,7 @@ public class ExtractResult {
 
     public void writeReport(PrintWriter printWriter) {
         Class<?> item = fias.item;
-        printWriter.println(Joiners.COMMA_SEPARATED.join(
+        printWriter.println(Joiners.TAB_SEPARATED.join(
                 fias.name(),
                 item.getSimpleName(),
                 item.getAnnotation(Description.class).value(),
@@ -106,7 +106,7 @@ public class ExtractResult {
             // FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
             Object[] parts = new Object[11];
             fieldStatistics.fillReportParts(parts);
-            printWriter.println(Joiners.COMMA_SEPARATED.join(parts));
+            printWriter.println(Joiners.TAB_SEPARATED.join(parts));
         }
     }
 }

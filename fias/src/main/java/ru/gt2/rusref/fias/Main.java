@@ -10,7 +10,6 @@ import javax.validation.ValidatorFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,7 +36,7 @@ public class Main {
         File csvFile = new File("report-stat.csv");
         CSV = new PrintWriter(new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(csvFile), Charsets.UTF_8)));
-        CSV.println(Joiners.COMMA_SEPARATED.join(
+        CSV.println(Joiners.TAB_SEPARATED.join(
                 "Справочник",
                 "Элемент",
                 "Описание",
