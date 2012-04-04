@@ -25,7 +25,6 @@ import java.util.List;
 public class Main {
     private static final String FILE_PREFIX = "AS_";
     private static final String FILE_SUFFIX = ".XML";
-    private static final String SERIALIZED_EXT = "serialized";
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
     private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 
@@ -45,6 +44,7 @@ public class Main {
                 "Мин",
                 "Макс",
                 "Ср.",
+                "NotNull",
                 "Разрядов",
                 "Мин длинна",
                 "Макс длинна"

@@ -100,11 +100,12 @@ public class ExtractResult {
                 itemCount,
                 null,
                 null,
+                null,
                 null
         ));
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             // FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
-            Object[] parts = new Object[11];
+            Object[] parts = new Object[12];
             fieldStatistics.fillReportParts(parts);
             printWriter.println(Joiners.TAB_SEPARATED.join(parts));
         }

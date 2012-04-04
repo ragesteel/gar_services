@@ -31,7 +31,7 @@ import java.util.UUID;
 public enum FieldType {
     INTEGER(Integer.class,
         Collections.<Class<? extends Annotation>>singleton(Digits.class),
-        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)) {
+        ImmutableSet.of(Id.class, FiasRef.class)) {
 
         @Override
         public IntegerFieldStatistics createFieldStatistics(Field field) {
@@ -40,7 +40,7 @@ public enum FieldType {
     },
     STRING(String.class,
         Collections.<Class<? extends Annotation>>singleton(Size.class),
-        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class)) {
+        ImmutableSet.of(Id.class, FiasRef.class)) {
 
         @Override
         public StringFieldStatistics createFieldStatistics(Field field) {
@@ -49,7 +49,7 @@ public enum FieldType {
     },
     DATE(Date.class,
         Collections.<Class<? extends Annotation>>emptySet(),
-        ImmutableSet.<Class<? extends Annotation>>of(Past.class, Future.class)) {
+        ImmutableSet.of(Past.class, Future.class)) {
 
         @Override
         public DateFieldStatistics createFieldStatistics(Field field) {
@@ -58,7 +58,7 @@ public enum FieldType {
     },
     GUID(UUID.class,
         Collections.<Class<? extends Annotation>>emptySet(),
-        ImmutableSet.<Class<? extends Annotation>>of(Id.class, FiasRef.class));
+        ImmutableSet.of(Id.class, FiasRef.class));
 
     public final Class<?> type;
     public final ImmutableSet<Class<? extends Annotation>> required;
@@ -80,17 +80,27 @@ public enum FieldType {
     }
 
     public void fillFieldRestrictions(Object[] parts, Field field) {
+        NotNull notNull = field.getAnnotation(NotNull.class);
+        if (null != notNull) {
+            Id id = field.getAnnotation(Id.class);
+            if (null != id) {
+                parts[8] = "PK";
+            } else {
+                parts[8] = "N";
+            }
+        }
+
         Digits digits = field.getAnnotation(Digits.class);
         if (null != digits) {
-            parts[8] = digits.integer();
+            parts[9] = digits.integer();
         }
         Size size = field.getAnnotation(Size.class);
         if (null != size) {
-            parts[9] = size.min();
+            parts[10] = size.min();
 
             int max = size.max();
             if (max != Integer.MAX_VALUE) {
-                parts[10] = max;
+                parts[11] = max;
             }
         }
     }
