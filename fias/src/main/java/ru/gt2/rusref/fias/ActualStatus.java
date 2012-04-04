@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import ru.gt2.rusref.Description;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
@@ -10,20 +10,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-/**
- * Статус актуальности.
- */
+@Description("Статус актуальности")
 @XmlType(propOrder = {"actStatId", "name"})
-@ToString
 public class ActualStatus implements Serializable {
-    /** Идентификатор статуса (ключ) */
+    @Description("Идентификатор статуса (ключ)")
     @Id
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "ACTSTATID", required = true)
     private Integer actStatId;
 
-    /** Наименование */
+    @Description("Наименование")
     @NotNull
     @Size(min = 1, max = 100)
     @XmlAttribute(name = "NAME", required = true)

@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import ru.gt2.rusref.Description;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
@@ -10,31 +10,28 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-/**
- * Тип адресного объекта.
- */
+@Description("Тип адресного объекта")
 @XmlType(propOrder = {"level", "scName", "socrName", "kodTSt"})
-@ToString
 public class AddressObjectType implements Serializable {
-    /** Уровень адресного объекта. */
+    @Description("Уровень адресного объекта")
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "LEVEL", required = true)
     private Integer level;
 
-    /** Краткое наименование типа объекта. */
+    @Description("Краткое наименование типа объекта")
     @NotNull
     @Size(min = 0, max = 10)
     @XmlAttribute(name = "SCNAME", required = true)
     private String scName;
     
-    /** Полное наименование типа объекта. */
+    @Description("Полное наименование типа объекта")
     @NotNull
     @Size(min = 0, max = 29)
     @XmlAttribute(name = "SOCRNAME", required = true)
     private String socrName;
 
-    /** Ключевое поле. */
+    @Description("Ключевое поле")
     @Id
     @NotNull
     @Size(min = 1, max = 3)

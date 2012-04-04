@@ -96,8 +96,10 @@ public enum FieldType {
                       Set<Class<? extends Annotation>> optional) {
         this.type = type;
         
-        this.required = ImmutableSet.copyOf(Sets.union(required, Collections.singleton(XmlAttribute.class)));
-        this.optional = ImmutableSet.copyOf(Sets.union(optional, Collections.singleton(NotNull.class)));
+        this.required = ImmutableSet.copyOf(Sets.union(required,
+                ImmutableSet.of(XmlAttribute.class, Description.class)));
+        this.optional = ImmutableSet.copyOf(Sets.union(optional,
+                Collections.singleton(NotNull.class)));
         this.all = ImmutableSet.copyOf(Sets.union(this.required, this.optional));
     }
 }

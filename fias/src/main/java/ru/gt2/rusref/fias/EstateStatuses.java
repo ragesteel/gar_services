@@ -11,7 +11,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "EstateStatuses")
 @Getter
-public class EstateStatuses {
+public class EstateStatuses implements Container<EstateStatus> {
     @XmlElement(name = "EstateStatus", required = true)
     private List<EstateStatus> list;
 }

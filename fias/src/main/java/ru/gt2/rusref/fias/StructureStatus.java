@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import ru.gt2.rusref.Description;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
@@ -10,36 +10,24 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-/**
- * Признак строения.
- *
- * @author rage
- */
+@Description("Признак строения")
 @XmlType(propOrder = {"strStatId", "name", "shortName"})
-@ToString
 public class StructureStatus implements Serializable {
-    /**
-     * Признак строения
-     */
+    @Description("Признак строения")
     @Id
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "STRSTATID", required = true)
     private Integer strStatId;
 
-    /**
-     * Наименование
-     */
+    @Description("Наименование")
     @NotNull
     @Size(min = 1, max = 20)
     @XmlAttribute(name = "NAME", required = true)
     private String name;
 
-    /**
-     * Краткое наименование
-     */
+    @Description("Краткое наименование")
     @Size(min = 1, max = 20)
     @XmlAttribute(name = "SHORTNAME")
     private String shortName;
-
 }

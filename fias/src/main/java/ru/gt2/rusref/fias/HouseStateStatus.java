@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import ru.gt2.rusref.Description;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
@@ -10,27 +10,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-/**
- * Статус состояния домов.
- * Наличие плюсов с минусами в именах явно намекает на то, что помимо именования нужно ещё пару полей, да и из скобок сокращенеи лучше убрать.
- *
- * @author rage
- */
+@Description("Статус состояния домов")
 @XmlType(propOrder = {"houseStId", "name"})
-@ToString
 public class HouseStateStatus implements Serializable {
-    /**
-     * Признак строения
-     */
+    @Description("Признак строения")
     @Id
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "HOUSESTID", required = true)
     private Integer houseStId;
 
-    /**
-     * Наименование
-     */
+    // Наличие плюсов с минусами в именах явно намекает на то, что помимо именования нужно ещё пару полей,
+    // да и из скобок сокращенеи лучше убрать.
+    @Description("Наименование")
     @NotNull
     @Size(min = 1, max = 60)
     @XmlAttribute(name = "NAME", required = true)

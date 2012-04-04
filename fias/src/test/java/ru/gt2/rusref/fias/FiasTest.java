@@ -183,8 +183,6 @@ public class FiasTest {
                     Size size = (Size) annotation;
                     Assert.assertTrue(field + ", Size min must be >= 0",
                             size.min() >= 0);
-                    Assert.assertTrue(field + ", Size max must be < Integer.MAX_VALUE",
-                            size.max() < Integer.MAX_VALUE);
                     Assert.assertTrue(field + ", Size min must be <= max",
                             size.min() <= size.max());
                 } else if (XmlAttribute.class.equals(annotationType)) {
@@ -223,7 +221,8 @@ public class FiasTest {
     }
 
     private void testWrapperHasContainer(Fias fias) {
-        Assert.assertTrue(Arrays.asList(fias.wrapper.getInterfaces()).contains(Container.class));
+        Assert.assertTrue("Wrapper of " + fias + " does not implement Container",
+                Arrays.asList(fias.wrapper.getInterfaces()).contains(Container.class));
     }
 
     // internals

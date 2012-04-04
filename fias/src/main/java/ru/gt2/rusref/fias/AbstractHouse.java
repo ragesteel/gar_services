@@ -1,5 +1,7 @@
 package ru.gt2.rusref.fias;
 
+import ru.gt2.rusref.Description;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -13,7 +15,7 @@ import java.util.UUID;
  */
 @XmlTransient
 public abstract class AbstractHouse extends AbstractAddressObject {
-    /** Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.). */
+    @Description("Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.)")
     @FiasRef(AddressObject.class)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)

@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import lombok.ToString;
 import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.fias.Fias;
@@ -22,9 +21,7 @@ import java.util.Set;
  * Представление результата импорта.
  *
  * Что-то включение валидации как-то серьёзно начало тормозить проект.
- * FIXME Нужно попробовать не выполнять проверки на каждом поле, если валиден весь объект.
  */
-@ToString
 public class ExtractResult {
 
     private final Fias fias;

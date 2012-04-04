@@ -1,6 +1,6 @@
 package ru.gt2.rusref.fias;
 
-import lombok.ToString;
+import ru.gt2.rusref.Description;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
@@ -12,39 +12,34 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Интервал домов.
- *
- * @author rage
- */
+@Description("Интервал домов")
 @XmlType(propOrder = {"postalCode", "ifnsFl", "terrIfnsFl", "ifnsUl", "terrIfnsUl", "okato", "oktmo", "updateDate",
     "intStart", "intEnd", "houseIntId", "intGuid", "aoGuid", "startDate", "endDate", "intStatus", "normDoc"})
-@ToString
 public class HouseInterval extends AbstractHouse {
-    /** Значение начала интервала */
+    @Description("Значение начала интервала")
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTSTART", required = true)
     private Integer intStart;
 
-    /** Значение окончания интервала */
+    @Description("Значение окончания интервала")
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTEND", required = true)
     private Integer intEnd;
 
-    /** Иидентификатор записи интервала домов. */
+    @Description("Иидентификатор записи интервала домов")
     @NotNull
     @XmlAttribute(name = "HOUSEINTID", required = true)
     private UUID houseIntId;
     
-    /** Глобальный уникальный идентификатор интервала домов. */
+    @Description("Глобальный уникальный идентификатор интервала домов")
     @Id
     @NotNull
     @XmlAttribute(name = "INTGUID", required = true)
     private UUID intGuid;
 
-    /** Статус интервала (обычный, четный, нечетный). */
+    @Description("Статус интервала (обычный, четный, нечетный)")
     @FiasRef(IntervalStatus.class)
     @NotNull
     @Digits(integer = 10, fraction = 0)
