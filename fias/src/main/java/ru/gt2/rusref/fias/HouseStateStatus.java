@@ -25,7 +25,7 @@ public class HouseStateStatus implements Serializable {
     private Integer houseStId;
 
     // Наличие плюсов с минусами в именах явно намекает на то, что помимо именования нужно ещё пару полей,
-    // да и из скобок сокращенеи лучше убрать.
+    // да и из скобок сокращений лучше убрать.
     @Description("Наименование")
     @Column(nullable = false, length = 60)
     @NotNull

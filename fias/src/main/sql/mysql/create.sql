@@ -9,6 +9,5 @@ CREATE TABLE `StrStat` (
 ) COMMENT 'Признак строения';
 
 
--- mvn exec:java -Dexec.mainClass="org.apache.openjpa.jdbc.meta.MappingTool" -Dexec.args="-readSchame=false"
--- mvn exec:java -Dexec.mainClass="org.apache.openjpa.jdbc.meta.MappingTool" -Dexec.args="-schemaAction build -sql create.sql -readSchema false"
+-- mvn exec:java -Dexec.mainClass="org.apache.openjpa.jdbc.meta.MappingTool" -Dexec.args="-schemaAction build -sql create.sql -readSchema false -sqlEncode utf8"
 -- http://openjpa.apache.org/builds/2.2.0/apache-openjpa/docs/ref_guide_mapping.html#ref_guide_mapping_mappingtool
