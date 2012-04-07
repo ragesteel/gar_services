@@ -1,5 +1,6 @@
-CREATE DATABASE IF NOT EXISTS fias
+CREATE DATABASE IF NOT EXISTS `fias`
     COLLATE 'utf8_unicode_ci';
+USE `fias`;
 CREATE TABLE `StructureStatus` (
   `strStatId` INT(10) NOT NULL COMMENT "Признак строения",
   `name` VARCHAR(20) NOT NULL COMMENT "Наименование",

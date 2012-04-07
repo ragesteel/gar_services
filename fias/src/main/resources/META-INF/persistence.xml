@@ -17,8 +17,15 @@
         <class>ru.gt2.rusref.fias.HouseStateStatus</class>
         <class>ru.gt2.rusref.fias.Landmark</class>
         <class>ru.gt2.rusref.fias.CenterStatus</class>
+        <class>ru.gt2.rusref.fias.AbstractHouse</class>
+        <class>ru.gt2.rusref.fias.AbstractAddressObject</class>
         <properties>
-            <property name="openjpa.jdbc.DBDictionary" value="mysql" />
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://rsl/fias" />
+            <property name="javax.persistence.jdbc.user" value="fias" />
+            <property name="javax.persistence.jdbc.password" value="NnZ5YbRpzHWAebx4" />
+
+            <property name="openjpa.DynamicEnhancementAgent" value="false" />
         </properties>
     </persistence-unit>
 </persistence>

@@ -4,6 +4,9 @@ import com.google.common.base.Charsets;
 import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.stat.ExtractResult;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -27,6 +30,9 @@ public class Main {
     private static final String FILE_SUFFIX = ".XML";
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
     private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
+            Persistence.createEntityManagerFactory("rusref.fias");
+    private static EntityManager ENTITY_MANAGER;
 
     private static PrintWriter CSV;
 
@@ -50,11 +56,14 @@ public class Main {
                 "Макс длинна"
         ));
 
+        ENTITY_MANAGER = ENTITY_MANAGER_FACTORY.createEntityManager();
         for (Fias fias : Fias.values()) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
         }
+        // FIXME Да, тут хорошое место для try-with-resources из JDK7, но пока обработка ошибок нам не особо и нужна.
         CSV.close();
+        ENTITY_MANAGER.close();
     }
 
     private static File[] findFiles(final Fias fias) {
@@ -87,7 +96,7 @@ public class Main {
         }
     }
 
-    private static void processFile(Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException, IOException {
+    private static void processFile(final Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException, IOException {
         String filename = file.getName();
 
         final ExtractResult extractResult = new ExtractResult(fias, VALIDATOR);
@@ -103,21 +112,32 @@ public class Main {
                 // FIXME Грязный хак, пока мы не начали делать по правильному
                 List<?> list = null;
                 if (parent instanceof Container<?>) {
-                    list = ((Container) parent).getList();
+                    list = ((Container<?>) parent).getList();
                 }
 
                 // FIXME Добавить индикацию прогресса чтения
                 if (null == list) {
                     return;
                 }
+
                 if (list.size() > 1000) {
+                    processContainerEntities(fias, (Container<?>) parent);
                     list.clear();
                 }
             }
         });
-        unmarshaller.unmarshal(file);
+
+        Container<?> container = (Container<?>) unmarshaller.unmarshal(file);
+        processContainerEntities(fias, container);
 
         extractResult.print(System.out);
         extractResult.writeReport(CSV);
+    }
+
+    private static void processContainerEntities(Fias fias, Container<?> container) {
+        List<?> list = container.getList();
+        for (Object entity : list) {
+            ENTITY_MANAGER.persist(entity);
+        }
     }
 }
