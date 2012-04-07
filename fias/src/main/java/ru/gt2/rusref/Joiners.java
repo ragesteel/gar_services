@@ -7,4 +7,5 @@ import com.google.common.base.Joiner;
  */
 public class Joiners {
     public static final Joiner TAB_SEPARATED = Joiner.on('\t').useForNull("");
+    public static final Joiner COMMA_SEPARATED = Joiner.on(", ");
 }

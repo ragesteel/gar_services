@@ -242,11 +242,7 @@ public class FiasTest {
 
     private void testReferenceTypes(Fias fias) {
         for (Field field : Fias.getReferences(fias.itemFields)) {
-            FiasRef fiasRef = field.getAnnotation(FiasRef.class);
-            Assert.assertNotNull(fiasRef);
-            Class<?> target = fiasRef.value();
-            Fias fiasTarget = Fias.FROM_ITEM_CLASS.get(target);
-            Assert.assertNotNull(fiasTarget);
+            Fias fiasTarget = Fias.FIAS_REF_TARGET.apply(field);
             Assert.assertEquals("Reference (" + field + ") and id field must be of the same type",
                     fiasTarget.idField.getType(), field.getType());
         }

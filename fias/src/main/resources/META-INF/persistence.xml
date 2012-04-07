@@ -18,11 +18,7 @@
         <class>ru.gt2.rusref.fias.Landmark</class>
         <class>ru.gt2.rusref.fias.CenterStatus</class>
         <properties>
-            <!--
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
-            -->
-            <property name="openjpa.jdbc.DBDictionary" value="ru.gt2.rusref.openjpa.ImprovedMySQLDictionary" />
-            <property name="openjpa.MetaDataFactory" value="ru.gt2.rusref.openjpa.CustomMetaDataFactory" />
+            <property name="openjpa.jdbc.DBDictionary" value="mysql" />
         </properties>
     </persistence-unit>
 </persistence>

@@ -1,21 +1,19 @@
 package ru.gt2.rusref.fias;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nullable;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +52,26 @@ public enum Fias {
 
     private static final Predicate<Field> FIAS_REF;
 
+    public static final Function<Field, Fias> FIAS_REF_TARGET;
+
     static {
         FIAS_REF = new Predicate<Field>() {
             @Override
             public boolean apply(@Nullable Field field) {
                 return (null != field.getAnnotation(FiasRef.class));
+            }
+        };
+
+        FIAS_REF_TARGET = new Function<Field, Fias>() {
+            @Override
+            public Fias apply(@Nullable Field field) {
+                Preconditions.checkNotNull(field);
+                FiasRef fiasRef = field.getAnnotation(FiasRef.class);
+                Preconditions.checkNotNull(fiasRef);
+                Class<?> target = fiasRef.value();
+                Fias fiasTarget = Fias.FROM_ITEM_CLASS.get(target);
+                Preconditions.checkNotNull(fiasTarget);
+                return fiasTarget;
             }
         };
 
@@ -69,8 +82,13 @@ public enum Fias {
         FROM_ITEM_CLASS = ImmutableMap.copyOf(fromType);
     }
 
-    public static ImmutableList<Field> getReferences(Collection<Field> fields) {
-        return ImmutableList.copyOf(Collections2.filter(fields, FIAS_REF));
+    public static Iterable<Field> getReferences(Iterable<Field> fields) {
+        return Iterables.filter(fields, FIAS_REF);
+    }
+
+    public static ImmutableList<Fias> getReferenceTargets(Iterable<Field> fields) {
+        Iterable<Fias> referenceTargets = Iterables.transform(getReferences(fields), FIAS_REF_TARGET);
+        return ImmutableList.copyOf(referenceTargets);
     }
 
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
