@@ -1,5 +1,6 @@
 package ru.gt2.rusref;
 
+import org.apache.openjpa.persistence.jdbc.Strategy;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -114,7 +115,7 @@ public enum FieldType {
         this.required = ImmutableSet.copyOf(Sets.union(required,
                 ImmutableSet.of(XmlAttribute.class, Description.class, Column.class)));
         this.optional = ImmutableSet.copyOf(Sets.union(optional,
-                Collections.singleton(NotNull.class)));
+                ImmutableSet.of(NotNull.class, Strategy.class)));
         this.all = ImmutableSet.copyOf(Sets.union(this.required, this.optional));
     }
 }

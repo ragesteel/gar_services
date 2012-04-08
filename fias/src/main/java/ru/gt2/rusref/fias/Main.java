@@ -6,6 +6,7 @@ import ru.gt2.rusref.stat.ExtractResult;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -57,7 +58,7 @@ public class Main {
         ));
 
         ENTITY_MANAGER = ENTITY_MANAGER_FACTORY.createEntityManager();
-        for (Fias fias : Fias.values()) {
+        for (Fias fias : new Fias[]{ Fias.NORMDOC, Fias.ADDROBJ, Fias.HOUSEINT, Fias.HOUSE, Fias.LANDMARK}) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
         }
@@ -120,7 +121,7 @@ public class Main {
                     return;
                 }
 
-                if (list.size() > 1000) {
+                if (list.size() > 10) {
                     processContainerEntities(fias, (Container<?>) parent);
                     list.clear();
                 }
@@ -135,9 +136,14 @@ public class Main {
     }
 
     private static void processContainerEntities(Fias fias, Container<?> container) {
+        EntityTransaction transaction = ENTITY_MANAGER.getTransaction();
+        transaction.begin();
         List<?> list = container.getList();
         for (Object entity : list) {
             ENTITY_MANAGER.persist(entity);
         }
+        ENTITY_MANAGER.flush();
+        ENTITY_MANAGER.clear();
+        transaction.commit();
     }
 }

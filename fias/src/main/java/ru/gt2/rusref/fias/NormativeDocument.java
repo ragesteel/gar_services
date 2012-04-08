@@ -1,5 +1,6 @@
 package ru.gt2.rusref.fias;
 
+import org.apache.openjpa.persistence.jdbc.Strategy;
 import ru.gt2.rusref.Description;
 
 import javax.persistence.Column;
@@ -23,6 +24,7 @@ public class NormativeDocument implements Serializable {
     @Id
     @Column(nullable = false)
     @NotNull
+    @Strategy("ru.gt2.rusref.openjpa.UUIDValueHandler")
     @XmlAttribute(name = "NORMDOCID", required = true)
     private UUID normDoc;
 

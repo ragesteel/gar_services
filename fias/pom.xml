@@ -27,7 +27,6 @@
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
             <version>${openjpa.version}</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
