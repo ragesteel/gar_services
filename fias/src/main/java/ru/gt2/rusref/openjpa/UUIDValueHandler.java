@@ -42,9 +42,7 @@ public class UUIDValueHandler extends AbstractValueHandler {
             return null;
         }
         UUID uuid = (UUID) val;
-        byte[] result = asByteArray(uuid);
-        System.out.println("toDataStoreValue: " + result);
-        return result;
+        return asByteArray(uuid);
     }
 
     @Override
@@ -53,6 +51,7 @@ public class UUIDValueHandler extends AbstractValueHandler {
             return null;
         }
         byte[] uuidBytes = (byte[]) val;
+        // FIXME Вообще-то тут нужен другой!ы
         return UUID.nameUUIDFromBytes(uuidBytes);
     }
 

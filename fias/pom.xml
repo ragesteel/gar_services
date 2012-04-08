@@ -109,6 +109,7 @@
                 <artifactId>openjpa-maven-plugin</artifactId>
                 <version>${openjpa.version}</version>
                 <configuration>
+                    <persistenceXmlFile>src/main/resources/META-INF/persistence.xml</persistenceXmlFile>
                     <addDefaultConstructor>true</addDefaultConstructor>
                     <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
                 </configuration>

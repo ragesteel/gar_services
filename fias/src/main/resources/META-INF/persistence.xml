@@ -25,6 +25,9 @@
             <property name="javax.persistence.jdbc.user" value="fias" />
             <property name="javax.persistence.jdbc.password" value="NnZ5YbRpzHWAebx4" />
 
+            <!--
+            <property name="openjpa.Log" value="SQL=TRACE, SQLDiag=TRACE, MetaData=TRACE, RunTime=TRACE" />
+            -->
             <property name="openjpa.DynamicEnhancementAgent" value="false" />
             <property name="openjpa.jdbc.MappingDefaults" value="FieldStrategies='java.util.UUID=ru.gt2.rusref.openjpa.UUIDValueHandler'" />
         </properties>

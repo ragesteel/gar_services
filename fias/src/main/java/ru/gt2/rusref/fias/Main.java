@@ -121,7 +121,7 @@ public class Main {
                     return;
                 }
 
-                if (list.size() > 10) {
+                if (list.size() > 1000) {
                     processContainerEntities(fias, (Container<?>) parent);
                     list.clear();
                 }
