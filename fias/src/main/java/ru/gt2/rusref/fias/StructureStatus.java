@@ -33,7 +33,8 @@ public class StructureStatus implements Serializable {
 
     @Description("Краткое наименование")
     @Column(length = 20)
-    @Size(min = 1, max = 20)
+    // WAS @Size(min = 1, max = 20)
+    @Size(min = 0, max = 20)
     @XmlAttribute(name = "SHORTNAME")
     private String shortName;
 }

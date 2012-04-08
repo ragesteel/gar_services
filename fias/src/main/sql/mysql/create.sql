@@ -177,3 +177,10 @@ CREATE TABLE `House` (
   FOREIGN KEY (`statStatus`) REFERENCES `HouseStateStatus` (`houseStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
 ) COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
+
+---
+
+ALTER TABLE  `AddressObjectType`
+    MODIFY `scName` VARCHAR(10) NULL,
+    MODIFY `socrName` VARCHAR(31) NOT NULL,
+    MODIFY `kodTSt` VARCHAR(4) NOT NULL;

@@ -34,7 +34,7 @@ public class NormativeDocument implements Serializable {
     
     @Description("Дата документа")
     @Column
-    @Past
+    // WAS @Past
     @XmlAttribute(name = "DOCDATE")
     private Date docDate;
 

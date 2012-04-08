@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,10 @@ public enum Fias {
         Map<String, Field> result = Maps.newHashMap();
         while (!Object.class.equals(item)) {
             for (Field field : item.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+
                 Field existing = result.put(field.getName(), field);
                 if (null != existing) {
                     throw new IllegalArgumentException("Duplicate field, trying to add: " + field
