@@ -136,6 +136,7 @@ public class Main {
     }
 
     private static void processContainerEntities(Fias fias, Container<?> container) {
+
         EntityTransaction transaction = ENTITY_MANAGER.getTransaction();
         transaction.begin();
         List<?> list = container.getList();
