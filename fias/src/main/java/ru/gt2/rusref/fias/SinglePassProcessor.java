@@ -30,7 +30,7 @@ public class SinglePassProcessor {
 
     private final CsvWriter report;
 
-    private CsvWriter csv;
+    protected CsvWriter csv;
 
     private Unmarshaller unmarshaller;
 
@@ -52,6 +52,11 @@ public class SinglePassProcessor {
         for (File file : files) {
             processFile(file);
         }
+    }
+
+    protected void writeProcessFileReport(ExtractResult extractResult) throws IOException {
+        extractResult.print(System.out);
+        extractResult.writeReport(report);
     }
 
     protected void writeEntity(Object entity) throws Exception {
@@ -104,8 +109,7 @@ public class SinglePassProcessor {
         container = (Container<?>) unmarshaller.unmarshal(file);
         processContainerEntities();
 
-        extractResult.print(System.out);
-        extractResult.writeReport(report);
+        writeProcessFileReport(extractResult);
     }
 
     private void processContainerEntities() {

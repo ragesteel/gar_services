@@ -3,6 +3,7 @@ package ru.gt2.rusref.fias;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import ru.gt2.rusref.CsvWriter;
+import ru.gt2.rusref.stat.ExtractResult;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -25,6 +26,7 @@ public class MultiPassProcessor extends SinglePassProcessor {
     private int alreadyWritten;
     private int written;
     private int unresolved;
+    private boolean writeUnresolved;
 
     public MultiPassProcessor(Fias fias, File[] files, CsvWriter report) {
         super(fias, files, report);
@@ -38,19 +40,41 @@ public class MultiPassProcessor extends SinglePassProcessor {
             resetCounters();
             System.out.println("Pass #" + pass + " started.");
             super.processFiles();
-            System.out.println("Pass #" + pass + " completed. Entities written: " + written + ", unresolved: " + unresolved + ", already written: " + alreadyWritten);
+            if (writeUnresolved) {
+                System.out.println("Pass #" + pass + " completed. Unresolved entries written: " + written);
+            } else {
+                System.out.println("Pass #" + pass + " completed. Entities written: " + written + ", unresolved: " + unresolved + ", already written: " + alreadyWritten);
+            }
             pass++;
             if (0 == unresolved) {
                 break;
             }
             if (0 == written) {
-                throw new RuntimeException("Possible circular reference, nothing written in pass");
+                System.out.println("Nothing was written. During next pass all unresolved entities will be written in separate files");
+                writeUnresolved = true;
+                csv.close();
+                File unresolvedCsvFile = new File(fias.item.getSimpleName() + "_unresolved.csv");
+                csv = CsvWriter.createMySqlCsvWriter(unresolvedCsvFile);
             }
         }
     }
 
     @Override
+    protected void writeProcessFileReport(ExtractResult extractResult) throws IOException {
+        if (0 != pass) {
+            return;
+        }
+        super.writeProcessFileReport(extractResult);
+    }
+
+    @Override
     protected void writeEntity(Object entity) throws Exception {
+        if (writeUnresolved) {
+            super.writeEntity(entity);
+            written++;
+            return;
+        }
+
         ImmutableSet<Object> notNullSelfReferences = fias.getNotNullFieldValues(entity, selfReferenceFields);
         Object pk = fias.idField.get(entity);
         if (resolved.contains(pk)) {
