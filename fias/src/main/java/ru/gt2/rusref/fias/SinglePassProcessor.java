@@ -1,6 +1,5 @@
 package ru.gt2.rusref.fias;
 
-import lombok.RequiredArgsConstructor;
 import ru.gt2.rusref.CsvWriter;
 import ru.gt2.rusref.stat.ExtractResult;
 
@@ -11,73 +10,66 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Извлекатель данных из справочников ФИАС.
+ * Однопроходный обработчик.
+ *
+ * Просто сразу пишет все обрабатываемые данные в файл.
  */
-@RequiredArgsConstructor
-public class FiasExtractor {
+public class SinglePassProcessor {
 
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 
     private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 
-    private static final String FILE_PREFIX = "AS_";
+    protected final Fias fias;
 
-    private static final String FILE_SUFFIX = ".XML";
-
-    private final Fias fias;
+    private final File[] files;
 
     private final CsvWriter report;
-
-    private File[] files;
 
     private CsvWriter csv;
 
     private Unmarshaller unmarshaller;
 
-    private File file;
-
     private Container<?> container;
 
-    public void findFiles() {
-        File xmlDir = new File("data/2012-03-22-xml");
-        final String prefix = FILE_PREFIX + fias.name() + "_";
-        final int nameLen = prefix.length() + FILE_SUFFIX.length() + 36 + 8 + 1;
-        files = xmlDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                if (nameLen != name.length()) {
-                    return false;
-                }
-                String upperName = name.toUpperCase();
-                return upperName.startsWith(prefix) && upperName.endsWith(FILE_SUFFIX);
-            }
-        });
+    public SinglePassProcessor(Fias fias, File[] files, CsvWriter report) {
+        this.fias = fias;
+        this.files = files;
+        this.report = report;
     }
 
-    public void processFiles() throws JAXBException, IOException {
-        if ((null == files) || (0 == files.length)) {
-            return;
-        }
+    public void process() throws JAXBException, IOException {
+        beforeProcessing();
+        processFiles();
+        afterProcessing();
+    }
 
+    protected void processFiles() throws JAXBException, IOException {
+        for (File file : files) {
+            processFile(file);
+        }
+    }
+
+    protected void writeEntity(Object entity) throws Exception {
+        csv.writeFields(fias.getFieldValues(entity));
+    }
+
+    private void beforeProcessing() throws IOException, JAXBException {
         File csvFile = new File(fias.item.getSimpleName() + ".csv");
         csv = CsvWriter.createMySqlCsvWriter(csvFile);
         JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
-
         unmarshaller = jaxbContext.createUnmarshaller();
+    }
 
-        for (File file : files) {
-            this.file = file;
-            processFile();
-        }
+    private void afterProcessing() throws IOException {
         csv.close();
     }
 
-    private void processFile() throws JAXBException, IOException {
+    private void processFile(File file) throws JAXBException, IOException {
         String filename = file.getName();
 
         final ExtractResult extractResult = new ExtractResult(fias, VALIDATOR);
@@ -124,9 +116,9 @@ public class FiasExtractor {
         List<?> list = container.getList();
         try {
             for (Object entity : list) {
-                csv.writeFields(fias.getFieldValues(entity));
+                writeEntity(entity);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

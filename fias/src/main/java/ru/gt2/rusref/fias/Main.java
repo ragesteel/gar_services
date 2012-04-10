@@ -31,10 +31,9 @@ public class Main {
                 "Макс длинна"
         );
 
-        for (Fias fias : Fias.orderByReferences()) {
-            FiasExtractor fiasExtractor = new FiasExtractor(fias, REPORT);
-            fiasExtractor.findFiles();
-            fiasExtractor.processFiles();
+        for (Fias fias : new Fias[]{ Fias.ADDROBJ }) { // Fias.orderByReferences()
+            FiasFilesProcessor fiasFilesProcessor = new FiasFilesProcessor(fias, REPORT);
+            fiasFilesProcessor.processFiles("data/2012-03-22-xml");
         }
         // FIXME Да, тут хорошое место для try-with-resources из JDK7, но пока обработка ошибок нам не особо и нужна.
         REPORT.close();

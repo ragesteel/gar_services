@@ -19,7 +19,6 @@ import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -219,8 +218,7 @@ public enum Fias {
         return result;
     }
 
-    @SneakyThrows
-    public Object[] getFieldValues(Object entity) {
+    public Object[] getFieldValues(Object entity) throws IllegalAccessException {
         int index = 0;
         Object[] result = new Object[itemFields.size()];
         for (Field field : itemFields) {
