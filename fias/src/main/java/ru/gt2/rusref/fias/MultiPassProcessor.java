@@ -36,9 +36,9 @@ public class MultiPassProcessor extends SinglePassProcessor {
         System.out.println("Using multi pass processor");
         while(true) {
             resetCounters();
-            System.out.println("Pass #" + pass);
+            System.out.println("Pass #" + pass + " started.");
             super.processFiles();
-            System.out.println(", written: " + written + ", unresolved: " + unresolved + ", already written: " + alreadyWritten);
+            System.out.println("Pass #" + pass + " completed. Entities written: " + written + ", unresolved: " + unresolved + ", already written: " + alreadyWritten);
             pass++;
             if (0 == unresolved) {
                 break;
