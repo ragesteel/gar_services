@@ -46,7 +46,7 @@ public class CsvWriter implements Closeable {
                 new FileOutputStream(file), Charsets.UTF_8));
         result.lineSeparator = "\n";
         result.fieldSeparator = Joiners.TAB_SEPARATED;
-        result.fieldTransformer = new MysqlCsvFormatter(CharMatcher.is('\t'));
+        result.fieldTransformer = new MysqlCsvFormatter();
 
         return result;
     }

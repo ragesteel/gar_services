@@ -1,27 +1,17 @@
 package ru.gt2.rusref.fias;
 
-import com.google.common.base.Charsets;
 import ru.gt2.rusref.CsvWriter;
-import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.stat.ExtractResult;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
