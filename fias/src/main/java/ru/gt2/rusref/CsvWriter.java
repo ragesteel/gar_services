@@ -10,6 +10,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 /**
  * Писатель в CSV.
  */
-public class CsvWriter implements Closeable {
+public class CsvWriter implements Closeable, Flushable {
     private Writer writer;
 
     private String lineSeparator;
@@ -30,6 +31,11 @@ public class CsvWriter implements Closeable {
     @Override
     public void close() throws IOException {
         writer.close();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        writer.flush();
     }
 
     public void writeFields(Object... fields) throws IOException {
