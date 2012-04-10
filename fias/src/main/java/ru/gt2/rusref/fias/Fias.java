@@ -104,7 +104,7 @@ public enum Fias {
         String[] propOrder = getPropOrder(item);
 
         Map<String, Field> fieldByName = getAllFieldsMap(item);
-        
+
         if (0 == propOrder.length) {
             return ImmutableList.copyOf(fieldByName.values());
         }
@@ -128,7 +128,6 @@ public enum Fias {
                 if (Modifier.isStatic(field.getModifiers())) {
                     continue;
                 }
-
                 Field existing = result.put(field.getName(), field);
                 if (null != existing) {
                     throw new IllegalArgumentException("Duplicate field, trying to add: " + field
@@ -148,7 +147,7 @@ public enum Fias {
         }
         return Objects.firstNonNull(propOrder, new String[0]);
     }
-    
+
     private static Field getId(Collection<Field> fields) {
         Field result = null;
         for (Field field : fields) {
@@ -167,4 +166,17 @@ public enum Fias {
         return result;
     }
 
+    public Object[] getFieldValues(Object entity) {
+        int index = 0;
+        Object[] result = new Object[itemFields.size()];
+        for (Field field : itemFields) {
+            try {
+                result[index] = field.get(entity);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            index++;
+        }
+        return result;
+    }
 }

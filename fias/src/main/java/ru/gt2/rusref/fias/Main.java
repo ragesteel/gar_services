@@ -1,6 +1,7 @@
 package ru.gt2.rusref.fias;
 
 import com.google.common.base.Charsets;
+import ru.gt2.rusref.CsvWriter;
 import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.stat.ExtractResult;
 
@@ -31,18 +32,16 @@ public class Main {
     private static final String FILE_SUFFIX = ".XML";
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
     private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
-            Persistence.createEntityManagerFactory("rusref.fias");
-    private static EntityManager ENTITY_MANAGER;
 
-    private static PrintWriter CSV;
+    private static CsvWriter REPORT;
+
+    private static CsvWriter CSV;
 
     public static void main(String... args) throws JAXBException, IOException {
 
         File csvFile = new File("report-stat.csv");
-        CSV = new PrintWriter(new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(csvFile), Charsets.UTF_8)));
-        CSV.println(Joiners.TAB_SEPARATED.join(
+        REPORT = CsvWriter.createMySqlCsvWriter(csvFile);
+        REPORT.writeFields(
                 "Справочник",
                 "Элемент",
                 "Описание",
@@ -55,16 +54,14 @@ public class Main {
                 "Разрядов",
                 "Мин длинна",
                 "Макс длинна"
-        ));
+        );
 
-        ENTITY_MANAGER = ENTITY_MANAGER_FACTORY.createEntityManager();
         for (Fias fias : new Fias[]{ Fias.NORMDOC, Fias.ADDROBJ, Fias.HOUSEINT, Fias.HOUSE, Fias.LANDMARK}) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
         }
         // FIXME Да, тут хорошое место для try-with-resources из JDK7, но пока обработка ошибок нам не особо и нужна.
-        CSV.close();
-        ENTITY_MANAGER.close();
+        REPORT.close();
     }
 
     private static File[] findFiles(final Fias fias) {
@@ -88,6 +85,8 @@ public class Main {
             return;
         }
 
+        File csvFile = new File(fias.item.getSimpleName() + ".csv");
+        CSV = CsvWriter.createMySqlCsvWriter(csvFile);
         JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
         
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -95,6 +94,7 @@ public class Main {
         for (File file : files) {
             processFile(fias, unmarshaller, file);
         }
+        CSV.close();
     }
 
     private static void processFile(final Fias fias, Unmarshaller unmarshaller, File file) throws JAXBException, IOException {
@@ -132,19 +132,17 @@ public class Main {
         processContainerEntities(fias, container);
 
         extractResult.print(System.out);
-        extractResult.writeReport(CSV);
+        extractResult.writeReport(REPORT);
     }
 
     private static void processContainerEntities(Fias fias, Container<?> container) {
-
-        EntityTransaction transaction = ENTITY_MANAGER.getTransaction();
-        transaction.begin();
         List<?> list = container.getList();
-        for (Object entity : list) {
-            ENTITY_MANAGER.persist(entity);
+        try {
+            for (Object entity : list) {
+                CSV.writeFields(fias.getFieldValues(entity));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        ENTITY_MANAGER.flush();
-        ENTITY_MANAGER.clear();
-        transaction.commit();
     }
 }

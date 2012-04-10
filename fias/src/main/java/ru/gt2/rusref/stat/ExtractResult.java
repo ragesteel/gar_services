@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import ru.gt2.rusref.CsvWriter;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
@@ -12,6 +13,7 @@ import ru.gt2.rusref.fias.Fias;
 import javax.annotation.Nullable;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -90,9 +92,9 @@ public class ExtractResult {
         }
     }
 
-    public void writeReport(PrintWriter printWriter) {
+    public void writeReport(CsvWriter report) throws IOException {
         Class<?> item = fias.item;
-        printWriter.println(Joiners.TAB_SEPARATED.join(
+        report.writeFields(
                 fias.name(),
                 item.getSimpleName(),
                 item.getAnnotation(Description.class).value(),
@@ -102,12 +104,12 @@ public class ExtractResult {
                 null,
                 null,
                 null
-        ));
+        );
         for (ObjectFieldStatistics fieldStatistics : statistics.values()) {
             // FieldType fieldType = FieldType.FROM_TYPE.get(field.getType());
             Object[] parts = new Object[12];
             fieldStatistics.fillReportParts(parts);
-            printWriter.println(Joiners.TAB_SEPARATED.join(parts));
+            report.writeFields(parts);
         }
     }
 }
