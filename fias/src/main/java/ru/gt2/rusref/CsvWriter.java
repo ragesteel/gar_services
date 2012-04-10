@@ -39,6 +39,7 @@ public class CsvWriter implements Closeable {
         writer.write(lineSeparator);
     }
 
+    //  mysqlimport  --user=root --fields-terminated-by=\\t --fields-optionally-enclosed-by=\" --fields-escaped-by=\\ fias /home/rage/NormativeDocument.csv
     public static CsvWriter createMySqlCsvWriter(File file) throws FileNotFoundException {
         CsvWriter result = new CsvWriter();
         result.writer = new BufferedWriter(
@@ -46,7 +47,7 @@ public class CsvWriter implements Closeable {
                 new FileOutputStream(file), Charsets.UTF_8));
         result.lineSeparator = "\n";
         result.fieldSeparator = Joiners.TAB_SEPARATED;
-        result.fieldTransformer = new MysqlCsvFormatter(CharMatcher.is('\t'));
+        result.fieldTransformer = new MysqlCsvFormatter();
 
         return result;
     }

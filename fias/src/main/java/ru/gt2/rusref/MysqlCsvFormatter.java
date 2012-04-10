@@ -4,6 +4,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,10 +17,9 @@ public class MysqlCsvFormatter implements Function<Object, String> {
 
     private static final CharMatcher DASH = CharMatcher.is('-');
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final CharMatcher escape;
+    private final CharMatcher escape = CharMatcher.anyOf("\t\"");
 
-    public MysqlCsvFormatter(CharMatcher escape) {
-        this.escape = escape;
+    public MysqlCsvFormatter() {
     }
 
     @Override
@@ -27,12 +27,20 @@ public class MysqlCsvFormatter implements Function<Object, String> {
         if (null == input) {
             return "\\N";
         } else if (input instanceof String) {
-            // FIXME Тут нужен escap'инг.
+            // FIXME Просто и наивное экранирование
             String string = (String) input;
             if (escape.matchesAnyOf(string)) {
-                throw new IllegalArgumentException("Escape is not implement, but required for string: " + input);
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < string.length(); i++) {
+                    char c = string.charAt(i);
+                    if (escape.matches(c)) {
+                        builder.append('\\');
+                    }
+                    builder.append(c);
+                }
+                string = builder.toString();
             }
-            return string;
+            return '"' + string + '"';
         } else if (input instanceof Date) {
             return dateFormat.format((Date) input);
         } else if (input instanceof Integer) {
@@ -40,6 +48,8 @@ public class MysqlCsvFormatter implements Function<Object, String> {
         } else if (input instanceof UUID) {
             String uuid = ((UUID) input).toString();
             return DASH.removeFrom(uuid);
+        } else if (input instanceof BigDecimal) {
+            return ((BigDecimal) input).toString();
         } else {
             throw new IllegalArgumentException("Processing not defined for class " + input.getClass());
         }
