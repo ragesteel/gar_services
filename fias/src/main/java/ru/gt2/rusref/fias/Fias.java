@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -11,6 +12,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.SneakyThrows;
 
 import javax.annotation.Nullable;
 import javax.persistence.Id;
@@ -217,17 +219,28 @@ public enum Fias {
         return result;
     }
 
+    @SneakyThrows
     public Object[] getFieldValues(Object entity) {
         int index = 0;
         Object[] result = new Object[itemFields.size()];
         for (Field field : itemFields) {
-            try {
-                result[index] = field.get(entity);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            result[index] = field.get(entity);
             index++;
         }
         return result;
+    }
+
+    public ImmutableSet<Object> getNotNullFieldValues(final Object entity, Iterable<Field> fields) {
+        Iterable<Object> values = Iterables.transform(fields, new Function<Field, Object>() {
+            @Override
+            @SneakyThrows
+            public Object apply(@Nullable Field field) {
+                Preconditions.checkNotNull(field);
+                return field.get(entity);
+            }
+        });
+
+        Iterable<Object> notNullValues = Iterables.filter(values, Predicates.notNull());
+        return ImmutableSet.copyOf(notNullValues);
     }
 }

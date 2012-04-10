@@ -22,7 +22,6 @@ import java.util.Map;
 
 /**
  * Создание MySQL-таблицы.
- * FIXME Ключи!
  *
  * Конечно, если это будет развиваться, нужно будет извлечь базовый класс и всякое такое.
  */
@@ -77,8 +76,11 @@ public class MySqlTable {
     }
 
     public void endTable() {
-        StringBuilder line = new StringBuilder(")");
-        appendComment(line, fias.item);
+        StringBuilder line = new StringBuilder(") ENGINE = InnoDB,");
+        boolean hasComment = appendComment(line, fias.item);
+        if (!hasComment) {
+            line.deleteCharAt(line.length() - 1);
+        }
         line.append(";");
         lines.add(line.toString());
     }
@@ -132,6 +134,7 @@ public class MySqlTable {
     public void createForeignKeys() {
         int commasToAppend = foreignKeyReferences.size() - 1;
         for (Map.Entry<List<String>, Fias> foreignKeyReference : foreignKeyReferences.entrySet()) {
+            // FIXME Имена для индексов
             StringBuilder line = new StringBuilder("  FOREIGN KEY (");
             String joinedForeignKeyFields = quouteAndJoinIdentifiers(foreignKeyReference.getKey());
             line.append(joinedForeignKeyFields);
@@ -175,12 +178,14 @@ public class MySqlTable {
         }
     }
 
-    private void appendComment(StringBuilder line, AnnotatedElement element) {
+    private boolean appendComment(StringBuilder line, AnnotatedElement element) {
         String comment = getDescription(element);
-        if (!Strings.isNullOrEmpty(comment)) {
-            line.append(" COMMENT ");
-            line.append(quoteLiteral(comment));
+        if (Strings.isNullOrEmpty(comment)) {
+            return false;
         }
+        line.append(" COMMENT ");
+        line.append(quoteLiteral(comment));
+        return true;
     }
 
     private String getTableName() {

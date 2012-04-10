@@ -196,3 +196,4 @@ CREATE TABLE `AddressObjectLevel` (
 -- ALTER TABLE `AddressObjectType` ADD FOREIGN KEY (`level`)   REFERENCES `AddressObjectLevel` (`level`);
 -- ALTER TABLE `AddressObject`     ADD FOREIGN KEY (`aoLevel`) REFERENCES `AddressObjectLevel` (`level`);
 
+-- FIXME Уникальный индекс (level, scName) и FOREIGN KEY из AddressObject'а.
