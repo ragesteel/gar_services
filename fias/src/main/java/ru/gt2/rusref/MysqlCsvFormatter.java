@@ -17,10 +17,7 @@ public class MysqlCsvFormatter implements Function<Object, String> {
 
     private static final CharMatcher DASH = CharMatcher.is('-');
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final CharMatcher escape = CharMatcher.anyOf("\t\"");
-
-    public MysqlCsvFormatter() {
-    }
+    private final CharMatcher escape = CharMatcher.anyOf("\"\\");
 
     @Override
     public String apply(@Nullable Object input) {
@@ -30,15 +27,15 @@ public class MysqlCsvFormatter implements Function<Object, String> {
             // FIXME Просто и наивное экранирование
             String string = (String) input;
             if (escape.matchesAnyOf(string)) {
-                StringBuilder builder = new StringBuilder();
+                StringBuilder escaped = new StringBuilder();
                 for (int i = 0; i < string.length(); i++) {
                     char c = string.charAt(i);
                     if (escape.matches(c)) {
-                        builder.append('\\');
+                        escaped.append('\\');
                     }
-                    builder.append(c);
+                    escaped.append(c);
                 }
-                string = builder.toString();
+                string = escaped.toString();
             }
             return '"' + string + '"';
         } else if (input instanceof Date) {
