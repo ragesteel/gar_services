@@ -42,10 +42,10 @@ public class ExtractResult {
             new Function<ConstraintViolation<Object>, String>() {
                 @Override
                 public String apply(@Nullable ConstraintViolation<Object> constraintViolation) {
-                    if (null != constraintViolation) {
-                        return String.valueOf(constraintViolation.getPropertyPath());
+                    if (null == constraintViolation) {
+                        return null;
                     }
-                    return null;
+                    return String.valueOf(constraintViolation.getPropertyPath());
                 }
             };
 

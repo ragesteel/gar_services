@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -45,11 +46,11 @@ public enum Fias {
 
     /** Класс обёртки. */
     public final Class<?> wrapper;
-    /** Внутренний класс. */
+    /** Внутренний класс — сам справочник. */
     public final Class<?> item;
-    /** Поля внутреннего класса. */
+    /** Поля справочника. */
     public final ImmutableList<Field> itemFields;
-    /** Поле идентификатора внутреннего класса. */
+    /** Ключевое поле. */
     public final Field idField;
     /** Название файла со схемой. */
     public final String schemePrefix;
@@ -72,12 +73,12 @@ public enum Fias {
             @Override
             public Fias apply(@Nullable Field field) {
                 Preconditions.checkNotNull(field);
-                FiasRef fiasRef = field.getAnnotation(FiasRef.class);
-                Preconditions.checkNotNull(fiasRef);
-                Class<?> target = fiasRef.value();
-                Fias fiasTarget = Fias.FROM_ITEM_CLASS.get(target);
-                Preconditions.checkNotNull(fiasTarget);
-                return fiasTarget;
+                FiasRef ref = field.getAnnotation(FiasRef.class);
+                Preconditions.checkNotNull(ref);
+                Class<?> targetClass = ref.value();
+                Fias target = Fias.FROM_ITEM_CLASS.get(targetClass);
+                Preconditions.checkNotNull(target);
+                return target;
             }
         };
 
@@ -88,13 +89,23 @@ public enum Fias {
         FROM_ITEM_CLASS = ImmutableMap.copyOf(fromType);
     }
 
-    public static Iterable<Field> getReferences(Iterable<Field> fields) {
-        return Iterables.filter(fields, FIAS_REF);
+    public static Iterable<Field> getReferences(Fias fias) {
+        return Iterables.filter(fias.itemFields, FIAS_REF);
     }
 
-    public static ImmutableList<Fias> getReferenceTargets(Iterable<Field> fields) {
-        Iterable<Fias> referenceTargets = Iterables.transform(getReferences(fields), FIAS_REF_TARGET);
-        return ImmutableList.copyOf(referenceTargets);
+    public static ImmutableList<Field> getSelfReferenceFields(Fias fias) {
+        List<Field> result = Lists.newArrayList();
+        for (Field field : fias.itemFields) {
+            FiasRef ref = field.getAnnotation(FiasRef.class);
+            if (null == ref) {
+                continue;
+            }
+            if (!ref.value().equals(fias.item)) {
+                continue;
+            }
+            result.add(field);
+        }
+        return ImmutableList.copyOf(result);
     }
 
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
@@ -186,7 +197,8 @@ public enum Fias {
             boolean moveHappens = false;
             for (Iterator<Fias> iterator = notProcessed.iterator(); iterator.hasNext(); ) {
                 Fias fias = iterator.next();
-                ImmutableSet<Fias> references = ImmutableSet.copyOf(getReferenceTargets(fias.itemFields));
+                Iterable<Fias> referenceTargets = Iterables.transform(getReferences(fias), FIAS_REF_TARGET);
+                ImmutableSet<Fias> references = ImmutableSet.copyOf(referenceTargets);
 
                 Sets.SetView<Fias> notProcessedReferences =
                         Sets.difference(references,

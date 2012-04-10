@@ -145,13 +145,8 @@ public class FiasTest {
     }
 
     @Test
-    public void testOrderByReferences() {
-        System.out.println(Iterables.transform(Fias.orderByReferences(), new Function<Fias, String>() {
-            @Override
-            public String apply(@Nullable Fias input) {
-                return input.item.getSimpleName();
-            }
-        }));
+    public void testSelfReferences() {
+        Assert.assertFalse(Fias.getSelfReferenceFields(Fias.ADDROBJ).isEmpty());
     }
 
     private void testFieldsInPropOrder(Fias fias) {
@@ -254,7 +249,7 @@ public class FiasTest {
     }
 
     private void testReferenceTypes(Fias fias) {
-        for (Field field : Fias.getReferences(fias.itemFields)) {
+        for (Field field : Fias.getReferences(fias)) {
             Fias fiasTarget = Fias.FIAS_REF_TARGET.apply(field);
             Assert.assertEquals("Reference (" + field + ") and id field must be of the same type",
                     fiasTarget.idField.getType(), field.getType());
