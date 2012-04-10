@@ -6,50 +6,50 @@ CREATE TABLE `StructureStatus` (
   `name` VARCHAR(20) NOT NULL COMMENT "Наименование",
   `shortName` VARCHAR(20) COMMENT "Краткое наименование",
   PRIMARY KEY (`strStatId`)
-) COMMENT "Признак строения";
+) ENGINE = InnoDB, COMMENT "Признак строения";
 CREATE TABLE `ActualStatus` (
   `actStatId` INT(10) NOT NULL COMMENT "Идентификатор статуса (ключ)",
   `name` VARCHAR(100) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`actStatId`)
-) COMMENT "Статус актуальности";
+) ENGINE = InnoDB, COMMENT "Статус актуальности";
 CREATE TABLE `IntervalStatus` (
   `intStatId` INT(10) NOT NULL COMMENT "Идентификатор статуса",
   `name` VARCHAR(60) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`intStatId`)
-) COMMENT "Статус интервалов домов";
+) ENGINE = InnoDB, COMMENT "Статус интервалов домов";
 CREATE TABLE `EstateStatus` (
   `estStatId` INT(10) NOT NULL COMMENT "Признак строения",
   `name` VARCHAR(20) NOT NULL COMMENT "Наименование",
   `shortName` VARCHAR(20) COMMENT "Краткое наименование",
   PRIMARY KEY (`estStatId`)
-) COMMENT "Признак владения";
+) ENGINE = InnoDB, COMMENT "Признак владения";
 CREATE TABLE `CenterStatus` (
   `centerStId` INT(10) NOT NULL COMMENT "Идентификатор статуса (ключ)",
   `name` VARCHAR(100) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`centerStId`)
-) COMMENT "Статус центра";
+) ENGINE = InnoDB, COMMENT "Статус центра";
 CREATE TABLE `OperationStatus` (
   `operStatId` INT(10) NOT NULL COMMENT "Идентификатор статуса (ключ)",
   `name` VARCHAR(100) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`operStatId`)
-) COMMENT "Статус действия";
+) ENGINE = InnoDB, COMMENT "Статус действия";
 CREATE TABLE `HouseStateStatus` (
   `houseStId` INT(10) NOT NULL COMMENT "Признак строения",
   `name` VARCHAR(60) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`houseStId`)
-) COMMENT "Статус состояния домов";
+) ENGINE = InnoDB, COMMENT "Статус состояния домов";
 CREATE TABLE `CurrentStatus` (
   `curentStId` INT(10) NOT NULL COMMENT "Идентификатор статуса (ключ)",
   `name` VARCHAR(100) NOT NULL COMMENT "Наименование",
   PRIMARY KEY (`curentStId`)
-) COMMENT "Статус актуальности КЛАДР 4.0";
+) ENGINE = InnoDB, COMMENT "Статус актуальности КЛАДР 4.0";
 CREATE TABLE `AddressObjectType` (
   `level` INT(10) NOT NULL COMMENT "Уровень адресного объекта",
   `scName` VARCHAR(10) NOT NULL COMMENT "Краткое наименование типа объекта",
   `socrName` VARCHAR(29) NOT NULL COMMENT "Полное наименование типа объекта",
   `kodTSt` VARCHAR(3) NOT NULL COMMENT "Ключевое поле",
   PRIMARY KEY (`kodTSt`)
-) COMMENT "Тип адресного объекта";
+) ENGINE = InnoDB, COMMENT "Тип адресного объекта";
 CREATE TABLE `NormativeDocument` (
   `normDoc` BINARY(16) NOT NULL COMMENT "Внешний ключ на нормативный документ",
   `docName` TEXT COMMENT "Наименование документа",
@@ -58,7 +58,7 @@ CREATE TABLE `NormativeDocument` (
   `docType` INT(10) NOT NULL COMMENT "Тип документа",
   `docImgId` INT(10) COMMENT "Идентификатор образа (внешний ключ)",
   PRIMARY KEY (`normDoc`)
-) COMMENT "Cведения по нормативным документам, являющимся основанием присвоения адресному элементу наименования";
+) ENGINE = InnoDB, COMMENT "Cведения по нормативным документам, являющимся основанием присвоения адресному элементу наименования";
 CREATE TABLE `AddressObject` (
   `aoGuid` BINARY(16) NOT NULL COMMENT "Глобальный уникальный идентификатор адресного объекта",
   `formalName` VARCHAR(120) NOT NULL COMMENT "Формализованное наименование",
@@ -104,7 +104,7 @@ CREATE TABLE `AddressObject` (
   FOREIGN KEY (`operStatus`) REFERENCES `OperationStatus` (`operStatId`),
   FOREIGN KEY (`currStatus`) REFERENCES `CurrentStatus` (`curentStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
-) COMMENT "Классификатор адресообразующих элементов";
+) ENGINE = InnoDB, COMMENT "Классификатор адресообразующих элементов";
 CREATE TABLE `Landmark` (
   `location` VARCHAR(500) NOT NULL COMMENT "Месторасположение ориентира",
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
@@ -124,7 +124,7 @@ CREATE TABLE `Landmark` (
   PRIMARY KEY (`landGuid`),
   FOREIGN KEY (`aoGuid`) REFERENCES `AddressObject` (`aoGuid`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
-) COMMENT "Описание места расположения имущественных объектов";
+) ENGINE = InnoDB, COMMENT "Описание места расположения имущественных объектов";
 CREATE TABLE `HouseInterval` (
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
   `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
@@ -147,7 +147,7 @@ CREATE TABLE `HouseInterval` (
   FOREIGN KEY (`aoGuid`) REFERENCES `AddressObject` (`aoGuid`),
   FOREIGN KEY (`intStatus`) REFERENCES `IntervalStatus` (`intStatId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
-) COMMENT "Интервал домов";
+) ENGINE = InnoDB, COMMENT "Интервал домов";
 CREATE TABLE `House` (
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
   `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
@@ -176,11 +176,23 @@ CREATE TABLE `House` (
   FOREIGN KEY (`aoGuid`) REFERENCES `AddressObject` (`aoGuid`),
   FOREIGN KEY (`statStatus`) REFERENCES `HouseStateStatus` (`houseStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
-) COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
+) ENGINE = InnoDB, COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
 
 ---
 
-ALTER TABLE  `AddressObjectType`
-    MODIFY `scName` VARCHAR(10) NULL,
-    MODIFY `socrName` VARCHAR(31) NOT NULL,
-    MODIFY `kodTSt` VARCHAR(4) NOT NULL;
+ALTER TABLE  `AddressObjectType` 
+  CHANGE  `scName`  `scName` VARCHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL COMMENT  'Краткое наименование типа объекта',
+  CHANGE  `socrName`  `socrName` VARCHAR( 31 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT  'Полное наименование типа объекта',
+  CHANGE  `kodTSt`  `kodTSt` VARCHAR( 4 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT  'Ключевое поле';
+
+---
+
+CREATE TABLE `AddressObjectLevel` (
+  `level` INT(10) NOT NULL COMMENT 'Уровень',
+  PRIMARY KEY (`level`)
+) ENGINE = InnoDB, COMMENT 'Уровни адресных объектов';
+
+-- INSERT INTO `AddressObjectLevel` SELECT DISTINCT `level` FROM `AddressObjectType`;
+-- ALTER TABLE `AddressObjectType` ADD FOREIGN KEY (`level`)   REFERENCES `AddressObjectLevel` (`level`);
+-- ALTER TABLE `AddressObject`     ADD FOREIGN KEY (`aoLevel`) REFERENCES `AddressObjectLevel` (`level`);
+

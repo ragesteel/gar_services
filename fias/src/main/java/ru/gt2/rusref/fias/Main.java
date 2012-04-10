@@ -56,7 +56,7 @@ public class Main {
                 "Макс длинна"
         );
 
-        for (Fias fias : new Fias[]{ Fias.NORMDOC, Fias.ADDROBJ, Fias.HOUSEINT, Fias.HOUSE, Fias.LANDMARK}) {
+        for (Fias fias : Fias.values()) {
             File[] files = findFiles(fias);
             processFiles(fias, files);
         }
@@ -136,6 +136,10 @@ public class Main {
     }
 
     private static void processContainerEntities(Fias fias, Container<?> container) {
+        // FIXME Оказывается мы не можем просто брать и писать сущность AddressObject,
+        // т.к. в ней есть ссылки на саму себя. Соотв. мы должны как-то накапливать эту информацию
+        // и передавать дальше только в том случае, если такой ключ мы уже записали.
+
         List<?> list = container.getList();
         try {
             for (Object entity : list) {

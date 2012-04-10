@@ -11,6 +11,7 @@ import org.junit.Test;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -141,6 +142,16 @@ public class FiasTest {
         for (Fias fias : Fias.values()) {
             testItemAnnotations(fias);
         }
+    }
+
+    @Test
+    public void testOrderByReferences() {
+        System.out.println(Iterables.transform(Fias.orderByReferences(), new Function<Fias, String>() {
+            @Override
+            public String apply(@Nullable Fias input) {
+                return input.item.getSimpleName();
+            }
+        }));
     }
 
     private void testFieldsInPropOrder(Fias fias) {
