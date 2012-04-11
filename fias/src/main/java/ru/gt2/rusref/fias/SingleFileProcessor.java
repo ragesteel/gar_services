@@ -69,7 +69,7 @@ public class SingleFileProcessor {
     protected void writeEntity(Object entity) throws Exception {
         Object pk = getPrimaryKey(entity);
         if (primaryKeys.contains(pk)) {
-            throw new IllegalArgumentException("Primary key already exists: " + pk);
+            System.out.println("  Warning, primary key is already exists: " + pk);
         }
         primaryKeys.add(pk);
         csv.writeFields(fias.getFieldValues(entity));
