@@ -113,10 +113,6 @@ public class SinglePassProcessor {
     }
 
     private void processContainerEntities() {
-        // FIXME Оказывается мы не можем просто брать и писать сущность AddressObject,
-        // т.к. в ней есть ссылки на саму себя. Соотв. мы должны как-то накапливать эту информацию
-        // и передавать дальше только в том случае, если такой ключ мы уже записали.
-
         List<?> list = container.getList();
         try {
             for (Object entity : list) {
