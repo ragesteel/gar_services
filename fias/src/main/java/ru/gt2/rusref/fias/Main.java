@@ -31,7 +31,7 @@ public class Main {
                 "Макс длинна"
         );
 
-        for (Fias fias : new Fias[]{ Fias.NORMDOC }) { // Fias.orderByReferences()
+        for (Fias fias : Fias.orderByReferences()) {
             FiasFilesProcessor fiasFilesProcessor = new FiasFilesProcessor(fias, REPORT);
             fiasFilesProcessor.processFiles("data/2012-03-22-xml");
         }

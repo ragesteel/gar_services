@@ -26,7 +26,7 @@ public class FiasFilesProcessor {
 
     private File[] files;
 
-    private SinglePassProcessor abstractExtractor;
+    private SingleFileProcessor singleFileProcessor;
 
     public void processFiles(String directoryName) throws IOException, JAXBException {
         directory = new File(directoryName);
@@ -35,8 +35,8 @@ public class FiasFilesProcessor {
             return;
         }
 
-        abstractExtractor = createProcessor();
-        abstractExtractor.process();
+        singleFileProcessor = createProcessor();
+        singleFileProcessor.process();
     }
 
     private void findFiles() {
@@ -54,13 +54,8 @@ public class FiasFilesProcessor {
         });
     }
 
-    private SinglePassProcessor createProcessor() {
-        boolean noSelfReferenceFields = Fias.getSelfReferenceFields(fias).isEmpty();
-        if (noSelfReferenceFields) {
-            return new SinglePassProcessor(fias, files, report, directory);
-        } else {
-            return new MultiPassProcessor(fias, files, report, directory);
-        }
+    private SingleFileProcessor createProcessor() {
+        return new SingleFileProcessor(fias, files, report, directory);
     }
 
 }

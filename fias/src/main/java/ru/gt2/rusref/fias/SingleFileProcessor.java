@@ -11,14 +11,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Однопроходный обработчик.
  *
  * Просто сразу пишет все обрабатываемые данные в файл.
  */
-public class SinglePassProcessor {
+public class SingleFileProcessor {
 
     private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
 
@@ -36,9 +38,11 @@ public class SinglePassProcessor {
 
     private Unmarshaller unmarshaller;
 
+    private final Set<Object> primaryKeys = new HashSet<Object>();
+
     private Container<?> container;
 
-    public SinglePassProcessor(Fias fias, File[] files, CsvWriter report, File target) {
+    public SingleFileProcessor(Fias fias, File[] files, CsvWriter report, File target) {
         this.fias = fias;
         this.files = files;
         this.report = report;
@@ -63,7 +67,16 @@ public class SinglePassProcessor {
     }
 
     protected void writeEntity(Object entity) throws Exception {
+        Object pk = getPrimaryKey(entity);
+        if (primaryKeys.contains(pk)) {
+            throw new IllegalArgumentException("Primary key already exists: " + pk);
+        }
+        primaryKeys.add(pk);
         csv.writeFields(fias.getFieldValues(entity));
+    }
+
+    protected Object getPrimaryKey(Object entity) throws IllegalAccessException {
+        return fias.idField.get(entity);
     }
 
     private void beforeProcessing() throws IOException, JAXBException {
