@@ -30,16 +30,19 @@ public class SinglePassProcessor {
 
     private final CsvWriter report;
 
+    private final File target;
+
     protected CsvWriter csv;
 
     private Unmarshaller unmarshaller;
 
     private Container<?> container;
 
-    public SinglePassProcessor(Fias fias, File[] files, CsvWriter report) {
+    public SinglePassProcessor(Fias fias, File[] files, CsvWriter report, File target) {
         this.fias = fias;
         this.files = files;
         this.report = report;
+        this.target = target;
     }
 
     public void process() throws JAXBException, IOException {
@@ -64,7 +67,7 @@ public class SinglePassProcessor {
     }
 
     private void beforeProcessing() throws IOException, JAXBException {
-        File csvFile = new File(fias.item.getSimpleName() + ".csv");
+        File csvFile = new File(target, fias.item.getSimpleName() + ".csv");
         csv = CsvWriter.createMySqlCsvWriter(csvFile);
         JAXBContext jaxbContext = JAXBContext.newInstance(fias.wrapper);
         unmarshaller = jaxbContext.createUnmarshaller();

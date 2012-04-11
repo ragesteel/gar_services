@@ -28,8 +28,8 @@ public class MultiPassProcessor extends SinglePassProcessor {
     private int unresolved;
     private boolean writeUnresolved;
 
-    public MultiPassProcessor(Fias fias, File[] files, CsvWriter report) {
-        super(fias, files, report);
+    public MultiPassProcessor(Fias fias, File[] files, CsvWriter report, File directory) {
+        super(fias, files, report, directory);
         selfReferenceFields = Fias.getSelfReferenceFields(fias);
     }
 
@@ -50,7 +50,7 @@ public class MultiPassProcessor extends SinglePassProcessor {
                 break;
             }
             if (0 == written) {
-                System.out.println("Nothing was written. During next pass all unresolved entities will be written in separate files");
+                System.out.println("Nothing was written. During next pass all unresolved entities will be written in separate file.");
                 writeUnresolved = true;
                 csv.close();
                 File unresolvedCsvFile = new File(fias.item.getSimpleName() + "_unresolved.csv");
@@ -69,19 +69,17 @@ public class MultiPassProcessor extends SinglePassProcessor {
 
     @Override
     protected void writeEntity(Object entity) throws Exception {
-        if (writeUnresolved) {
-            super.writeEntity(entity);
-            written++;
-            return;
-        }
-
-        ImmutableSet<Object> notNullSelfReferences = fias.getNotNullFieldValues(entity, selfReferenceFields);
         Object pk = fias.idField.get(entity);
         if (resolved.contains(pk)) {
             alreadyWritten++;
             return;
         }
-
+        if (writeUnresolved) {
+            super.writeEntity(entity);
+            written++;
+            return;
+        }
+        ImmutableSet<Object> notNullSelfReferences = fias.getNotNullFieldValues(entity, selfReferenceFields);
         if (!resolved.containsAll(notNullSelfReferences)) {
             unresolved++;
             return;

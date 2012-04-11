@@ -57,9 +57,9 @@ public class FiasFilesProcessor {
     private SinglePassProcessor createProcessor() {
         boolean noSelfReferenceFields = Fias.getSelfReferenceFields(fias).isEmpty();
         if (noSelfReferenceFields) {
-            return new SinglePassProcessor(fias, files, report);
+            return new SinglePassProcessor(fias, files, report, directory);
         } else {
-            return new MultiPassProcessor(fias, files, report);
+            return new MultiPassProcessor(fias, files, report, directory);
         }
     }
 
