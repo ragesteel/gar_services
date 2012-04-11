@@ -9,7 +9,12 @@ public class MySqlDdl {
     public static void main(String... args) {
         for (Fias fias : Fias.orderByReferences()) {
             MySqlTable table = new MySqlTable(fias);
-            table.generate();
+            table.createTable();
+        }
+
+        for (Fias fias : Fias.orderByReferences()) {
+            MySqlTable table = new MySqlTable(fias);
+            table.loadData();
         }
     }
 

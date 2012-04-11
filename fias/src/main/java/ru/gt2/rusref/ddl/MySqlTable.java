@@ -1,6 +1,7 @@
 package ru.gt2.rusref.ddl;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,13 +32,15 @@ public class MySqlTable {
     private final List<String> lines = Lists.newArrayList();
     private final List<String> primaryKeysFields = Lists.newArrayList();
     private final Map<List<String>, Fias> foreignKeyReferences = Maps.newLinkedHashMap();
+    private final String tableName;
 
     private Field field;
+    private String fieldName;
     private FieldType fieldType;
     private Column column;
     private boolean appendComma;
 
-    public static final Function<String, String> QUOTE_INDENTIFIER = new Function<String, String>() {
+    public static final Function<String, String> QUOTE_IDENTIFIER = new Function<String, String>() {
         @Override
         public String apply(@Nullable String identifier) {
             if (null == identifier) {
@@ -49,51 +52,55 @@ public class MySqlTable {
 
     public MySqlTable(Fias fias) {
         this.fias = fias;
+        tableName = getTableName(fias);
     }
 
-    public void generate() {
-        startTable();
+    public void createTable() {
+        beginCreateTable();
         for (Field field : fias.itemFields) {
-            createField(field);
+            setField(field);
+            createField();
         }
-        if (primaryKeysFields.isEmpty()) {
-            throw new RuntimeException("Primary key field(s) not found");
-        }
+
+        Preconditions.checkArgument(!primaryKeysFields.isEmpty(), "Primary key field(s) not found");
 
         appendComma = !foreignKeyReferences.isEmpty();
         createPrimaryKey();
 
         createForeignKeys();
 
-        endTable();
+        endCreateTable();
 
-        for (String line : lines) {
-            System.out.println(line);
-        }
+        printLines();
     }
 
-    public void startTable() {
-        lines.add("CREATE TABLE " + QUOTE_INDENTIFIER.apply(getTableName()) + " (");
+    public void loadData() {
+        loadDataCommand();
+
+        loadDataFields();
+
+        lines.add("COMMIT;");
+
+        printLines();
     }
 
-    public void endTable() {
+    public void beginCreateTable() {
+        lines.add("CREATE TABLE " + QUOTE_IDENTIFIER.apply(tableName) + " (");
+    }
+
+    public void endCreateTable() {
         StringBuilder line = new StringBuilder(") ENGINE = InnoDB,");
         boolean hasComment = appendComment(line, fias.item);
         if (!hasComment) {
-            line.deleteCharAt(line.length() - 1);
+            deleteLastChar(line);
         }
         line.append(";");
         lines.add(line.toString());
     }
 
-    public void createField(Field field) {
-        this.field = field;
-        fieldType = FieldType.FROM_TYPE.get(field.getType());
-        column = field.getAnnotation(Column.class);
-
+    public void createField() {
         StringBuilder line = new StringBuilder("  ");
-        String fieldName = field.getName();
-        line.append(QUOTE_INDENTIFIER.apply(fieldName));
+        line.append(QUOTE_IDENTIFIER.apply(fieldName));
         line.append(' ');
         line.append(getType());
         if (!column.nullable()) {
@@ -113,9 +120,7 @@ public class MySqlTable {
         FiasRef fiasRef = field.getAnnotation(FiasRef.class);
         if (null != fiasRef) {
             Fias target = Fias.FROM_ITEM_CLASS.get(fiasRef.value());
-            if (null == target) {
-                throw new RuntimeException("Unable to identify target class for reference field: " + field);
-            }
+            Preconditions.checkNotNull(target, "Unable to identify target class for reference field: {0}", field);
             foreignKeyReferences.put(
                     Collections.singletonList(fieldName),
                     target);
@@ -124,7 +129,7 @@ public class MySqlTable {
 
     public void createPrimaryKey() {
         StringBuilder line = new StringBuilder("  PRIMARY KEY (");
-        line.append(quouteAndJoinIdentifiers(primaryKeysFields));
+        line.append(quoteAndJoinIdentifiers(primaryKeysFields));
         line.append(')');
         if (appendComma) {
             line.append(',');
@@ -137,13 +142,13 @@ public class MySqlTable {
         for (Map.Entry<List<String>, Fias> foreignKeyReference : foreignKeyReferences.entrySet()) {
             // FIXME Имена для индексов
             StringBuilder line = new StringBuilder("  FOREIGN KEY (");
-            String joinedForeignKeyFields = quouteAndJoinIdentifiers(foreignKeyReference.getKey());
+            String joinedForeignKeyFields = quoteAndJoinIdentifiers(foreignKeyReference.getKey());
             line.append(joinedForeignKeyFields);
             line.append(") REFERENCES ");
             Fias reference = foreignKeyReference.getValue();
-            line.append(QUOTE_INDENTIFIER.apply(getTableName(reference)));
+            line.append(QUOTE_IDENTIFIER.apply(getTableName(reference)));
             line.append(" (");
-            line.append(QUOTE_INDENTIFIER.apply(reference.idField.getName()));
+            line.append(QUOTE_IDENTIFIER.apply(reference.idField.getName()));
             line.append(")");
             if (commasToAppend > 0) {
                 line.append(',');
@@ -153,16 +158,49 @@ public class MySqlTable {
         }
     }
 
-    private String getType() {
-        if (null == fieldType) {
-            throw new RuntimeException("FieldType not found for field: " + field);
+    private void loadDataCommand() {
+        lines.add("LOAD DATA LOCAL INFILE '" + tableName + ".csv'");
+        lines.add("  INTO TABLE " + QUOTE_IDENTIFIER.apply(tableName));
+        lines.add("  FIELDS");
+        lines.add("    TERMINATED BY '\\t'");
+        lines.add("    OPTIONALLY ENCLOSED BY '\"'");
+        lines.add("    ESCAPED BY '\\\\'");
+    }
+
+    private void loadDataFields() {
+        boolean hasUnhex = false;
+        StringBuilder fieldLine = new StringBuilder("  (");
+        StringBuilder unhexLine = new StringBuilder("    ");
+        for (Field field : fias.itemFields) {
+            setField(field);
+            String quotedFieldName = QUOTE_IDENTIFIER.apply(fieldName);
+            if (FieldType.GUID.equals(fieldType)) {
+                hasUnhex = true;
+                fieldLine.append("@").append(fieldName);
+                unhexLine.append(quotedFieldName).append(" = UNHEX(@").append(fieldName).append("), ");
+            } else {
+                fieldLine.append(quotedFieldName);
+            }
+            fieldLine.append(", ");
         }
+        deleteTwoLastChars(fieldLine);
+        fieldLine.append(")");
+        lines.add(fieldLine.toString());
+
+        if (hasUnhex) {
+            lines.add("  SET");
+            deleteTwoLastChars(unhexLine);
+            lines.add(unhexLine.toString());
+        }
+
+        lines.add(";");
+    }
+
+    private String getType() {
         switch (fieldType) {
             case INTEGER:
                 int scale = column.scale();
-                if (10 != scale) {
-                    throw new RuntimeException("Unhandled scale: " + scale);
-                }
+                Preconditions.checkArgument(10 == scale, "Unhandled scale: {0}", scale);
                 return "INT(" + scale + ")";
             case DATE:
                 return "DATETIME";
@@ -175,7 +213,8 @@ public class MySqlTable {
             case GUID:
                 return "BINARY(16)";
             default:
-                throw new RuntimeException("Unhandled FieldType: " + fieldType);
+                Preconditions.checkArgument(false, "Unhandled FieldType: {0}", fieldType);
+                return null;
         }
     }
 
@@ -189,8 +228,13 @@ public class MySqlTable {
         return true;
     }
 
-    private String getTableName() {
-        return getTableName(fias);
+    private void setField(Field field) {
+        this.field = field;
+        fieldName = field.getName();
+        fieldType = FieldType.FROM_TYPE.get(field.getType());
+        Preconditions.checkNotNull(fieldType, "FieldType not found for field: {0}", field);
+        column = field.getAnnotation(Column.class);
+        Preconditions.checkNotNull(column, "Column annotation is not set");
     }
 
     private static String getTableName(Fias fias) {
@@ -207,8 +251,24 @@ public class MySqlTable {
         return '"' + literal + '"';
     }
 
-    protected String quouteAndJoinIdentifiers(List<String> identifiers) {
+    protected String quoteAndJoinIdentifiers(List<String> identifiers) {
         return Joiners.COMMA_SEPARATED.join(
-                Lists.transform(identifiers, QUOTE_INDENTIFIER));
+                Lists.transform(identifiers, QUOTE_IDENTIFIER));
     }
+
+    private void printLines() {
+        for (String line : lines) {
+            System.out.println(line);
+        }
+    }
+
+    private static void deleteLastChar(StringBuilder line) {
+        line.deleteCharAt(line.length() - 1);
+    }
+
+    private static void deleteTwoLastChars(StringBuilder line) {
+        int length = line.length();
+        line.delete(length - 2, length);
+    }
+
 }

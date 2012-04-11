@@ -17,7 +17,7 @@ public class MysqlCsvFormatter implements Function<Object, String> {
 
     private static final CharMatcher DASH = CharMatcher.is('-');
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final CharMatcher escape = CharMatcher.anyOf("\"\\");
+    private final CharMatcher escape = CharMatcher.anyOf("\0\b\n\r\t\"\\");
 
     @Override
     public String apply(@Nullable Object input) {
