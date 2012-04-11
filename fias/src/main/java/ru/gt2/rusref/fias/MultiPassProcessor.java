@@ -31,6 +31,11 @@ public class MultiPassProcessor extends SinglePassProcessor {
     public MultiPassProcessor(Fias fias, File[] files, CsvWriter report, File directory) {
         super(fias, files, report, directory);
         selfReferenceFields = Fias.getSelfReferenceFields(fias);
+
+        // FIXME Всё-таки не получилось универасального инструмента. Похожо проблема в том,
+        // что в AddressObject'е есть циклические ссылки — prevId/nextId.
+        // Видимо остаётся только одну из них убрать, непример nextId, что была возможность вернуться назад.
+        // а потом — правильные ссылки мы расставим.
     }
 
     @Override
