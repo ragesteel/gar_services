@@ -107,10 +107,12 @@ public class AddressObject extends AbstractAddressObject {
     private String offName;
 
     @Description("Краткое наименование типа объекта")
-    @Column(nullable = false, length = 10)
-    @NotNull
+    // WAS @Column(nullable = false, length = 10)
+    @Column(length = 10)
+    // WAS @NotNull
     @Size(min = 1, max = 10)
-    @XmlAttribute(name = "SHORTNAME", required = true)
+    // WAS @XmlAttribute(name = "SHORTNAME", required = true)
+    @XmlAttribute(name = "SHORTNAME")
     private String shortName;
 
     @Description("Уровень адресного объекта")

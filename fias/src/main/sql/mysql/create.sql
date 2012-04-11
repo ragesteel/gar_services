@@ -45,9 +45,9 @@ CREATE TABLE `CurrentStatus` (
 ) ENGINE = InnoDB, COMMENT "Статус актуальности КЛАДР 4.0";
 CREATE TABLE `AddressObjectType` (
   `level` INT(10) NOT NULL COMMENT "Уровень адресного объекта",
-  `scName` VARCHAR(10) NOT NULL COMMENT "Краткое наименование типа объекта",
-  `socrName` VARCHAR(29) NOT NULL COMMENT "Полное наименование типа объекта",
-  `kodTSt` VARCHAR(3) NOT NULL COMMENT "Ключевое поле",
+  `scName` VARCHAR(10) COMMENT "Краткое наименование типа объекта",
+  `socrName` VARCHAR(31) NOT NULL COMMENT "Полное наименование типа объекта",
+  `kodTSt` VARCHAR(4) NOT NULL COMMENT "Ключевое поле",
   PRIMARY KEY (`kodTSt`)
 ) ENGINE = InnoDB, COMMENT "Тип адресного объекта";
 CREATE TABLE `NormativeDocument` (
@@ -73,14 +73,14 @@ CREATE TABLE `AddressObject` (
   `sextCode` VARCHAR(3) NOT NULL COMMENT "Код подчиненного дополнительного адресообразующего элемента",
   `offName` VARCHAR(120) COMMENT "Официальное наименование",
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
-  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
+  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ",
   `terrIfnsFl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ФЛ",
   `ifnsUl` VARCHAR(4) COMMENT "Код ИФНС ЮЛ",
   `terrIfnsUl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ЮЛ",
   `okato` VARCHAR(11) COMMENT "ОКАТО",
   `oktmo` VARCHAR(8) COMMENT "ОКТМО",
   `updateDate` DATETIME NOT NULL COMMENT "Дата внесения записи",
-  `shortName` VARCHAR(10) NOT NULL COMMENT "Краткое наименование типа объекта",
+  `shortName` VARCHAR(10) COMMENT "Краткое наименование типа объекта",
   `aoLevel` INT(10) NOT NULL COMMENT "Уровень адресного объекта",
   `parentGuid` BINARY(16) COMMENT "Идентификатор объекта родительского объекта",
   `aoId` BINARY(16) NOT NULL COMMENT "Уникальный идентификатор записи. Ключевое поле",
@@ -108,7 +108,7 @@ CREATE TABLE `AddressObject` (
 CREATE TABLE `Landmark` (
   `location` VARCHAR(500) NOT NULL COMMENT "Месторасположение ориентира",
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
-  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
+  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ",
   `terrIfnsFl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ФЛ",
   `ifnsUl` VARCHAR(4) COMMENT "Код ИФНС ЮЛ",
   `terrIfnsUl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ЮЛ",
@@ -127,7 +127,7 @@ CREATE TABLE `Landmark` (
 ) ENGINE = InnoDB, COMMENT "Описание места расположения имущественных объектов";
 CREATE TABLE `HouseInterval` (
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
-  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
+  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ",
   `terrIfnsFl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ФЛ",
   `ifnsUl` VARCHAR(4) COMMENT "Код ИФНС ЮЛ",
   `terrIfnsUl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ЮЛ",
@@ -150,7 +150,7 @@ CREATE TABLE `HouseInterval` (
 ) ENGINE = InnoDB, COMMENT "Интервал домов";
 CREATE TABLE `House` (
   `postalCode` VARCHAR(6) COMMENT "Почтовый индекс",
-  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ.",
+  `ifnsFl` VARCHAR(4) COMMENT "Код ИФНС ФЛ",
   `terrIfnsFl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ФЛ",
   `ifnsUl` VARCHAR(4) COMMENT "Код ИФНС ЮЛ",
   `terrIfnsUl` VARCHAR(4) COMMENT "Код территориального участка ИФНС ЮЛ",
@@ -177,13 +177,6 @@ CREATE TABLE `House` (
   FOREIGN KEY (`statStatus`) REFERENCES `HouseStateStatus` (`houseStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
 ) ENGINE = InnoDB, COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
-
----
-
-ALTER TABLE  `AddressObjectType` 
-  CHANGE  `scName`  `scName` VARCHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL COMMENT  'Краткое наименование типа объекта',
-  CHANGE  `socrName`  `socrName` VARCHAR( 31 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT  'Полное наименование типа объекта',
-  CHANGE  `kodTSt`  `kodTSt` VARCHAR( 4 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT  'Ключевое поле';
 
 ---
 

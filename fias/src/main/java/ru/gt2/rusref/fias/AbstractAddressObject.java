@@ -25,7 +25,7 @@ public abstract class AbstractAddressObject implements Serializable {
     @XmlAttribute(name = "POSTALCODE")
     private String postalCode;
 
-    @Description("Код ИФНС ФЛ.")
+    @Description("Код ИФНС ФЛ")
     @Column(length = 4)
     @Size(min = 4, max = 4)
     @XmlAttribute(name = "IFNSFL")
