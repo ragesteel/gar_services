@@ -24,6 +24,7 @@ import javax.validation.constraints.Size;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,7 @@ public class MySqlTable {
     private final ImmutableList<UniqueConstraint> uniqueKeys;
     private final List<String> lines = Lists.newArrayList();
     private final List<String> primaryKeysFields = Lists.newArrayList();
-    private final Map<List<String>, Fias> foreignKeyReferences = Maps.newLinkedHashMap();
-    private final SetMultimap<Fias, String> nonPkReferences = HashMultimap.create();
+    private final ForeignKeyList foreignKeyList = new ForeignKeyList();
     private final String tableName;
     private final String quotedTableName;
 
@@ -82,12 +82,10 @@ public class MySqlTable {
 
         Preconditions.checkArgument(!primaryKeysFields.isEmpty(), "Primary key field(s) not found");
 
-        addNonPkReferences();
-
-        appendComma = !uniqueKeys.isEmpty() || !foreignKeyReferences.isEmpty();
+        appendComma = !uniqueKeys.isEmpty() || !foreignKeyList.isEmpty();
         createPrimaryKey();
 
-        appendComma = !foreignKeyReferences.isEmpty();
+        appendComma = !foreignKeyList.isEmpty();
         createUniqueKeys();
 
         createForeignKeys();
@@ -159,37 +157,8 @@ public class MySqlTable {
             primaryKeysFields.add(fieldName);
         }
 
-        FiasRef fiasRef = field.getAnnotation(FiasRef.class);
-        if (null != fiasRef) {
-            Fias target = getTargetFias(fiasRef);
-            Preconditions.checkNotNull(target, "Unable to identify target class for reference field: {0}", field);
-            String targetFieldName = fiasRef.fieldName();
-            if (Strings.isNullOrEmpty(targetFieldName)) {
-                foreignKeyReferences.put(
-                        Collections.singletonList(fieldName),
-                        target);
-            } else {
-                nonPkReferences.put(target, targetFieldName);
-            }
-        }
+        foreignKeyList.addToList(field);
     }
-
-    private void addNonPkReferences() {
-        // FIXME Доделать: нужно сохранять пары исходное поле/целевое поле, а потом находить подходящий unique
-        /*
-        for (Fias fias : nonPkReferences.keySet()) {
-            Set<String> strings = nonPkReferences.get(fias);
-            foreignKeyReferences.put(fias, strings);
-        }
-        Multiset<Fias> keys = nonPkReferences.keys();
-        for (Map.Entry<Fias, > entry : nonPkReferences.entries()) {
-
-        }
-        */
-        //To change body of created methods use File | Settings | File Templates.
-    }
-
-
 
     protected void createPrimaryKey() {
         StringBuilder line = new StringBuilder("  PRIMARY KEY (");
@@ -202,7 +171,7 @@ public class MySqlTable {
     }
 
     private void createUniqueKeys() {
-        int commasToAppend = foreignKeyReferences.size() - 1;
+        int commasToAppend = uniqueKeys.size() - 1;
         if (appendComma) {
             commasToAppend++;
         }
@@ -222,17 +191,21 @@ public class MySqlTable {
     }
 
     protected void createForeignKeys() {
-        int commasToAppend = foreignKeyReferences.size() - 1;
-        for (Map.Entry<List<String>, Fias> foreignKeyReference : foreignKeyReferences.entrySet()) {
+        int commasToAppend = foreignKeyList.size() - 1;
+        for (ForeignKeyList.ForeignKey foreignKey : foreignKeyList) {
             // FIXME Имена для индексов
             StringBuilder line = new StringBuilder("  FOREIGN KEY (");
-            String joinedForeignKeyFields = quoteAndJoinIdentifiers(foreignKeyReference.getKey());
-            line.append(joinedForeignKeyFields);
+
+            Map<String, String> orderTargetBySource = foreignKey.getOrderTargetBySource();
+            Iterable<String> sourceFields = orderTargetBySource.values();
+            Iterable<String> targetFields = orderTargetBySource.keySet();
+
+            line.append(quoteAndJoinIdentifiers(sourceFields));
             line.append(") REFERENCES ");
-            Fias reference = foreignKeyReference.getValue();
-            line.append(QUOTE_IDENTIFIER.apply(getTableName(reference)));
+            Fias reference = foreignKey.getTargetTable();
+            line.append(getQuotedTableName(reference));
             line.append(" (");
-            line.append(QUOTE_IDENTIFIER.apply(reference.idField.getName()));
+            line.append(quoteAndJoinIdentifiers(targetFields));
             line.append(")");
             if (commasToAppend > 0) {
                 line.append(',');

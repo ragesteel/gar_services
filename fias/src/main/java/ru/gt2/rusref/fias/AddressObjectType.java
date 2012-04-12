@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Description("Тип адресного объекта")
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"level", "scName"})})
+        @UniqueConstraint(name = "AddressObjectLevelAndName", columnNames = {"level", "scName"})})
 @XmlType(propOrder = {"level", "scName", "socrName", "kodTSt"})
 public class AddressObjectType implements Serializable {
     @Description("Уровень адресного объекта")

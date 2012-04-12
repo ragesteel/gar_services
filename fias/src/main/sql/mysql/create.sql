@@ -120,6 +120,7 @@ CREATE TABLE `AddressObject` (
   `endDate` DATETIME NOT NULL COMMENT "Окончание действия записи",
   `normDoc` BINARY(16) COMMENT "Внешний ключ на нормативный документ",
   PRIMARY KEY (`aoId`),
+  FOREIGN KEY (`aoLevel`, `shortName`) REFERENCES `AddressObjectType` (`level`, `scName`),
   FOREIGN KEY (`parentGuid`) REFERENCES `AddressObjectGuid` (`aoGuid`),
   FOREIGN KEY (`prevId`) REFERENCES `AddressObject` (`aoId`),
   FOREIGN KEY (`nextId`) REFERENCES `AddressObject` (`aoId`),

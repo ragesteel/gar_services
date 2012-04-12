@@ -108,7 +108,7 @@ public class AddressObject extends AbstractAddressObject {
     private String offName;
 
     @Description("Краткое наименование типа объекта")
-    @FiasRef(value = AddressObjectType.class, fieldName = "scName")
+    @FiasRef(value = AddressObjectType.class, fieldName = "scName", constraintName = "AddressObjectLevelAndName")
     // WAS @Column(nullable = false, length = 10)
     @Column(length = 10)
     // WAS @NotNull
@@ -118,7 +118,7 @@ public class AddressObject extends AbstractAddressObject {
     private String shortName;
 
     @Description("Уровень адресного объекта")
-    @FiasRef(value = AddressObjectType.class, fieldName = "level")
+    @FiasRef(value = AddressObjectType.class, fieldName = "level", constraintName = "AddressObjectLevelAndName")
     @Column(nullable = false, scale = 10)
     @NotNull
     @Digits(integer = 10, fraction = 0)
