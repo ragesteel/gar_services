@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import ru.gt2.rusref.CsvWriter;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
-import ru.gt2.rusref.Joiners;
 import ru.gt2.rusref.fias.Fias;
 
 import javax.annotation.Nullable;
@@ -15,7 +14,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;

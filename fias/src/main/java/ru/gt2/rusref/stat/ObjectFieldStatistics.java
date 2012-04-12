@@ -3,7 +3,6 @@ package ru.gt2.rusref.stat;
 import lombok.Getter;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
-import ru.gt2.rusref.Joiners;
 
 import javax.annotation.Nullable;
 import java.io.PrintStream;
@@ -11,7 +10,6 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Date;
 
 /**
  * Статистика по полю.

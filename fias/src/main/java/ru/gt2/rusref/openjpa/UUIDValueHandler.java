@@ -1,7 +1,5 @@
 package ru.gt2.rusref.openjpa;
 
-import java.util.UUID;
-
 import org.apache.openjpa.jdbc.identifier.DBIdentifier;
 import org.apache.openjpa.jdbc.kernel.JDBCStore;
 import org.apache.openjpa.jdbc.meta.JavaSQLTypes;
@@ -10,6 +8,8 @@ import org.apache.openjpa.jdbc.meta.strats.AbstractValueHandler;
 import org.apache.openjpa.jdbc.schema.Column;
 import org.apache.openjpa.jdbc.schema.ColumnIO;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
+
+import java.util.UUID;
 
 public class UUIDValueHandler extends AbstractValueHandler {
     @Override

@@ -1,10 +1,10 @@
 package ru.gt2.rusref;
 
-import org.apache.openjpa.persistence.jdbc.Strategy;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 import ru.gt2.rusref.fias.FiasRef;
 import ru.gt2.rusref.stat.DateFieldStatistics;
 import ru.gt2.rusref.stat.IntegerFieldStatistics;
