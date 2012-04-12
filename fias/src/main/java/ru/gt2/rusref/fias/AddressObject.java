@@ -24,8 +24,6 @@ public class AddressObject extends AbstractAddressObject {
      * Да и положено так, чтобы внутри AddressObjects были именно AddressObject'ы, а не просто Object'ы.
      */
 
-    // FIXME Передвинуть первичный ключ на aoId, а для ключей похоже придётся создавать отдельную таблицу,
-    // вроде AddressObjectGuid и делать на нём Foreign Key.
     @Description("Глобальный уникальный идентификатор адресного объекта")
     @Column(nullable = false)
     @NotNull
