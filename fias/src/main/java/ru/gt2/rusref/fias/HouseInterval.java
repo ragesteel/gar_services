@@ -31,13 +31,13 @@ public class HouseInterval extends AbstractHouse {
     private Integer intEnd;
 
     @Description("Иидентификатор записи интервала домов")
+    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "HOUSEINTID", required = true)
     private UUID houseIntId;
     
     @Description("Глобальный уникальный идентификатор интервала домов")
-    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "INTGUID", required = true)

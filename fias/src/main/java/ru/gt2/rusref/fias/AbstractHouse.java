@@ -16,7 +16,7 @@ import java.util.UUID;
 @XmlTransient
 public abstract class AbstractHouse extends AbstractAddressObject {
     @Description("Уникальный идентификатор родителшьского объекта (улицы, города, населенного пункта и т.п.)")
-    @FiasRef(AddressObject.class)
+    @FiasRef(AddressObjectGuid.class)
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)

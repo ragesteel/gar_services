@@ -5,6 +5,8 @@ import ru.gt2.rusref.Description;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,9 +16,12 @@ import java.io.Serializable;
 
 @Description("Тип адресного объекта")
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"level", "scName"})})
 @XmlType(propOrder = {"level", "scName", "socrName", "kodTSt"})
 public class AddressObjectType implements Serializable {
     @Description("Уровень адресного объекта")
+    @FiasRef(AddressObjectLevel.class)
     @Column(nullable = false, scale = 10)
     @NotNull
     @Digits(integer = 10, fraction = 0)

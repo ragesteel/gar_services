@@ -3,8 +3,15 @@ package ru.gt2.rusref.ddl;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
 import ru.gt2.rusref.Description;
 import ru.gt2.rusref.FieldType;
 import ru.gt2.rusref.Joiners;
@@ -14,25 +21,34 @@ import ru.gt2.rusref.fias.FiasRef;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Создание MySQL-таблицы.
- * FIXME Добавить метод для записи LOAD DATA команды с учётом того, что для GUID нужно делать UNHEX.
+ * FIXME Unique индексы.
+ * FIXME Обработка нескольких FiasRef как один индекс (например ссылка на таблицу сохращени из AddressObject.
  *
  * Конечно, если это будет развиваться, нужно будет извлечь базовый класс и всякое такое.
  */
 public class MySqlTable {
     private final Fias fias;
+    private final ImmutableList<UniqueConstraint> uniqueKeys;
     private final List<String> lines = Lists.newArrayList();
     private final List<String> primaryKeysFields = Lists.newArrayList();
     private final Map<List<String>, Fias> foreignKeyReferences = Maps.newLinkedHashMap();
+    private final SetMultimap<Fias, String> nonPkReferences = HashMultimap.create();
     private final String tableName;
+    private final String quotedTableName;
 
     private Field field;
     private String fieldName;
@@ -52,7 +68,14 @@ public class MySqlTable {
 
     public MySqlTable(Fias fias) {
         this.fias = fias;
+        Table table = fias.item.getAnnotation(Table.class);
+        if (null == table) {
+            uniqueKeys = ImmutableList.of();
+        } else {
+            uniqueKeys = ImmutableList.copyOf(table.uniqueConstraints());
+        }
         tableName = getTableName(fias);
+        quotedTableName = getQuotedTableName(fias);
     }
 
     public void createTable() {
@@ -64,8 +87,13 @@ public class MySqlTable {
 
         Preconditions.checkArgument(!primaryKeysFields.isEmpty(), "Primary key field(s) not found");
 
-        appendComma = !foreignKeyReferences.isEmpty();
+        addNonPkReferences();
+
+        appendComma = !uniqueKeys.isEmpty() || !foreignKeyReferences.isEmpty();
         createPrimaryKey();
+
+        appendComma = !foreignKeyReferences.isEmpty();
+        createUniqueKeys();
 
         createForeignKeys();
 
@@ -79,16 +107,31 @@ public class MySqlTable {
 
         loadDataFields();
 
-        lines.add("COMMIT;");
+        commit();
 
         printLines();
     }
 
-    public void beginCreateTable() {
-        lines.add("CREATE TABLE " + QUOTE_IDENTIFIER.apply(tableName) + " (");
+    public void insertSelect() {
+        lines.add("INSERT INTO " + quotedTableName);
+        FiasRef fiasRef = fias.item.getAnnotation(FiasRef.class);
+        Preconditions.checkNotNull(fiasRef, "@FiasRef not found on class: {0}", fias.item);
+        Fias target = getTargetFias(fiasRef);
+        Preconditions.checkNotNull(target, "Unable to identify target class for reference: {0}", fias);
+
+        lines.add("  SELECT DISTINCT " + QUOTE_IDENTIFIER.apply(fiasRef.fieldName())
+                + " FROM " + getQuotedTableName(target) + ";");
+
+        commit();
+
+        printLines();
     }
 
-    public void endCreateTable() {
+    protected void beginCreateTable() {
+        lines.add("CREATE TABLE " + quotedTableName + " (");
+    }
+
+    protected void endCreateTable() {
         StringBuilder line = new StringBuilder(") ENGINE = InnoDB,");
         boolean hasComment = appendComment(line, fias.item);
         if (!hasComment) {
@@ -98,7 +141,7 @@ public class MySqlTable {
         lines.add(line.toString());
     }
 
-    public void createField() {
+    protected void createField() {
         StringBuilder line = new StringBuilder("  ");
         line.append(QUOTE_IDENTIFIER.apply(fieldName));
         line.append(' ');
@@ -119,15 +162,37 @@ public class MySqlTable {
 
         FiasRef fiasRef = field.getAnnotation(FiasRef.class);
         if (null != fiasRef) {
-            Fias target = Fias.FROM_ITEM_CLASS.get(fiasRef.value());
+            Fias target = getTargetFias(fiasRef);
             Preconditions.checkNotNull(target, "Unable to identify target class for reference field: {0}", field);
-            foreignKeyReferences.put(
-                    Collections.singletonList(fieldName),
-                    target);
+            String targetFieldName = fiasRef.fieldName();
+            if (Strings.isNullOrEmpty(targetFieldName)) {
+                foreignKeyReferences.put(
+                        Collections.singletonList(fieldName),
+                        target);
+            } else {
+                nonPkReferences.put(target, targetFieldName);
+            }
         }
     }
 
-    public void createPrimaryKey() {
+    private void addNonPkReferences() {
+        // FIXME Доделать: нужно сохранять пары исходное поле/целевое поле, а потом находить подходящий unique
+        /*
+        for (Fias fias : nonPkReferences.keySet()) {
+            Set<String> strings = nonPkReferences.get(fias);
+            foreignKeyReferences.put(fias, strings);
+        }
+        Multiset<Fias> keys = nonPkReferences.keys();
+        for (Map.Entry<Fias, > entry : nonPkReferences.entries()) {
+
+        }
+        */
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+
+
+    protected void createPrimaryKey() {
         StringBuilder line = new StringBuilder("  PRIMARY KEY (");
         line.append(quoteAndJoinIdentifiers(primaryKeysFields));
         line.append(')');
@@ -137,7 +202,27 @@ public class MySqlTable {
         lines.add(line.toString());
     }
 
-    public void createForeignKeys() {
+    private void createUniqueKeys() {
+        int commasToAppend = foreignKeyReferences.size() - 1;
+        if (appendComma) {
+            commasToAppend++;
+        }
+        for (UniqueConstraint uniqueKey : uniqueKeys) {
+            // FIXME Имена для индексов
+            StringBuilder line = new StringBuilder("  UNIQUE KEY (");
+            String joinedForeignKeyFields = quoteAndJoinIdentifiers(
+                    Arrays.asList(uniqueKey.columnNames()));
+            line.append(joinedForeignKeyFields);
+            line.append(")");
+            if (commasToAppend > 0) {
+                line.append(',');
+            }
+            lines.add(line.toString());
+            commasToAppend--;
+        }
+    }
+
+    protected void createForeignKeys() {
         int commasToAppend = foreignKeyReferences.size() - 1;
         for (Map.Entry<List<String>, Fias> foreignKeyReference : foreignKeyReferences.entrySet()) {
             // FIXME Имена для индексов
@@ -158,16 +243,16 @@ public class MySqlTable {
         }
     }
 
-    private void loadDataCommand() {
+    protected void loadDataCommand() {
         lines.add("LOAD DATA LOCAL INFILE '" + tableName + ".csv'");
-        lines.add("  INTO TABLE " + QUOTE_IDENTIFIER.apply(tableName));
+        lines.add("  INTO TABLE " + quotedTableName);
         lines.add("  FIELDS");
         lines.add("    TERMINATED BY '\\t'");
         lines.add("    OPTIONALLY ENCLOSED BY '\"'");
         lines.add("    ESCAPED BY '\\\\'");
     }
 
-    private void loadDataFields() {
+    protected void loadDataFields() {
         boolean hasUnhex = false;
         StringBuilder fieldLine = new StringBuilder("  (");
         StringBuilder unhexLine = new StringBuilder("    ");
@@ -196,7 +281,7 @@ public class MySqlTable {
         lines.add(";");
     }
 
-    private String getType() {
+    protected String getType() {
         switch (fieldType) {
             case INTEGER:
                 int scale = column.scale();
@@ -218,7 +303,7 @@ public class MySqlTable {
         }
     }
 
-    private boolean appendComment(StringBuilder line, AnnotatedElement element) {
+    protected boolean appendComment(StringBuilder line, AnnotatedElement element) {
         String comment = getDescription(element);
         if (Strings.isNullOrEmpty(comment)) {
             return false;
@@ -228,7 +313,11 @@ public class MySqlTable {
         return true;
     }
 
-    private void setField(Field field) {
+    protected void commit() {
+        lines.add("COMMIT;");
+    }
+
+    protected void setField(Field field) {
         this.field = field;
         fieldName = field.getName();
         fieldType = FieldType.FROM_TYPE.get(field.getType());
@@ -237,11 +326,20 @@ public class MySqlTable {
         Preconditions.checkNotNull(column, "Column annotation is not set");
     }
 
-    private static String getTableName(Fias fias) {
+    protected static Fias getTargetFias(FiasRef fiasRef) {
+        Fias target = Fias.FROM_ITEM_CLASS.get(fiasRef.value());
+        return target;
+    }
+
+    protected static String getTableName(Fias fias) {
         return fias.item.getSimpleName();
     }
 
-    private static String getDescription(AnnotatedElement element) {
+    protected static String getQuotedTableName(Fias fias) {
+        return QUOTE_IDENTIFIER.apply(getTableName(fias));
+    }
+
+    protected static String getDescription(AnnotatedElement element) {
         Description description = element.getAnnotation(Description.class);
         return (null == description) ? null : description.value();
     }
@@ -251,22 +349,23 @@ public class MySqlTable {
         return '"' + literal + '"';
     }
 
-    protected String quoteAndJoinIdentifiers(List<String> identifiers) {
+    protected String quoteAndJoinIdentifiers(Iterable<String> identifiers) {
         return Joiners.COMMA_SEPARATED.join(
-                Lists.transform(identifiers, QUOTE_IDENTIFIER));
+                Iterables.transform(identifiers, QUOTE_IDENTIFIER));
     }
 
-    private void printLines() {
+    protected void printLines() {
         for (String line : lines) {
             System.out.println(line);
         }
+        System.out.println();
     }
 
-    private static void deleteLastChar(StringBuilder line) {
+    protected static void deleteLastChar(StringBuilder line) {
         line.deleteCharAt(line.length() - 1);
     }
 
-    private static void deleteTwoLastChars(StringBuilder line) {
+    protected static void deleteTwoLastChars(StringBuilder line) {
         int length = line.length();
         line.delete(length - 2, length);
     }

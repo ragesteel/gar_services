@@ -52,13 +52,13 @@ public class House extends AbstractHouse {
     private Integer strStatus;
 
     @Description("Уникальный идентификатор записи дома")
+    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "HOUSEID", required = true)
     private UUID houseId;
     
     @Description("Глобальный уникальный идентификатор дома")
-    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "HOUSEGUID", required = true)

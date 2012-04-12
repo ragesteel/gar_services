@@ -27,7 +27,6 @@ public class AddressObject extends AbstractAddressObject {
     // FIXME Передвинуть первичный ключ на aoId, а для ключей похоже придётся создавать отдельную таблицу,
     // вроде AddressObjectGuid и делать на нём Foreign Key.
     @Description("Глобальный уникальный идентификатор адресного объекта")
-    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "AOGUID", required = true)
@@ -109,6 +108,7 @@ public class AddressObject extends AbstractAddressObject {
     private String offName;
 
     @Description("Краткое наименование типа объекта")
+    @FiasRef(value = AddressObjectType.class, fieldName = "scName")
     // WAS @Column(nullable = false, length = 10)
     @Column(length = 10)
     // WAS @NotNull
@@ -118,7 +118,7 @@ public class AddressObject extends AbstractAddressObject {
     private String shortName;
 
     @Description("Уровень адресного объекта")
-    // FIXME Тут должна быть ссылка на AddressObjectType.level, но он не является ключём.
+    @FiasRef(value = AddressObjectType.class, fieldName = "level")
     @Column(nullable = false, scale = 10)
     @NotNull
     @Digits(integer = 10, fraction = 0)
@@ -126,12 +126,13 @@ public class AddressObject extends AbstractAddressObject {
     private Integer aoLevel;
 
     @Description("Идентификатор объекта родительского объекта")
-    @FiasRef(AddressObject.class)
+    @FiasRef(AddressObjectGuid.class)
     @Column
     @XmlAttribute(name = "PARENTGUID")
     private UUID parentGuid;
 
     @Description("Уникальный идентификатор записи. Ключевое поле")
+    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "AOID", required = true)

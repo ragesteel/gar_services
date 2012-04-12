@@ -5,6 +5,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -17,6 +18,7 @@ import lombok.SneakyThrows;
 import javax.annotation.Nullable;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlType;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -30,11 +32,13 @@ import java.util.Set;
  * Все файлы ФИАС.
  */
 public enum Fias {
+    ADROBJPK(AddressObjectGuid.class),
     ADDROBJ(AddressObjects.class, AddressObject.class, "01"),
     HOUSE(Houses.class, House.class, "02"),
     HOUSEINT(HouseIntervals.class, HouseInterval.class, "03"),
     LANDMARK(Landmarks.class, Landmark.class, "04"),
     NORMDOC(NormativeDocumentes.class, NormativeDocument.class, "05"),
+    ADROBJLV(AddressObjectLevel.class),
     SOCRBASE(AddressObjectTypes.class, AddressObjectType.class, "06"),
     CURENTST(CurrentStatuses.class, CurrentStatus.class, "07"),
     ACTSTAT(ActualStatuses.class, ActualStatus.class, "08"),
@@ -45,6 +49,7 @@ public enum Fias {
     ESTSTAT(EstateStatuses.class, EstateStatus.class, "13"),
     STRSTAT(StructureStatuses.class, StructureStatus.class, "14");
 
+    public final boolean intermediate;
     /** Класс обёртки. */
     public final Class<?> wrapper;
     /** Внутренний класс — сам справочник. */
@@ -60,7 +65,8 @@ public enum Fias {
 
     private static final Predicate<Field> FIAS_REF;
 
-    public static final Function<Field, Fias> FIAS_REF_TARGET;
+    public static final Function<AnnotatedElement, Fias> FIAS_REF_TARGET;
+    public static final Predicate<Fias> FIAS_NOT_ITERMEDIATE;
 
     static {
         FIAS_REF = new Predicate<Field>() {
@@ -70,16 +76,24 @@ public enum Fias {
             }
         };
 
-        FIAS_REF_TARGET = new Function<Field, Fias>() {
+        FIAS_REF_TARGET = new Function<AnnotatedElement, Fias>() {
             @Override
-            public Fias apply(@Nullable Field field) {
-                Preconditions.checkNotNull(field);
-                FiasRef ref = field.getAnnotation(FiasRef.class);
+            public Fias apply(@Nullable AnnotatedElement annotatedElement) {
+                Preconditions.checkNotNull(annotatedElement);
+                FiasRef ref = annotatedElement.getAnnotation(FiasRef.class);
                 Preconditions.checkNotNull(ref);
                 Class<?> targetClass = ref.value();
                 Fias target = Fias.FROM_ITEM_CLASS.get(targetClass);
                 Preconditions.checkNotNull(target);
                 return target;
+            }
+        };
+
+        FIAS_NOT_ITERMEDIATE = new Predicate<Fias>() {
+            @Override
+            public boolean apply(@Nullable Fias fias) {
+                Preconditions.checkNotNull(fias);
+                return !fias.intermediate;
             }
         };
 
@@ -109,12 +123,53 @@ public enum Fias {
         return ImmutableList.copyOf(result);
     }
 
+    public static Set<Fias> orderForCreation() {
+        return orderFor(false);
+    }
+
+    public static Set<Fias> orderForLoading() {
+        return orderFor(true);
+    }
+
+    public Object[] getFieldValues(Object entity) throws IllegalAccessException {
+        int index = 0;
+        Object[] result = new Object[itemFields.size()];
+        for (Field field : itemFields) {
+            result[index] = field.get(entity);
+            index++;
+        }
+        return result;
+    }
+
+    public ImmutableSet<Object> getNotNullFieldValues(final Object entity, Iterable<Field> fields) {
+        Iterable<Object> values = Iterables.transform(fields, new Function<Field, Object>() {
+            @Override
+            @SneakyThrows
+            public Object apply(@Nullable Field field) {
+                Preconditions.checkNotNull(field);
+                return field.get(entity);
+            }
+        });
+
+        Iterable<Object> notNullValues = Iterables.filter(values, Predicates.notNull());
+        return ImmutableSet.copyOf(notNullValues);
+    }
+
     private Fias(Class<?> wrapper, Class<?> item, String schemePart) {
         this.wrapper = wrapper;
+        intermediate = null == wrapper;
         this.item = item;
-        this.schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
+        if (!Strings.isNullOrEmpty(schemePart)) {
+            schemePrefix = "AS_" + name() + "_2_250_" + schemePart + "_04_01_";
+        } else {
+            schemePrefix = null;
+        }
         this.itemFields = getAllFields(item);
         this.idField = getId(itemFields);
+    }
+
+    private Fias(Class<?> item) {
+        this(null, item, null);
     }
 
     private static ImmutableList<Field> getAllFields(Class<?> item) {
@@ -183,7 +238,7 @@ public enum Fias {
         return result;
     }
 
-    public static Set<Fias> orderByReferences() {
+    private static Set<Fias> orderFor(boolean loading) {
         // Нужно получить упорядоченный по использованию список
         // Чтобы сначала были все зависимости, а потом уже таблица, которая зависит.
         // Способ такой идём по списку необработанных, проверяем если все зависимости в обработанных
@@ -199,6 +254,15 @@ public enum Fias {
             for (Iterator<Fias> iterator = notProcessed.iterator(); iterator.hasNext(); ) {
                 Fias fias = iterator.next();
                 Iterable<Fias> referenceTargets = Iterables.transform(getReferences(fias), FIAS_REF_TARGET);
+                if (loading) {
+                    if (fias.intermediate) {
+                        Fias refTarget = FIAS_REF_TARGET.apply(fias.item);
+                        referenceTargets = Iterables.concat(referenceTargets, Collections.singleton(refTarget));
+                    } else {
+                        referenceTargets = Iterables.filter(referenceTargets, FIAS_NOT_ITERMEDIATE);
+                    }
+                }
+
                 ImmutableSet<Fias> references = ImmutableSet.copyOf(referenceTargets);
 
                 Sets.SetView<Fias> notProcessedReferences =
@@ -218,27 +282,4 @@ public enum Fias {
         return result;
     }
 
-    public Object[] getFieldValues(Object entity) throws IllegalAccessException {
-        int index = 0;
-        Object[] result = new Object[itemFields.size()];
-        for (Field field : itemFields) {
-            result[index] = field.get(entity);
-            index++;
-        }
-        return result;
-    }
-
-    public ImmutableSet<Object> getNotNullFieldValues(final Object entity, Iterable<Field> fields) {
-        Iterable<Object> values = Iterables.transform(fields, new Function<Field, Object>() {
-            @Override
-            @SneakyThrows
-            public Object apply(@Nullable Field field) {
-                Preconditions.checkNotNull(field);
-                return field.get(entity);
-            }
-        });
-
-        Iterable<Object> notNullValues = Iterables.filter(values, Predicates.notNull());
-        return ImmutableSet.copyOf(notNullValues);
-    }
 }

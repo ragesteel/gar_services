@@ -31,7 +31,10 @@ public class Main {
                 "Макс длинна"
         );
 
-        for (Fias fias : Fias.orderByReferences()) {
+        for (Fias fias : Fias.orderForLoading()) {
+            if (fias.intermediate) {
+                continue;
+            }
             FiasFilesProcessor fiasFilesProcessor = new FiasFilesProcessor(fias, REPORT);
             fiasFilesProcessor.processFiles("data/2012-03-22-xml");
         }

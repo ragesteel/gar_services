@@ -24,13 +24,13 @@ public class Landmark extends AbstractHouse {
     private String location;
 
     @Description("Уникальный идентификатор записи ориентира")
+    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "LANDID", required = true)
     private UUID landId;
     
     @Description("Глобальный уникальный идентификатор ориентира")
-    @Id
     @Column(nullable = false)
     @NotNull
     @XmlAttribute(name = "LANDGUID", required = true)

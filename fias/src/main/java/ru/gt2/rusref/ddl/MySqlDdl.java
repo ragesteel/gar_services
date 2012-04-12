@@ -7,14 +7,18 @@ import ru.gt2.rusref.fias.Fias;
  */
 public class MySqlDdl {
     public static void main(String... args) {
-        for (Fias fias : Fias.orderByReferences()) {
+        for (Fias fias : Fias.orderForCreation()) {
             MySqlTable table = new MySqlTable(fias);
             table.createTable();
         }
 
-        for (Fias fias : Fias.orderByReferences()) {
+        for (Fias fias : Fias.orderForLoading()) {
             MySqlTable table = new MySqlTable(fias);
-            table.loadData();
+            if (fias.intermediate) {
+                table.insertSelect();
+            } else {
+                table.loadData();
+            }
         }
     }
 
