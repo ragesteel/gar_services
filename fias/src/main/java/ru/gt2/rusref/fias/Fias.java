@@ -37,6 +37,7 @@ public enum Fias {
     HOUSE(Houses.class, House.class, "02"),
     HOUSEINT(HouseIntervals.class, HouseInterval.class, "03"),
     LANDMARK(Landmarks.class, Landmark.class, "04"),
+    NRMDOCTP(NormativeDocumentType.class),
     NORMDOC(NormativeDocumentes.class, NormativeDocument.class, "05"),
     ADROBJLV(AddressObjectLevel.class),
     SOCRBASE(AddressObjectTypes.class, AddressObjectType.class, "06"),

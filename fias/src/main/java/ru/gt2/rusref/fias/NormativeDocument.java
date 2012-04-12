@@ -42,6 +42,7 @@ public class NormativeDocument implements Serializable {
 
     // Где то должна быть расшифовка по типам.
     @Description("Тип документа")
+    @FiasRef(NormativeDocumentType.class)
     @Column(nullable = false, scale = 10)
     @NotNull
     @Digits(integer = 10, fraction = 0)

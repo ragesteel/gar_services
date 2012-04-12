@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Description("Уникальные идентификаторы адресных объектов для ссылок")
-@FiasRef(value = AddressObject.class, fieldName = "aoGuid")
+@FiasRef(AddressObject.class)
 public class AddressObjectGuid {
     @Description("Уникальный идентификатор адресного объекта (улицы, города, населенного пункта и т.п.)")
     @Id

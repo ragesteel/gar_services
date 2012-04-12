@@ -119,7 +119,11 @@ public class MySqlTable {
         Fias target = getTargetFias(fiasRef);
         Preconditions.checkNotNull(target, "Unable to identify target class for reference: {0}", fias);
 
-        lines.add("  SELECT DISTINCT " + QUOTE_IDENTIFIER.apply(fiasRef.fieldName())
+        String targetFieldName = fiasRef.fieldName();
+        if (Strings.isNullOrEmpty(targetFieldName)) {
+            targetFieldName = fias.idField.getName();
+        }
+        lines.add("  SELECT DISTINCT " + QUOTE_IDENTIFIER.apply(targetFieldName)
                 + " FROM " + getQuotedTableName(target) + ";");
 
         commit();

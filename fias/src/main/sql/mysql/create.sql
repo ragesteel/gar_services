@@ -7,6 +7,11 @@ CREATE TABLE `AddressObjectGuid` (
   PRIMARY KEY (`aoGuid`)
 ) ENGINE = InnoDB, COMMENT "Уникальные идентификаторы адресных объектов для ссылок";
 
+CREATE TABLE `NormativeDocumentType` (
+  `docType` INT(10) NOT NULL COMMENT "Тип документа",
+  PRIMARY KEY (`docType`)
+) ENGINE = InnoDB, COMMENT "Тип документа";
+
 CREATE TABLE `NormativeDocument` (
   `normDoc` BINARY(16) NOT NULL COMMENT "Внешний ключ на нормативный документ",
   `docName` TEXT COMMENT "Наименование документа",
@@ -14,7 +19,8 @@ CREATE TABLE `NormativeDocument` (
   `docNum` VARCHAR(20) COMMENT "Номер документа",
   `docType` INT(10) NOT NULL COMMENT "Тип документа",
   `docImgId` INT(10) COMMENT "Идентификатор образа (внешний ключ)",
-  PRIMARY KEY (`normDoc`)
+  PRIMARY KEY (`normDoc`),
+  FOREIGN KEY (`docType`) REFERENCES `NormativeDocumentType` (`docType`)
 ) ENGINE = InnoDB, COMMENT "Cведения по нормативным документам, являющимся основанием присвоения адресному элементу наименования";
 
 CREATE TABLE `Landmark` (
@@ -38,12 +44,19 @@ CREATE TABLE `Landmark` (
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
 ) ENGINE = InnoDB, COMMENT "Описание места расположения имущественных объектов";
 
+CREATE TABLE `AddressObjectLevel` (
+  `level` INT(10) NOT NULL COMMENT "Уровень адресного объекта",
+  PRIMARY KEY (`level`)
+) ENGINE = InnoDB, COMMENT "Уровень адресного объекта";
+
 CREATE TABLE `AddressObjectType` (
   `level` INT(10) NOT NULL COMMENT "Уровень адресного объекта",
   `scName` VARCHAR(10) COMMENT "Краткое наименование типа объекта",
   `socrName` VARCHAR(31) NOT NULL COMMENT "Полное наименование типа объекта",
   `kodTSt` VARCHAR(4) NOT NULL COMMENT "Ключевое поле",
-  PRIMARY KEY (`kodTSt`)
+  PRIMARY KEY (`kodTSt`),
+  UNIQUE KEY (`level`, `scName`),
+  FOREIGN KEY (`level`) REFERENCES `AddressObjectLevel` (`level`)
 ) ENGINE = InnoDB, COMMENT "Тип адресного объекта";
 
 CREATE TABLE `CurrentStatus` (
@@ -196,16 +209,3 @@ CREATE TABLE `House` (
   FOREIGN KEY (`statStatus`) REFERENCES `HouseStateStatus` (`houseStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
 ) ENGINE = InnoDB, COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
-
----
-
---CREATE TABLE `AddressObjectLevel` (
---  `level` INT(10) NOT NULL COMMENT 'Уровень',
---  PRIMARY KEY (`level`)
---) ENGINE = InnoDB, COMMENT 'Уровни адресных объектов';
-
--- INSERT INTO `AddressObjectLevel` SELECT DISTINCT `level` FROM `AddressObjectType`;
--- ALTER TABLE `AddressObjectType` ADD FOREIGN KEY (`level`)   REFERENCES `AddressObjectLevel` (`level`);
--- ALTER TABLE `AddressObject`     ADD FOREIGN KEY (`aoLevel`) REFERENCES `AddressObjectLevel` (`level`);
-
--- FIXME Уникальный индекс (level, scName) и FOREIGN KEY из AddressObject'а.

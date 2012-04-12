@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 
 @Description("Уровень адресного объекта")
-@FiasRef(value = AddressObjectType.class, fieldName = "level")
+@FiasRef(AddressObjectType.class)
 public class AddressObjectLevel {
     @Description("Уровень адресного объекта")
     @Id

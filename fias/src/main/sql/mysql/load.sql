@@ -1,8 +1,4 @@
 -- mysql --user=root --show-warnings --local fias
--- StructureStatus.csv ActualStatus.csv IntervalStatus.csv EstateStatus.csv CenterStatus.csv OperationStatus.csv
--- HouseStateStatus.csv CurrentStatus.csv AddressObjectType.csv NormativeDocument.csv AddressObject.csv Landmark.csv
--- HouseInterval.csv House.csv
-
 -- http://dev.mysql.com/doc/refman/5.5/en/optimizing-innodb-bulk-data-loading.html
 SET autocommit = 0, foreign_key_checks = 0;
 
@@ -30,6 +26,10 @@ LOAD DATA LOCAL INFILE 'Landmark.csv'
 ;
 COMMIT;
 
+INSERT INTO `NormativeDocumentType`
+  SELECT DISTINCT `docType` FROM `NormativeDocument`;
+COMMIT;
+
 LOAD DATA LOCAL INFILE 'AddressObjectType.csv'
   INTO TABLE `AddressObjectType`
   FIELDS
@@ -38,6 +38,10 @@ LOAD DATA LOCAL INFILE 'AddressObjectType.csv'
     ESCAPED BY '\\'
   (`level`, `scName`, `socrName`, `kodTSt`)
 ;
+COMMIT;
+
+INSERT INTO `AddressObjectLevel`
+  SELECT DISTINCT `level` FROM `AddressObjectType`;
 COMMIT;
 
 LOAD DATA LOCAL INFILE 'CurrentStatus.csv'
