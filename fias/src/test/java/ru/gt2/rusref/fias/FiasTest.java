@@ -1,6 +1,9 @@
 package ru.gt2.rusref.fias;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -24,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -70,6 +74,14 @@ public class FiasTest {
         }
     };
 
+    private static Predicate<Fias> NOT_INTERMEDIATE = new Predicate<Fias>() {
+        @Override
+        public boolean apply(@Nullable Fias fias) {
+            Preconditions.checkNotNull(fias);
+            return !fias.intermediate;
+        }
+    };
+
     /**
      * Проверка налаичия всех полей в propOrder и propOrder на укакзания на поля.
      * Дубликаты propOrder также нужно удалять.
@@ -103,7 +115,7 @@ public class FiasTest {
 
     @Test
     public void testSchemeNames() {
-        for (Fias fias : Fias.values()) {
+        for (Fias fias : notItermediate()) {
             String scheme = SCHEME_BY_FIAS.get(fias);
             Assert.assertNotNull(scheme);
             String schemePrefix = scheme.substring(0, scheme.length() - 2);
@@ -130,7 +142,7 @@ public class FiasTest {
 
     @Test
     public void testWrapperHasContainer() {
-        for (Fias fias : Fias.values()) {
+        for (Fias fias : notItermediate()) {
             testWrapperHasContainer(fias);
         }
     }
@@ -160,13 +172,15 @@ public class FiasTest {
 
     private void testFieldsNullable(Fias fias) {
         for (Field field : fias.itemFields) {
-            XmlAttribute xmlAttribute = field.getAnnotation(XmlAttribute.class);
-            Assert.assertNotNull(xmlAttribute);
             NotNull notNull = field.getAnnotation(NotNull.class);
-            if (xmlAttribute.required()) {
-                Assert.assertNotNull("Field " + field + " is required, must be notNull", notNull);
-            } else {
-                Assert.assertNull(notNull);
+            if (!fias.intermediate) {
+                XmlAttribute xmlAttribute = field.getAnnotation(XmlAttribute.class);
+                Assert.assertNotNull(xmlAttribute);
+                if (xmlAttribute.required()) {
+                    Assert.assertNotNull("Field " + field + " is required, must be notNull", notNull);
+                } else {
+                    Assert.assertNull(notNull);
+                }
             }
             
             Id id = field.getAnnotation(Id.class);
@@ -178,11 +192,11 @@ public class FiasTest {
 
     private void testFieldsConstrainsByType(Fias fias) {
         for (Field field : fias.itemFields) {
-            testFieldConstrainsByType(field);
+            testFieldConstrainsByType(fias, field);
         }
     }
 
-    private void testFieldConstrainsByType(Field field) {
+    private void testFieldConstrainsByType(Fias fias, Field field) {
         Class<?> type = field.getType();
         FieldType fieldType = FieldType.FROM_TYPE.get(type);
         Assert.assertNotNull("Type " + type + " does not contains in supported types",
@@ -191,6 +205,11 @@ public class FiasTest {
         ImmutableSet<Class<? extends Annotation>> annotationClasses = ImmutableSet.copyOf(
                 (Iterables.transform(Arrays.asList(annotations), ANNOTATION_CLASS)));
         ImmutableSet<Class<? extends Annotation>> requiredAnnotations = fieldType.required;
+        if (fias.intermediate) {
+            requiredAnnotations = ImmutableSet.copyOf(
+                    Sets.difference(requiredAnnotations, Collections.singleton(XmlAttribute.class)));
+        }
+
         Sets.SetView<Class<? extends Annotation>> intersectionWithRequired =
                 Sets.intersection(requiredAnnotations, annotationClasses);
         Assert.assertEquals("Field " + field + " missing required annotations " +
@@ -248,9 +267,26 @@ public class FiasTest {
 
     private void testReferenceTypes(Fias fias) {
         for (Field field : Fias.getReferences(fias)) {
+            FiasRef fiasRef = field.getAnnotation(FiasRef.class);
             Fias fiasTarget = Fias.FIAS_REF_TARGET.apply(field);
-            Assert.assertEquals("Reference (" + field + ") and id field must be of the same type",
-                    fiasTarget.idField.getType(), field.getType());
+            final String fieldName = fiasRef.fieldName();
+            if (Strings.isNullOrEmpty(fieldName)) {
+                Assert.assertEquals("Reference (" + field + ") and id field must be of the same type",
+                        fiasTarget.idField.getType(), field.getType());
+                continue;
+            }
+
+            Field targetField = Iterables.find(fiasTarget.itemFields, new Predicate<Field>() {
+                @Override
+                public boolean apply(@Nullable Field input) {
+                    Preconditions.checkNotNull(input);
+                    return fieldName.equals(input.getName());
+                }
+            });
+
+            Assert.assertEquals("Reference (" + field + ") and field " + fieldName + " must be of the same type",
+                    targetField.getType(), field.getType());
+
         }
     }
 
@@ -278,9 +314,15 @@ public class FiasTest {
             Annotation annotation = item.getAnnotation(requiredAnnotation);
             Assert.assertNotNull(item + " must have @" + requiredAnnotation.getSimpleName(), annotation);
         }
+
+        // FIXME Добавить проверку на «лишние» аннотации.
     }
 
     // internals
+
+    private Iterable<Fias> notItermediate() {
+        return Iterables.filter(Arrays.asList(Fias.values()), NOT_INTERMEDIATE);
+    }
 
     private String[] getPropOrder(Fias fias) {
         Class<?> item = fias.item;

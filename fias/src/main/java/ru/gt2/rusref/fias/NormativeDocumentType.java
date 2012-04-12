@@ -3,9 +3,12 @@ package ru.gt2.rusref.fias;
 import ru.gt2.rusref.Description;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
  * Типы номативных документов.
@@ -14,7 +17,9 @@ import javax.validation.constraints.NotNull;
  */
 @Description("Тип документа")
 @FiasRef(NormativeDocument.class)
-public class NormativeDocumentType {
+@Entity
+@XmlType(propOrder = {"docType"})
+public class NormativeDocumentType implements Serializable {
     // Где то должна быть расшифовка по типам.
     @Description("Тип документа")
     @Id

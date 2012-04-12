@@ -19,6 +19,9 @@
         <class>ru.gt2.rusref.fias.CenterStatus</class>
         <class>ru.gt2.rusref.fias.AbstractHouse</class>
         <class>ru.gt2.rusref.fias.AbstractAddressObject</class>
+        <class>ru.gt2.rusref.fias.AddressObjectLevel</class>
+        <class>ru.gt2.rusref.fias.AddressObjectGuid</class>
+        <class>ru.gt2.rusref.fias.NormativeDocumentType</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://rsl/fias" />
