@@ -226,7 +226,7 @@ public class MySqlTable {
         boolean hasUnhex = false;
         StringBuilder fieldLine = new StringBuilder("  (");
         StringBuilder unhexLine = new StringBuilder("    ");
-        for (Field field : fias.itemFields) {
+        for (Field field : fias.reorderedItemFields) {
             setField(field);
             String quotedFieldName = QUOTE_IDENTIFIER.apply(fieldName);
             if (FieldType.GUID.equals(fieldType)) {

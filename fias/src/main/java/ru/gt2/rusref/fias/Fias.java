@@ -57,6 +57,8 @@ public enum Fias {
     public final Class<?> item;
     /** Поля справочника. */
     public final ImmutableList<Field> itemFields;
+    /** Поля справочника с первичным ключём в первом поля — для загрузки данных с GUID'ами. */
+    public final ImmutableList<Field> reorderedItemFields;
     /** Ключевое поле. */
     public final Field idField;
     /** Название файла со схемой. */
@@ -132,10 +134,10 @@ public enum Fias {
         return orderFor(true);
     }
 
-    public Object[] getFieldValues(Object entity) throws IllegalAccessException {
+    public Object[] getFieldValuesReordered(Object entity) throws IllegalAccessException {
         int index = 0;
-        Object[] result = new Object[itemFields.size()];
-        for (Field field : itemFields) {
+        Object[] result = new Object[reorderedItemFields.size()];
+        for (Field field : reorderedItemFields) {
             result[index] = field.get(entity);
             index++;
         }
@@ -166,6 +168,7 @@ public enum Fias {
             schemePrefix = null;
         }
         this.itemFields = getAllFields(item);
+        this.reorderedItemFields = getAllFieldsReordered(itemFields);
         this.idField = getId(itemFields);
     }
 
@@ -186,12 +189,23 @@ public enum Fias {
         List<Field> fields = Lists.newArrayListWithCapacity(propOrder.length);
         for (String name : propOrder) {
             Field field = fieldByName.get(name);
-            if (null == field) {
-                throw new IllegalArgumentException("Field: " + name + " not found, class " + item);
-            }
+            Preconditions.checkNotNull(field, "Field: {0} not found, class {1}", name, item);
             fields.add(field);
         }
         return ImmutableList.copyOf(fields);
+    }
+
+    private static ImmutableList<Field> getAllFieldsReordered(ImmutableList<Field> fields) {
+        List<Field> result = Lists.newArrayListWithCapacity(fields.size());
+        for (Field field : fields) {
+            Id id = field.getAnnotation(Id.class);
+            if (null != id) {
+                result.add(0, field);
+            } else {
+                result.add(field);
+            }
+        }
+        return ImmutableList.copyOf(result);
     }
 
     private static Map<String, Field> getAllFieldsMap(Class<?> item) {

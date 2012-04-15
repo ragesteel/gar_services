@@ -72,7 +72,7 @@ public class SingleFileProcessor {
             System.out.println("  Warning, primary key is already exists: " + pk);
         }
         primaryKeys.add(pk);
-        csv.writeFields(fias.getFieldValues(entity));
+        csv.writeFields(fias.getFieldValuesReordered(entity));
     }
 
     protected Object getPrimaryKey(Object entity) throws IllegalAccessException {

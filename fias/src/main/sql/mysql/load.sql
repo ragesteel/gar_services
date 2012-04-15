@@ -20,7 +20,7 @@ LOAD DATA LOCAL INFILE 'Landmark.csv'
     TERMINATED BY '\t'
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '\\'
-  (`location`, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, @landId, @landGuid, @aoGuid, `startDate`, `endDate`, @normDoc)
+  (@landId, `location`, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, @landGuid, @aoGuid, `startDate`, `endDate`, @normDoc)
   SET
     `landId` = UNHEX(@landId), `landGuid` = UNHEX(@landGuid), `aoGuid` = UNHEX(@aoGuid), `normDoc` = UNHEX(@normDoc)
 ;
@@ -36,7 +36,7 @@ LOAD DATA LOCAL INFILE 'AddressObjectType.csv'
     TERMINATED BY '\t'
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '\\'
-  (`level`, `scName`, `socrName`, `kodTSt`)
+  (`kodTSt`, `level`, `scName`, `socrName`)
 ;
 COMMIT;
 
@@ -90,9 +90,9 @@ LOAD DATA LOCAL INFILE 'AddressObject.csv'
     TERMINATED BY '\t'
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '\\'
-  (@aoGuid, `formalName`, `regionCode`, `autoCode`, `areaCode`, `cityCode`, `ctarCode`, `placeCode`, `streetCode`, `extrCode`, `sextCode`, `offName`, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `shortName`, `aoLevel`, @parentGuid, @aoId, @prevId, @nextId, `code`, `plainCode`, `actStatus`, `centStatus`, `operStatus`, `currStatus`, `startDate`, `endDate`, @normDoc)
+  (@aoId, @aoGuid, `formalName`, `regionCode`, `autoCode`, `areaCode`, `cityCode`, `ctarCode`, `placeCode`, `streetCode`, `extrCode`, `sextCode`, `offName`, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `shortName`, `aoLevel`, @parentGuid, @prevId, @nextId, `code`, `plainCode`, `actStatus`, `centStatus`, `operStatus`, `currStatus`, `startDate`, `endDate`, @normDoc)
   SET
-    `aoGuid` = UNHEX(@aoGuid), `parentGuid` = UNHEX(@parentGuid), `aoId` = UNHEX(@aoId), `prevId` = UNHEX(@prevId), `nextId` = UNHEX(@nextId), `normDoc` = UNHEX(@normDoc)
+    `aoId` = UNHEX(@aoId), `aoGuid` = UNHEX(@aoGuid), `parentGuid` = UNHEX(@parentGuid), `prevId` = UNHEX(@prevId), `nextId` = UNHEX(@nextId), `normDoc` = UNHEX(@normDoc)
 ;
 COMMIT;
 
@@ -116,7 +116,7 @@ LOAD DATA LOCAL INFILE 'HouseInterval.csv'
     TERMINATED BY '\t'
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '\\'
-  (`postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `intStart`, `intEnd`, @houseIntId, @intGuid, @aoGuid, `startDate`, `endDate`, `intStatus`, @normDoc)
+  (@houseIntId, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `intStart`, `intEnd`, @intGuid, @aoGuid, `startDate`, `endDate`, `intStatus`, @normDoc)
   SET
     `houseIntId` = UNHEX(@houseIntId), `intGuid` = UNHEX(@intGuid), `aoGuid` = UNHEX(@aoGuid), `normDoc` = UNHEX(@normDoc)
 ;
@@ -158,7 +158,7 @@ LOAD DATA LOCAL INFILE 'House.csv'
     TERMINATED BY '\t'
     OPTIONALLY ENCLOSED BY '"'
     ESCAPED BY '\\'
-  (`postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `houseNum`, `estStatus`, `buildNum`, `structNum`, `strStatus`, @houseId, @houseGuid, @aoGuid, `startDate`, `endDate`, `statStatus`, @normDoc, `counter`)
+  (@houseId, `postalCode`, `ifnsFl`, `terrIfnsFl`, `ifnsUl`, `terrIfnsUl`, `okato`, `oktmo`, `updateDate`, `houseNum`, `estStatus`, `buildNum`, `structNum`, `strStatus`, @houseGuid, @aoGuid, `startDate`, `endDate`, `statStatus`, @normDoc, `counter`)
   SET
     `houseId` = UNHEX(@houseId), `houseGuid` = UNHEX(@houseGuid), `aoGuid` = UNHEX(@aoGuid), `normDoc` = UNHEX(@normDoc)
 ;
