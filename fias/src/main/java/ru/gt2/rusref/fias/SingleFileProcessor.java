@@ -38,8 +38,6 @@ public class SingleFileProcessor {
 
     private Unmarshaller unmarshaller;
 
-    private final Set<Object> primaryKeys = new HashSet<Object>();
-
     private Container<?> container;
 
     public SingleFileProcessor(Fias fias, File[] files, CsvWriter report, File target) {
@@ -67,16 +65,7 @@ public class SingleFileProcessor {
     }
 
     protected void writeEntity(Object entity) throws Exception {
-        Object pk = getPrimaryKey(entity);
-        if (primaryKeys.contains(pk)) {
-            System.out.println("  Warning, primary key is already exists: " + pk);
-        }
-        primaryKeys.add(pk);
         csv.writeFields(fias.getFieldValuesReordered(entity));
-    }
-
-    protected Object getPrimaryKey(Object entity) throws IllegalAccessException {
-        return fias.idField.get(entity);
     }
 
     private void beforeProcessing() throws IOException, JAXBException {
