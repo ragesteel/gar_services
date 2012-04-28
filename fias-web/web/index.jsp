@@ -17,7 +17,9 @@
         `parentGuid` IS NULL
         AND `actStatus` = 1
         AND `currStatus` = 0
-    ORDER BY `formalName` ASC
+    ORDER BY
+        `aoLevel` ASC,
+        `formalName` ASC
     </sql:query>
 </c:when>
 <c:otherwise>
@@ -28,8 +30,10 @@
         `parentGuid` = UNHEX(?)
         AND `actStatus` = 1
         AND `currStatus` = 0
-    ORDER BY `formalName` ASC
-        <sql:param value="${param['parent']}" />
+    ORDER BY
+        `aoLevel` ASC,
+        `formalName` ASC
+<sql:param value="${param['parent']}" />
     </sql:query>
 </c:otherwise>
 </c:choose>
