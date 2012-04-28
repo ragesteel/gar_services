@@ -28,8 +28,8 @@ public class FiasFilesProcessor {
 
     private SingleFileProcessor singleFileProcessor;
 
-    public void processFiles(String directoryName) throws IOException, JAXBException {
-        directory = new File(directoryName);
+    public void processFiles(File directory) throws IOException, JAXBException {
+        this.directory = directory;
         findFiles();
         if ((null == files) || (0 == files.length)) {
             return;
