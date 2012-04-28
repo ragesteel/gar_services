@@ -24,9 +24,9 @@
         <class>ru.gt2.rusref.fias.NormativeDocumentType</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://rsl/fias" />
-            <property name="javax.persistence.jdbc.user" value="fias" />
-            <property name="javax.persistence.jdbc.password" value="NnZ5YbRpzHWAebx4" />
+            <property name="javax.persistence.jdbc.url" value="${fias.jdbc.url}" />
+            <property name="javax.persistence.jdbc.user" value="${fias.jdbc.user}" />
+            <property name="javax.persistence.jdbc.password" value="${fias.jdbc.password}" />
 
             <!--
             <property name="openjpa.Log" value="SQL=TRACE, SQLDiag=TRACE, MetaData=TRACE, RunTime=TRACE" />
