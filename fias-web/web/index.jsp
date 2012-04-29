@@ -48,6 +48,17 @@
         `aoLevel` ASC,
         `formalName` ASC
     </sql:query>
+    <sql:query var="houses">
+        <sql:param value="${param['parent']}" />
+    SELECT `house`.*,
+        `estateStatus`.`name` AS `estateStatusName`,
+        `structureStatus`.`name` AS `structureStateName`
+    FROM `house`
+    LEFT JOIN `estateStatus` ON `house`.`estStatus` = `estateStatus`.`estStatId`
+    LEFT JOIN `structureStatus` ON `house`.`strStatus` = `structureStatus`.`strStatId`
+    WHERE
+        `aoGuid` = UNHEX(?)
+    </sql:query>
 </c:otherwise>
 </c:choose>
 <c:if test="${not empty param['parent']}">
@@ -84,10 +95,8 @@
 <c:if test="${addressObjects.rowCount > 0}">
     <table>
         <tr>
-            <th>aoGuid</th>
-            <th>formalName</th>
-            <th>shortName</th>
-            <th>code</th>
+            <th>Название</th>
+            <th>КЛАДР 4.0</th>
         </tr>
         <c:set var="prevLevel" value="" />
         <c:forEach var="_row" items="${addressObjects.rows}">
@@ -98,13 +107,35 @@
             </c:if>
             <c:set var="prevLevel" value="${_row.aoLevel}" />
             <tr>
-                <td>${_row.hexAoGuid}</td>
-                <td><a href="?parent=${_row.hexAoGuid}">${_row.formalName}</a></td>
-                <td>${_row.shortName}</td>
+                <td><a href="?parent=${_row.hexAoGuid}">${_row.formalName} ${_row.shortName}</a></td>
                 <td>${_row.code}</td>
             </tr>
         </c:forEach>
     </table>
+</c:if>
+<c:if test="${not empty param['parent'] and houses.rowCount > 0}">
+<table>
+    <tr>
+        <th>Признак</th>
+        <th>№ дома</th>
+        <th>№ корпуса</th>
+        <th>№ строения</th>
+        <th>Признак</th>
+    </tr>
+    <c:set var="prevLevel" value="" />
+    <c:forEach var="_col" items="${houses.columnNames}">
+        ${_col}
+    </c:forEach>
+    <c:forEach var="_row" items="${houses.rows}">
+        <tr>
+            <td>${_row.estateStatusName}</td>
+            <td>${_row.houseNum}</td>
+            <td>${_row.buildNum}</td>
+            <td>${_row.structNum}</td>
+            <td>${_row.structureStateName}</td>
+        </tr>
+    </c:forEach>
+</table>
 </c:if>
 
 </html>
