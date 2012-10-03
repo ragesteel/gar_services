@@ -50,6 +50,7 @@ public enum Fias {
     ESTSTAT(EstateStatuses.class, EstateStatus.class, "13"),
     STRSTAT(StructureStatuses.class, StructureStatus.class, "14");
 
+    /** Вспомогательный, не содержит данных */
     public final boolean intermediate;
     /** Класс обёртки. */
     public final Class<?> wrapper;

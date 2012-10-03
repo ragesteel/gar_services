@@ -12,9 +12,9 @@ public class SortScript {
                 continue;
             }
             String name = fias.item.getSimpleName();
-            System.out.println("move " + name + ".csv " + name + "-unsorted.csv");
-            System.out.println("sort.exe " + name + "-unsorted.csv /output " + name + ".csv");
-            System.out.println("del " + name + "-unsorted.csv");
+            System.out.println("move " + name + ".csv " + name + "-unsorted.csv && "
+                    + "sort.exe " + name + "-unsorted.csv /output " + name + ".csv && "
+                    + "del " + name + "-unsorted.csv");
         }
     }
 
