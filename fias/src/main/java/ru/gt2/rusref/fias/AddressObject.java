@@ -17,7 +17,8 @@ import java.util.UUID;
 @XmlType(propOrder = {"aoGuid", "formalName", "regionCode", "autoCode", "areaCode", "cityCode", "ctarCode", "placeCode",
     "streetCode", "extrCode", "sextCode", "offName", "postalCode", "ifnsFl", "terrIfnsFl", "ifnsUl", "terrIfnsUl",
     "okato", "oktmo", "updateDate", "shortName", "aoLevel", "parentGuid", "aoId", "prevId", "nextId", "code",
-    "plainCode", "actStatus", "centStatus", "operStatus", "currStatus", "startDate", "endDate", "normDoc"})
+    "plainCode", "actStatus", "centStatus", "operStatus", "currStatus", "startDate", "endDate", "normDoc",
+    "liveStatus"})
 public class AddressObject extends AbstractAddressObject {
     /**
      * Вместо Object сделали AddressObject, т.к. в Java один Object уже есть, чтобы не было путаницы.
@@ -150,13 +151,13 @@ public class AddressObject extends AbstractAddressObject {
 
     @Description("Код адресного объекта одной строкой с признаком актуальности из КЛАДР 4.0")
     @Column(length = 17)
-    @Size(min = 17, max = 17)
+    @Size(min = 0, max = 17)
     @XmlAttribute(name = "CODE")
     private String code;
 
     @Description("Код адресного объекта из КЛАДР 4.0 одной строкой без признака актуальности (последних двух цифр)")
     @Column(length = 15)
-    @Size(min = 15, max = 15)
+    @Size(min = 0, max = 15)
     @XmlAttribute(name = "PLAINCODE")
     private String plainCode;
 
@@ -191,4 +192,11 @@ public class AddressObject extends AbstractAddressObject {
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "CURRSTATUS", required = true)
     private Integer currStatus;
+
+    @Description("Признак действующего адресного объекта")
+    @Column(nullable = false, scale = 1)
+    @NotNull
+    @Digits(integer = 1, fraction = 0)
+    @XmlAttribute(name = "LIVESTATUS", required = true)
+    private Byte liveStatus;
 }

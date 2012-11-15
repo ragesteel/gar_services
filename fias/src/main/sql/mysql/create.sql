@@ -210,3 +210,38 @@ CREATE TABLE `House` (
   FOREIGN KEY (`statStatus`) REFERENCES `HouseStateStatus` (`houseStId`),
   FOREIGN KEY (`normDoc`) REFERENCES `NormativeDocument` (`normDoc`)
 ) ENGINE = InnoDB, COMMENT "Сведения по номерам домов улиц городов и населенных пунктов, номера земельных участков и т.п.";
+
+-- Обновление схемы
+
+ALTER TABLE `AddressObject`
+  MODIFY `updateDate` DATE NOT NULL,
+  MODIFY `startDate` DATE NOT NULL,
+  MODIFY `endDate` DATE NOT NULL,
+  ADD `liveStatus` TINYINT(1) NOT NULL COMMENT "Признак действующего адресного объекта";
+
+ALTER TABLE `House`
+  MODIFY `updateDate` DATE NOT NULL,
+  MODIFY `houseNum` VARCHAR(20),
+  MODIFY `startDate` DATE NOT NULL,
+  MODIFY `endDate` DATE NOT NULL;
+
+ALTER TABLE `HouseInterval`
+  MODIFY `updateDate` DATE NOT NULL,
+  MODIFY `startDate` DATE NOT NULL,
+  MODIFY `endDate` DATE NOT NULL;
+
+ALTER TABLE `IntervalStatus`
+  CHANGE `intStatId` `intvStatId` INT(10) NOT NULL;
+
+ALTER TABLE `Landmark`
+  MODIFY `updateDate` DATE NOT NULL,
+  MODIFY `startDate` DATE NOT NULL,
+  MODIFY `endDate` DATE NOT NULL;
+
+ALTER TABLE `NormativeDocument`
+  MODIFY `docDate` DATE NOT NULL;
+
+ALTER TABLE `AddressObjectType`
+  MODIFY `socrName` VARCHAR(50) NOT NULL;
+
+

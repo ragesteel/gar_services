@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 import ru.gt2.rusref.fias.FiasRef;
+import ru.gt2.rusref.stat.ByteFieldStatistics;
 import ru.gt2.rusref.stat.DateFieldStatistics;
 import ru.gt2.rusref.stat.IntegerFieldStatistics;
 import ru.gt2.rusref.stat.ObjectFieldStatistics;
@@ -31,6 +32,15 @@ import java.util.UUID;
  * Тип поля.
  */
 public enum FieldType {
+    BYTE(Byte.class,
+        Collections.<Class<? extends Annotation>>singleton(Digits.class),
+        Collections.<Class<? extends Annotation>>emptySet()) {
+
+        @Override
+        public ByteFieldStatistics createFieldStatistics(Field field) {
+            return new ByteFieldStatistics(field, this);
+        }
+    },
     INTEGER(Integer.class,
         Collections.<Class<? extends Annotation>>singleton(Digits.class),
         ImmutableSet.of(Id.class, FiasRef.class)) {

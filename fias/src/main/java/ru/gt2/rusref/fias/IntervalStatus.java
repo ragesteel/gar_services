@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 @Description("Статус интервалов домов")
 @Entity
-@XmlType(propOrder = {"intStatId", "name"})
+@XmlType(propOrder = {"intvStatId", "name"})
 public class IntervalStatus implements Serializable {
     @Description("Идентификатор статуса")
     @Id
@@ -22,7 +22,7 @@ public class IntervalStatus implements Serializable {
     @NotNull
     @Digits(integer = 10, fraction = 0)
     @XmlAttribute(name = "INTVSTATID", required = true)
-    private Integer intStatId;
+    private Integer intvStatId;
 
     @Description("Наименование")
     @Column(nullable = false, length = 60)

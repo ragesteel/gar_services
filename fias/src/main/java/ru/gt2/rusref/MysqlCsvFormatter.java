@@ -16,7 +16,7 @@ import java.util.UUID;
 public class MysqlCsvFormatter implements Function<Object, String> {
 
     private static final CharMatcher DASH = CharMatcher.is('-');
-    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final CharMatcher escape = CharMatcher.anyOf("\0\b\n\r\t\"\\");
 
     @Override
@@ -47,6 +47,8 @@ public class MysqlCsvFormatter implements Function<Object, String> {
             return DASH.removeFrom(uuid);
         } else if (input instanceof BigDecimal) {
             return ((BigDecimal) input).toString();
+        } else if (input instanceof Byte) {
+            return ((Byte) input).toString();
         } else {
             throw new IllegalArgumentException("Processing not defined for class " + input.getClass());
         }

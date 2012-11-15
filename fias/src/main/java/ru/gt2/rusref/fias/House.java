@@ -19,8 +19,8 @@ import java.util.UUID;
     "endDate", "statStatus", "normDoc", "counter"})
 public class House extends AbstractHouse {
     @Description("Номер дома")
-    @Column(length = 10)
-    @Size(min = 1, max = 10)
+    @Column(length = 20)
+    @Size(min = 1, max = 20)
     @XmlAttribute(name = "HOUSENUM")
     private String houseNum;
 
