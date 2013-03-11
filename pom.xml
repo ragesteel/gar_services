@@ -13,6 +13,11 @@
     <name>rus-ref</name>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>fias</module>
+        <module>rossvyaz</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <!-- Project lombok -->
