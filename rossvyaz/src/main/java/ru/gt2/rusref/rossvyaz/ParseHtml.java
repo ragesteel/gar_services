@@ -55,7 +55,7 @@ public class ParseHtml {
 
                         if (TD.equals(event.asStartElement().getName().getLocalPart())) {
                             event = eventReader.nextEvent();
-                            buff[ind++] = event.asCharacters().getData();
+                            buff[ind++] = event.asCharacters().getData().trim();
                             continue;
                         }
                     }
@@ -89,10 +89,10 @@ public class ParseHtml {
         // здесь проводится проверка строки на валидность и если
         // строка не валидна, выбрасывается эксепшн с номером строки
         PhoneRange result = new PhoneRange();
-        result.setCode(Integer.valueOf(nextLine[0].trim()));
-        result.setBegin(Integer.valueOf(nextLine[1].trim()));
-        result.setEnd(Integer.valueOf(nextLine[2].trim()));
-        result.setCount(Integer.valueOf(nextLine[3].trim()));
+        result.setCode(Integer.valueOf(nextLine[0]));
+        result.setBegin(Integer.valueOf(nextLine[1]));
+        result.setEnd(Integer.valueOf(nextLine[2]));
+        result.setCount(Integer.valueOf(nextLine[3]));
         result.setOperator(nextLine[4]);
         result.setRegion(nextLine[5]);
         return result;
@@ -102,5 +102,6 @@ public class ParseHtml {
         List<PhoneRange> list = Lists.newArrayList();
         InputStream inputStream = new FileInputStream("/home/rage/projects/rus-ref/rossvyaz/DEF-9x.html");
         parseHTML(inputStream, list);
+        System.out.println(list);
     }
 }

@@ -1,5 +1,7 @@
 package ru.gt2.rusref.rossvyaz;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.Range;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +18,18 @@ public class PhoneRange {
     private int count;
     private String operator;
     private String region;
+
+    @Override
+    public String toString() {
+        Range range = Range.closed(begin, end);
+
+        return Objects.toStringHelper(this)
+                .add("code", code)
+                .add("range", range)
+                .add("count", count)
+                .add("operator", operator)
+                .add("region", region).toString();
+    }
+
 
 }
