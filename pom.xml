@@ -16,6 +16,7 @@
     <modules>
         <module>fias</module>
         <module>rossvyaz</module>
+        <module>soun</module>
     </modules>
 
     <dependencyManagement>
