@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: gar-import
+
+  # Настройки для цветного вывода в терминале
+  output:
+    ansi:
+      enabled: always
