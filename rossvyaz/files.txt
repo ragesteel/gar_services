@@ -1,3 +1,5 @@
+На 2025ый нижеприведённые адреса больше не актуальны. Нужно смотреть в сторону https://opendata.digital.gov.ru/registry/numeric/downloads
+
 http://rossvyaz.ru/docs/articles/DEF-9x.html
 http://rossvyaz.ru/docs/articles/ABC-3x.html
 http://rossvyaz.ru/docs/articles/ABC-4x.html

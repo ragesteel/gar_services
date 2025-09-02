@@ -11,6 +11,7 @@
 	<artifactId>rus-ref-soun</artifactId>
 
     <name>rus-ref-soun</name>
+    <description>Справочник обозначений налоговых органов</description>
 
     <dependencies>
         <dependency>

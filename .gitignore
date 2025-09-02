@@ -1,0 +1,8 @@
+# Служебные директории
+fias/xsd/
+fias/data/
+target/
+
+# IntelliJ IDEA и продукты на её основе.
+.idea/
+*.iml
