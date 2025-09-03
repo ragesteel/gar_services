@@ -1,19 +1,21 @@
-package ru.gt2.gar.parse;
+package ru.gt2.gar.parse.zip;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import com.google.common.io.CharStreams;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static java.util.Objects.requireNonNull;
-import static ru.gt2.gar.parse.GarVersion.DATE_FORMATTER;
+import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
 
 /**
  * Чтение данных из архива.
@@ -22,7 +24,12 @@ import static ru.gt2.gar.parse.GarVersion.DATE_FORMATTER;
 @Slf4j
 public class ZipFileReader {
     private static final String VERSION = "version.txt";
+
+    @Getter
     private GarVersion version;
+    @Getter
+    private final Multiset<String> garNames = HashMultiset.create();
+
     private final ZipFile zipFile;
 
     public ZipFileReader(String fileName) throws IOException {
@@ -31,20 +38,20 @@ public class ZipFileReader {
     }
 
     public void process() throws IOException {
-        zipFile.stream().forEach(this::onZipEntry);
+        var entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            onZipEntry(entries.nextElement());
+        }
     }
 
-    private void onZipEntry(ZipEntry zipEntry) {
-        try {
-            if (VERSION.equals(zipEntry.getName())) {
-                try (var is = zipFile.getInputStream(zipEntry)) {
-                    parseVersion(is);
-                }
+    private void onZipEntry(ZipEntry zipEntry) throws IOException {
+        if (VERSION.equals(zipEntry.getName())) {
+            try (var is = zipFile.getInputStream(zipEntry)) {
+                parseVersion(is);
             }
-        } catch (IOException e) {
-            log.error("Unable to process zipEntry " + zipEntry, e);
+            return;
         }
-        System.out.println(zipEntry);
+        parseName(zipEntry.getName());
     }
 
     private void parseVersion(InputStream is) throws IOException {
@@ -64,7 +71,15 @@ public class ZipFileReader {
             var intVer = Integer.parseInt(strVer.substring(2));
 
             version = new GarVersion(dateVer, intVer);
-            System.out.println("Version is: " + version);
         }
+    }
+
+    private void parseName(String name) {
+        GarEntry garEntry = EntryNameMatcher.tryParse(name);
+        if (null == garEntry) {
+            log.warn("Unknown file: " + name);
+            return;
+        }
+        garNames.add(garEntry.name());
     }
 }

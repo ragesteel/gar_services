@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse;
+package ru.gt2.gar.parse.zip;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.gt2.gar.parse.xml.XMLStreamParser;
+import ru.gt2.gar.parse.zip.ZipFileReader;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -26,6 +27,9 @@ public class ParseApplication implements CommandLineRunner {
             xmlStreamParser.parse(inputStream);
         }
 
-        new ZipFileReader("C:/Gar/gar_xml_2025-08-29.zip").process();
+        ZipFileReader zipFileReader = new ZipFileReader("C:/Gar/gar_xml_2025-08-29.zip");
+        zipFileReader.process();
+        System.out.println(zipFileReader.getVersion());
+        System.out.println(zipFileReader.getGarNames());
     }
 }
