@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
 import ru.gt2.gar.parse.domain.ElementName;
 
@@ -18,10 +19,10 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -97,8 +98,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
                 }
                 StartElement startElement = event.asStartElement();
                 if (elementName.equalsIgnoreCase(startElement.getName().getLocalPart())) {
-                    Map<String, String> attributesMap = attributesToMap(startElement.getAttributes());
-                    T obj = objectMapper.convertValue(attributesMap, valueType);
+                    T obj = createValue(startElement);
                     result.add(obj);
                     count++;
                 }
@@ -112,15 +112,11 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         return result;
     }
 
-    /**
-     * Преобразует итератор атрибутов элемента в Map<String, String>.
-     */
-    private static Map<String, String> attributesToMap(Iterator<Attribute> attributes) {
-        Map<String, String> map = new HashMap<>();
-        attributes.forEachRemaining(attr ->
-                map.put(attr.getName().getLocalPart(), attr.getValue())
-        );
-        return map;
+    private T createValue(StartElement startElement) {
+        Map<String, String> attributes = Streams.stream(startElement.getAttributes())
+                .collect(Collectors.toMap(a -> a.getName().getLocalPart(), Attribute::getValue));
+
+        return objectMapper.convertValue(attributes, valueType);
     }
 
     /**
