@@ -52,6 +52,21 @@ public class GarZipFile {
         return Optional.of(version);
     }
 
+    /* TODO что-то подобное нужно добавить, чтобы убедиться в том что мы распарсим всё что есть и что мы ничего не потеряли
+    public void validateNames() {
+        Multiset<String> garNames = stream().collect(Multisets.toMultiset(GarEntry::name, ge -> 1, HashMultiset::create));
+        EnumSet<GarTypes> enumSet = EnumSet.allOf(GarTypes.class);
+        garNames.forEach(gn -> {
+            String name = gn.substring(3);
+            GarTypes garType = GarTypes.valueOf(name);
+            enumSet.remove(garType);
+        });
+        if (!enumSet.isEmpty()) {
+            println("Not used: " + enumSet);
+        }
+    }
+    */
+
     private GarVersion readVersion() {
         ZipEntry versionEntry = zipFile.getEntry(VERSION);
         if (null == versionEntry) {
