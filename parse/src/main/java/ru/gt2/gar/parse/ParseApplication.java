@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
+import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -37,6 +38,9 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<AddressObjectType> aotCounter = new ListCounter<>();
         XMLStreamProcessor<AddressObjectType> aotProcessor = XMLStreamProcessor.forAddressObjectType(batchSize);
 
+        ListCounter<AdmHierarchy> ahCounter = new ListCounter<>();
+        XMLStreamProcessor<AdmHierarchy> ahProcessor = XMLStreamProcessor.forAdmHierarchy(batchSize);
+
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
             aoProcessor.process(inputStream, aoCounter);
@@ -53,9 +57,10 @@ public class ParseApplication implements CommandLineRunner {
         });
         System.out.println();
 
+        process(garZipFile, aoProcessor, aoCounter);
         process(garZipFile, aodProcessor, aodCounter);
         process(garZipFile, aotProcessor, aotCounter);
-        process(garZipFile, aoProcessor, aoCounter);
+        process(garZipFile, ahProcessor, ahCounter);
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {

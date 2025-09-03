@@ -51,6 +51,7 @@ public record AddressObject(
 
         /**
          * Статус действия над записью – причина появления записи
+         * см. GarType.OPERATION_TYPES
          */
         int operTypeId,
 

@@ -25,14 +25,27 @@ public interface AttrConverter<T> extends Function<Map<String, String>, T> {
         return map -> objectMapper.convertValue(map, valueType);
     }
 
+    Map<String, String> BOOLEAN_MAP = Map.of("0", Boolean.FALSE.toString(),
+            "1", Boolean.TRUE.toString());
+
     BiFunction<String, String, String> BOOL_ACTUAL_ACTIVE = new BiFunction<>() {
         private static final Set<String> APPLICABLE_NAMES = Set.of("ISACTUAL", "ISACTIVE");
-        private static final Map<String, String> BOOLEAN_MAP = Map.of("0", Boolean.FALSE.toString(),
-                "1", Boolean.TRUE.toString());
 
         @Override
         public String apply(String name, String value) {
             if (!APPLICABLE_NAMES.contains(name.toUpperCase())) {
+                return value;
+            }
+            return BOOLEAN_MAP.get(value);
+        }
+    };
+
+    BiFunction<String, String, String> BOOL_ACTIVE = new BiFunction<>() {
+        private static final String APPLICABLE_NAME = "ISACTIVE";
+
+        @Override
+        public String apply(String name, String value) {
+            if (!APPLICABLE_NAME.equalsIgnoreCase(name)) {
                 return value;
             }
             return BOOLEAN_MAP.get(value);

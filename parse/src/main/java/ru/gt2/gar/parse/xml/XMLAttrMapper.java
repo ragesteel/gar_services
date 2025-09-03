@@ -3,10 +3,12 @@ package ru.gt2.gar.parse.xml;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
+import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.domain.GarType;
 
 import java.util.function.BiFunction;
 
+import static ru.gt2.gar.parse.xml.AttrConverter.BOOL_ACTIVE;
 import static ru.gt2.gar.parse.xml.AttrConverter.BOOL_ACTUAL_ACTIVE;
 import static ru.gt2.gar.parse.xml.AttrConverter.NOTHING;
 
@@ -18,6 +20,8 @@ public class XMLAttrMapper<T> {
             "ITEMS", "ITEM", AddressObjectDivision.class, GarType.ADDR_OBJ_DIVISION, NOTHING);
     public static final XMLAttrMapper<AddressObjectType> ADDRESS_OBJECT_TYPE = new XMLAttrMapper<>(
             "ADDRESSOBJECTTYPES", "ADDRESSOBJECTTYPE", AddressObjectType.class, GarType.ADDR_OBJ_TYPES, NOTHING);
+    public static final XMLAttrMapper<AdmHierarchy> ADM_HIERARCHY = new XMLAttrMapper<>(
+            "ITEMS", "ITEM", AdmHierarchy.class, GarType.ADM_HIERARCHY, BOOL_ACTIVE);
 
     public final String rootName;
     public final String elementName;
