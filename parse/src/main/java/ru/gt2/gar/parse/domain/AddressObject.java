@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * База — AS_ADDR_OBJ_2_251_01_04_01_01.xsd
+ * Классификатор адресообразующих элементов.
+ * Основа — AS_ADDR_OBJ_2_251_01_04_01_01.xsd
+ *
  * IDEA в идеале бы вообще строить объектную модель из XSD'шек автоматически
  */
 public record AddressObject(
