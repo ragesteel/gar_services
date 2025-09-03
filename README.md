@@ -22,4 +22,4 @@
 
 - Java 21+;
 - Maven 3.8+;
-- Доступ к данным ГАР;
+- Доступ к [данным ГАР](https://fias.nalog.ru/Frontend);
