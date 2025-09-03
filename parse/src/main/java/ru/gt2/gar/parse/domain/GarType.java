@@ -3,7 +3,7 @@ package ru.gt2.gar.parse.domain;
 /**
  * Все разновидности объектов для файлов, по крайней мере для которых имеется описание.
  */
-public enum GarTypes {
+public enum GarType {
     ADDR_OBJ,
     ADDR_OBJ_DIVISION,
     ADDR_OBJ_TYPES,

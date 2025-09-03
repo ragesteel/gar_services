@@ -6,12 +6,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ConverterTest {
+class AttrConverterTest {
 
     @Test
     void testJackson() {
         record RecordUnderTest(boolean isSomething) { };
-        Converter<RecordUnderTest> jackson = Converter.jackson(RecordUnderTest.class);
+        AttrConverter<RecordUnderTest> jackson = AttrConverter.jackson(RecordUnderTest.class);
         RecordUnderTest trueField = new RecordUnderTest(true);
         RecordUnderTest falseField = new RecordUnderTest(false);
 

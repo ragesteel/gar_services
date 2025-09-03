@@ -1,6 +1,5 @@
 package ru.gt2.gar.parse.xml;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -11,8 +10,11 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public interface Converter<T> extends Function<Map<String, String>, T> {
-    static <T> Converter<T> jackson(Class<T> valueType) {
+/**
+ * Преобразователи для более правильных преобразований типов, чтобы вместо цифр 0 и 1 получить boolean.
+ */
+public interface AttrConverter<T> extends Function<Map<String, String>, T> {
+    static <T> AttrConverter<T> jackson(Class<T> valueType) {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                 // .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

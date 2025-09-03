@@ -1,0 +1,46 @@
+package ru.gt2.gar.parse.xml;
+
+import ru.gt2.gar.parse.domain.AddressObject;
+import ru.gt2.gar.parse.domain.AddressObjectDivision;
+import ru.gt2.gar.parse.domain.GarType;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
+
+// В отличие от XMLStreamParser'а этой штуке нужна «труба» куда она добавлять свои данные.
+public class XMLStreamProcessor<T> {
+    private final XMLAttrMapper<T> mapper;
+    private final int batchSize;
+    private final AttrConverter<T> attrConverter;
+
+    public static XMLStreamProcessor<AddressObject> forAddressObject(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ADDRESS_OBJECT, batchSize);
+    }
+
+    public static XMLStreamProcessor<AddressObjectDivision> forAddressObjectDivision(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ADDRESS_OBJECT_DIVISION, batchSize);
+    }
+
+    private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {
+        this.mapper = mapper;
+        this.batchSize = batchSize;
+        attrConverter = AttrConverter.jackson(mapper.valueClass);
+    }
+
+    public GarType getGarType() {
+        return mapper.garType;
+    }
+
+    public void process(InputStream inputStream, Consumer<List<T>> dataConsumer) throws Exception {
+        requireNonNull(inputStream);
+        requireNonNull(dataConsumer);
+        try (XMLAttrReader<T> reader = new XMLAttrReader<>(inputStream, mapper, attrConverter, batchSize)) {
+            while(reader.hasNext()) {
+                dataConsumer.accept(reader.next());
+            }
+        }
+    }
+}

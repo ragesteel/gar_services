@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
-import ru.gt2.gar.parse.domain.GarTypes;
+import ru.gt2.gar.parse.domain.GarType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ public class GarZipFile {
 
     private final ZipFile zipFile;
     private Map<GarEntry, ZipEntry> entries;
-    private Map<GarTypes, FileStats> stats;
+    private Map<GarType, FileStats> stats;
 
     public GarZipFile(String fileName) throws IOException {
         requireNonNull(fileName, "fileName must be not null!");
@@ -50,7 +50,7 @@ public class GarZipFile {
         return entries.keySet().stream();
     }
 
-    public Map<GarTypes, FileStats> getStats() {
+    public Map<GarType, FileStats> getStats() {
         if (null == entries) {
             fillEntries();
         }
@@ -68,7 +68,7 @@ public class GarZipFile {
                 return;
             }
             entries.put(ge, ze);
-            stats.merge(GarTypes.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
+            stats.merge(GarType.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
         });
     }
 

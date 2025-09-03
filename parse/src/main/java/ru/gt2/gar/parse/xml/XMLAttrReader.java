@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -36,17 +35,17 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
     private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
     private final int batchSize;
-    private final Converter<T> converter;
+    private final AttrConverter<T> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<T> mapper, Converter<T> converter, int batchSize)
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<T> mapper, AttrConverter<T> attrConverter, int batchSize)
             throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
         elementName = mapper.elementName;
         valueProcessing = mapper.valueProcessing;
 
-        this.converter = requireNonNull(converter, "converter must not be null");
+        this.attrConverter = requireNonNull(attrConverter, "converter must not be null");
 
         if (batchSize <= 0) {
             throw new IllegalArgumentException("batchSize must be > 0");
@@ -75,7 +74,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
             List<T> result = new ArrayList<>(batchSize);
             while (eventReader.hasNext() && (result.size() < batchSize)) {
                 XMLEvent event = eventReader.nextEvent();
-                if (XMLStreamConstants.START_ELEMENT != event.getEventType()) {
+                if (!event.isStartElement()) {
                     continue;
                 }
                 StartElement startElement = event.asStartElement();
@@ -101,7 +100,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
                 .collect(Collectors.toMap(a -> a.getName().getLocalPart(),
                         a -> valueProcessing.apply(a.getName().getLocalPart(), a.getValue())));
-        return converter.apply(attributes);
+        return attrConverter.apply(attributes);
     }
 
     /**
