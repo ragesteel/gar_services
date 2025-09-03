@@ -32,14 +32,18 @@ import static java.util.Objects.requireNonNull;
 public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
 
     private final XMLEventReader eventReader;
+    private final String rootName;
     private final String elementName;
     private final int batchSize;
     private final Converter<T> converter;
+    private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XmlAttrMapper<T> mapper, Converter<T> converter, int batchSize)
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<T> mapper, Converter<T> converter, int batchSize)
             throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
+        rootName = mapper.rootName;
         elementName = mapper.elementName;
+
         this.converter = requireNonNull(converter, "converter must not be null");
 
         if (batchSize <= 0) {
@@ -73,7 +77,12 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
                     continue;
                 }
                 StartElement startElement = event.asStartElement();
-                if (!elementName.equalsIgnoreCase(startElement.getName().getLocalPart())) {
+                String startElementName = startElement.getName().getLocalPart();
+                if (expectOuter && (startElementName.equalsIgnoreCase(rootName))) {
+                    expectOuter = false;
+                    continue;
+                } else if (!startElementName.equalsIgnoreCase(elementName)) {
+                    log.warn("Unexpected element: {}", startElement);
                     continue;
                 }
                 result.add(createValue(startElement));

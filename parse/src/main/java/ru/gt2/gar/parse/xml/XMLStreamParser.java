@@ -12,17 +12,17 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class XmlStreamParser {
+public class XMLStreamParser {
     private final int recordsPerBatch;
 
-    public XmlStreamParser(
+    public XMLStreamParser(
             @Value("${gar.parse.batch:1000}") int recordsPerBatch) {
         this.recordsPerBatch = recordsPerBatch;
     }
 
     public void parse(InputStream inputStream) throws IOException, XMLStreamException {
         try (XMLAttrReader<AddressObject> reader =
-                     new XMLAttrReader<>(inputStream, XmlAttrMapper.ADDRESS_OBJECT, Converter.jackson(AddressObject.class), recordsPerBatch)) {
+                     new XMLAttrReader<>(inputStream, XMLAttrMapper.ADDRESS_OBJECT, Converter.jackson(AddressObject.class), recordsPerBatch)) {
             while(reader.hasNext()) {
                 List<AddressObject> batch = reader.next();
                 log.info("Number of records read: {}", batch.size());
