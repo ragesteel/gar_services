@@ -21,8 +21,8 @@ public class XmlStreamParser {
     }
 
     public void parse(InputStream inputStream) throws IOException, XMLStreamException {
-        try (XMLAttributeReader<AddressObject> reader =
-                     new XMLAttributeReader<>(inputStream, AddressObject.class, recordsPerBatch)) {
+        try (XMLAttrReader<AddressObject> reader =
+                     new XMLAttrReader<>(inputStream, AddressObject.class, recordsPerBatch)) {
             while(reader.hasNext()) {
                 List<AddressObject> batch = reader.next();
                 log.info("Number of records read: {}", batch.size());

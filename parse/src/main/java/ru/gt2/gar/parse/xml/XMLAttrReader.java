@@ -29,11 +29,12 @@ import static java.util.Objects.requireNonNull;
  * Преобразование XML в record.
  * <a href="https://habr.com/ru/articles/724324/">Источник вдохновения</a>
  * TODO вынести обработчик исключений во время работы в отдельную лямбду, чтобы не кидать RuntimeException
+ * TODO вынести наружу mapper, а в идеале так вообще его самостоятельно генерировать
  * IDEA а ещё — по хорошему вообще вынести логику сохранения в лист наружу, чтобы тут только парсинг XML остался.
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class XMLAttributeReader<T> implements Iterator<List<T>>, Closeable {
+public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
 
     private final XMLEventReader eventReader;
     private final String elementName;
@@ -48,7 +49,7 @@ public class XMLAttributeReader<T> implements Iterator<List<T>>, Closeable {
      * @param valueType класс, в который мапятся данные
      * @param batchSize   размер пакета (сколько объектов читать за раз)
      */
-    public XMLAttributeReader(InputStream inputStream, Class<T> valueType, int batchSize)
+    public XMLAttrReader(InputStream inputStream, Class<T> valueType, int batchSize)
             throws XMLStreamException {
         this.valueType = requireNonNull(valueType, "valueType must not be null");
         ElementName annotation = valueType.getAnnotation(ElementName.class);
@@ -128,9 +129,7 @@ public class XMLAttributeReader<T> implements Iterator<List<T>>, Closeable {
     @Override
     public void close() {
         try {
-            if (eventReader != null) {
-                eventReader.close();
-            }
+            eventReader.close();
         } catch (XMLStreamException e) {
             log.warn("Unable to close eventReader", e);
         }
