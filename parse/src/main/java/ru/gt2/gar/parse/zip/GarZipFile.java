@@ -1,8 +1,10 @@
 package ru.gt2.gar.parse.zip;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
+import ru.gt2.gar.parse.domain.GarTypes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +35,7 @@ public class GarZipFile {
 
     private final ZipFile zipFile;
     private Map<GarEntry, ZipEntry> entries;
+    private Map<GarTypes, FileStats> stats;
 
     public GarZipFile(String fileName) throws IOException {
         requireNonNull(fileName, "fileName must be not null!");
@@ -41,25 +44,36 @@ public class GarZipFile {
 
     public Stream<GarEntry> stream() {
         if (null == entries) {
-            entries = new HashMap<>();
-
-            Streams.stream(zipFile.entries().asIterator()).forEach(ze -> {
-                GarEntry ge = EntryNameMatcher.tryParse(ze.getName());
-                if (null == ge) {
-                    return;
-                }
-                entries.put(ge, ze);
-            });
-
+            fillEntries();
         }
 
         return entries.keySet().stream();
     }
 
-    public InputStream getInputStream(GarEntry ge) throws IOException {
-        requireNonNull(ge);
+    public Map<GarTypes, FileStats> getStats() {
+        if (null == entries) {
+            fillEntries();
+        }
 
-        ZipEntry entry = entries.get(ge);
+        return ImmutableMap.copyOf(stats);
+    }
+
+    private void fillEntries() {
+        entries = new HashMap<>();
+        stats = new HashMap<>();
+
+        Streams.stream(zipFile.entries().asIterator()).forEach(ze -> {
+            GarEntry ge = EntryNameMatcher.tryParse(ze.getName());
+            if (null == ge) {
+                return;
+            }
+            entries.put(ge, ze);
+            stats.merge(GarTypes.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
+        });
+    }
+
+    public InputStream getInputStream(GarEntry ge) throws IOException {
+        ZipEntry entry = entries.get(requireNonNull(ge));
         if (null == entry) {
             throw new IOException("ZipEntry not found: " + ge);
         }

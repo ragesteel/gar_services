@@ -35,6 +35,12 @@ public class ParseApplication implements CommandLineRunner {
                 v -> log.info("Gar file date: {}, version: {}", v.date(), v.number()),
                 () -> log.warn("Gar file does not contains version information"));
 
+        // Однако да, один только распакованный файл будет весить 361 Гб.
+        garZipFile.getStats().forEach((garTypes, fileStats) -> {
+            System.out.printf("%25s %3d %14d%n", garTypes.name(), fileStats.count(), fileStats.size());
+        });
+        System.out.println();
+
         garZipFile.stream()
                 .filter(ge -> ge.name().equals(GarTypes.ADDR_OBJ.name()))
                 .forEach(ge -> {
