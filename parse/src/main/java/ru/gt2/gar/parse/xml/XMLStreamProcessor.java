@@ -2,6 +2,7 @@ package ru.gt2.gar.parse.xml;
 
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
+import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.GarType;
 
 import java.io.InputStream;
@@ -22,6 +23,10 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<AddressObjectDivision> forAddressObjectDivision(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.ADDRESS_OBJECT_DIVISION, batchSize);
+    }
+
+    public static XMLStreamProcessor<AddressObjectType> forAddressObjectType(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ADDRESS_OBJECT_TYPE, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {
