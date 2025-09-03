@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ru.gt2.gar.parse.domain.GarTypes;
 import ru.gt2.gar.parse.xml.XMLStreamParser;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
@@ -33,5 +34,16 @@ public class ParseApplication implements CommandLineRunner {
         garZipFile.getVersion().ifPresentOrElse(
                 v -> log.info("Gar file date: {}, version: {}", v.date(), v.number()),
                 () -> log.warn("Gar file does not contains version information"));
+
+        garZipFile.stream()
+                .filter(ge -> ge.name().equals(GarTypes.ADDR_OBJ.name()))
+                .forEach(ge -> {
+                    try (var is = garZipFile.getInputStream(ge)) {
+                        xmlStreamParser.parse(is);
+                    } catch (Exception e) {
+                        log.warn("Unable to parse entry: " + ge, e);
+                    }
+                });
+        log.info("Total ADDR_OBJ read: {}", xmlStreamParser.getTotalRead());
     }
 }

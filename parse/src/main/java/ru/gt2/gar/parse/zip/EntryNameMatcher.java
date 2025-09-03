@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class EntryNameMatcher {
     private static final Pattern NAME_PATTERN = Pattern.compile(
-            "^((?<Dir>\\d{2})/)?(?<Name>AS_[A-Z_]+)_(?<Year>\\d{4})(?<Month>\\d{2})(?<Day>\\d{2})_" +
+            "^((?<Dir>\\d{2})/)?AS_(?<Name>[A-Z_]+)_(?<Year>\\d{4})(?<Month>\\d{2})(?<Day>\\d{2})_" +
                     "(?<UUID>[a-f0-9]{8}-[a-f0-9]{4}-[A-F0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\\.XML$", Pattern.CASE_INSENSITIVE);
 
     @Nullable

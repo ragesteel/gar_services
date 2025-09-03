@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse.xml;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import java.util.List;
 @Slf4j
 public class XMLStreamParser {
     private final int recordsPerBatch;
+    @Getter
+    private int totalRead;
 
     public XMLStreamParser(
             @Value("${gar.parse.batch:1000}") int recordsPerBatch) {
@@ -25,7 +28,8 @@ public class XMLStreamParser {
                      new XMLAttrReader<>(inputStream, XMLAttrMapper.ADDRESS_OBJECT, Converter.jackson(AddressObject.class), recordsPerBatch)) {
             while(reader.hasNext()) {
                 List<AddressObject> batch = reader.next();
-                log.info("Number of records read: {}", batch.size());
+                totalRead += batch.size();
+                // log.info("Number of records read: {}", batch.size());
                 // TODO по хорошему потом нужно их куда-то передавать ещё, но пока так.
             }
         }

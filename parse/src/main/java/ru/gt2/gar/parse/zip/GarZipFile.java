@@ -5,11 +5,13 @@ import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -30,6 +32,7 @@ public class GarZipFile {
     private GarVersion version;
 
     private final ZipFile zipFile;
+    private Map<GarEntry, ZipEntry> entries;
 
     public GarZipFile(String fileName) throws IOException {
         requireNonNull(fileName, "fileName must be not null!");
@@ -37,9 +40,30 @@ public class GarZipFile {
     }
 
     public Stream<GarEntry> stream() {
-        return Streams.stream(zipFile.entries().asIterator())
-                .map(ze -> EntryNameMatcher.tryParse(ze.getName()))
-                .filter(Objects::nonNull);
+        if (null == entries) {
+            entries = new HashMap<>();
+
+            Streams.stream(zipFile.entries().asIterator()).forEach(ze -> {
+                GarEntry ge = EntryNameMatcher.tryParse(ze.getName());
+                if (null == ge) {
+                    return;
+                }
+                entries.put(ge, ze);
+            });
+
+        }
+
+        return entries.keySet().stream();
+    }
+
+    public InputStream getInputStream(GarEntry ge) throws IOException {
+        requireNonNull(ge);
+
+        ZipEntry entry = entries.get(ge);
+        if (null == entry) {
+            throw new IOException("ZipEntry not found: " + ge);
+        }
+        return zipFile.getInputStream(entry);
     }
 
     public Optional<GarVersion> getVersion() {
