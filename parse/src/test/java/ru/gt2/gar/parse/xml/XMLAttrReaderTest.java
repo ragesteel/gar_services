@@ -33,7 +33,7 @@ public class XMLAttrReaderTest {
                     UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,
                     "Садрыя Мингазова", "ул.", "8", 10, 0L, 0L,
                     LocalDate.of(2025, AUGUST, 28), LocalDate.of(2025, AUGUST, 28),
-                    LocalDate.of(2079, JUNE, 6), 1, 1), next.getFirst());
+                    LocalDate.of(2079, JUNE, 6), true, true), next.getFirst());
         }
     }
 }

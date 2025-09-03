@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface Converter<T> extends Function<Map<String, String>, T> {
@@ -20,4 +22,18 @@ public interface Converter<T> extends Function<Map<String, String>, T> {
 
         return map -> objectMapper.convertValue(map, valueType);
     }
+
+    BiFunction<String, String, String> BOOL_ACTUAL_ACTIVE = new BiFunction<>() {
+        private static final Set<String> APPLICABLE_NAMES = Set.of("ISACTUAL", "ISACTIVE");
+        private static final Map<String, String> BOOLEAN_MAP = Map.of("0", Boolean.FALSE.toString(),
+                "1", Boolean.TRUE.toString());
+
+        @Override
+        public String apply(String name, String value) {
+            if (!APPLICABLE_NAMES.contains(name.toUpperCase())) {
+                return value;
+            }
+            return BOOLEAN_MAP.get(value);
+        }
+    };
 }

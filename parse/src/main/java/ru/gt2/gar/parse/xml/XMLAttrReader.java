@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -34,6 +35,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
     private final XMLEventReader eventReader;
     private final String rootName;
     private final String elementName;
+    private final BiFunction<String, String, String> valueProcessing;
     private final int batchSize;
     private final Converter<T> converter;
     private boolean expectOuter = true;
@@ -43,6 +45,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
         elementName = mapper.elementName;
+        valueProcessing = mapper.valueProcessing;
 
         this.converter = requireNonNull(converter, "converter must not be null");
 
@@ -97,8 +100,8 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
 
     private T createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
-                .collect(Collectors.toMap(a -> a.getName().getLocalPart(), Attribute::getValue));
-
+                .collect(Collectors.toMap(a -> a.getName().getLocalPart(),
+                        a -> valueProcessing.apply(a.getName().getLocalPart(), a.getValue())));
         return converter.apply(attributes);
     }
 
