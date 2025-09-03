@@ -22,7 +22,7 @@ public class XmlStreamParser {
 
     public void parse(InputStream inputStream) throws IOException, XMLStreamException {
         try (XMLAttrReader<AddressObject> reader =
-                     new XMLAttrReader<>(inputStream, AddressObject.class, recordsPerBatch)) {
+                     new XMLAttrReader<>(inputStream, XmlAttrMapper.ADDRESS_OBJECT, Converter.jackson(AddressObject.class), recordsPerBatch)) {
             while(reader.hasNext()) {
                 List<AddressObject> batch = reader.next();
                 log.info("Number of records read: {}", batch.size());

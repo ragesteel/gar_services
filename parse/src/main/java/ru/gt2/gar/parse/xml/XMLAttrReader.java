@@ -1,13 +1,7 @@
 package ru.gt2.gar.parse.xml;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
-import ru.gt2.gar.parse.domain.ElementName;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -40,21 +34,13 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
     private final XMLEventReader eventReader;
     private final String elementName;
     private final int batchSize;
-    private final ObjectMapper objectMapper;
-    private final Class<T> valueType;
+    private final Converter<T> converter;
 
-    /**
-     * Конструктор и создание файлового reader-а.
-     *
-     * @param inputStream входной поток с XML
-     * @param valueType класс, в который мапятся данные
-     * @param batchSize   размер пакета (сколько объектов читать за раз)
-     */
-    public XMLAttrReader(InputStream inputStream, Class<T> valueType, int batchSize)
+    public XMLAttrReader(InputStream inputStream, XmlAttrMapper<T> mapper, Converter<T> converter, int batchSize)
             throws XMLStreamException {
-        this.valueType = requireNonNull(valueType, "valueType must not be null");
-        ElementName annotation = valueType.getAnnotation(ElementName.class);
-        elementName = requireNonNull(annotation, "ElementName annotation must be present on class " + valueType).value();
+        requireNonNull(mapper, "mapper must not be null");
+        elementName = mapper.elementName;
+        this.converter = requireNonNull(converter, "converter must not be null");
 
         if (batchSize <= 0) {
             throw new IllegalArgumentException("batchSize must be > 0");
@@ -64,13 +50,6 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         requireNonNull(inputStream, "inputStream must not be null");
         XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
         eventReader = factory.createXMLEventReader(inputStream);
-        objectMapper = JsonMapper.builder()
-                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .build();
-
-        objectMapper.registerModule(new JavaTimeModule());
-        // или можно objectMapper.findAndRegisterModules() и поставить scope=runtime зависимости jackson-datatype-jsr310
     }
 
     /**
@@ -89,16 +68,15 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         try {
             List<T> result = new ArrayList<>(batchSize);
             while (eventReader.hasNext() && (result.size() < batchSize)) {
-                // пропуск прочих событий
                 XMLEvent event = eventReader.nextEvent();
                 if (XMLStreamConstants.START_ELEMENT != event.getEventType()) {
                     continue;
                 }
                 StartElement startElement = event.asStartElement();
-                if (elementName.equalsIgnoreCase(startElement.getName().getLocalPart())) {
-                    T obj = createValue(startElement);
-                    result.add(obj);
+                if (!elementName.equalsIgnoreCase(startElement.getName().getLocalPart())) {
+                    continue;
                 }
+                result.add(createValue(startElement));
             }
             return result;
         } catch (XMLStreamException e) {
@@ -112,7 +90,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
                 .collect(Collectors.toMap(a -> a.getName().getLocalPart(), Attribute::getValue));
 
-        return objectMapper.convertValue(attributes, valueType);
+        return converter.apply(attributes);
     }
 
     /**

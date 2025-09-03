@@ -27,7 +27,7 @@ public class XMLAttrReaderTest {
         ENDDATE="2079-06-06" ISACTUAL="1" ISACTIVE="1" />
 </ADDRESSOBJECTS>
                 """.getBytes(UTF_8));
-        try (var xmlAttrReader = new XMLAttrReader<>(inputStream, AddressObject.class, 10)) {
+        try (var xmlAttrReader = new XMLAttrReader<>(inputStream, XmlAttrMapper.ADDRESS_OBJECT, Converter.jackson(AddressObject.class), 10)) {
             List<AddressObject> next = xmlAttrReader.next();
             assertEquals(new AddressObject(52185551L, 174296886L,
                     UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,
