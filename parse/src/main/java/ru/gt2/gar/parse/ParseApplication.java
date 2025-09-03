@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.GarTypes;
+import ru.gt2.gar.parse.xml.ListCounter;
+import ru.gt2.gar.parse.xml.XMLStreamMapper;
 import ru.gt2.gar.parse.xml.XMLStreamParser;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
@@ -40,6 +43,19 @@ public class ParseApplication implements CommandLineRunner {
             System.out.printf("%25s %3d %14d%n", garTypes.name(), fileStats.count(), fileStats.size());
         });
         System.out.println();
+
+        ListCounter<AddressObjectDivision> aodCounter = new ListCounter<>();
+        XMLStreamMapper<AddressObjectDivision> addressObjectDivisionMapper = XMLStreamMapper.forAddressObjectDivision();
+        garZipFile.stream()
+                .filter(ge -> ge.name().equals(GarTypes.ADDR_OBJ_DIVISION.name()))
+                .forEach(ge -> {
+                    try (var is = garZipFile.getInputStream(ge)) {
+                        addressObjectDivisionMapper.process(is, aodCounter);
+                    } catch (Exception e) {
+                        log.warn("Unable to parse entry: " + ge, e);
+                    }
+                });
+        log.warn("Total ADDR_OBJ_DIVISION items read: {}", aodCounter.getCounter());
 
         garZipFile.stream()
                 .filter(ge -> ge.name().equals(GarTypes.ADDR_OBJ.name()))

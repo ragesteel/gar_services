@@ -36,4 +36,6 @@ public interface Converter<T> extends Function<Map<String, String>, T> {
             return BOOLEAN_MAP.get(value);
         }
     };
+
+    BiFunction<String, String, String> NOTHING = (n, v) -> v;
 }
