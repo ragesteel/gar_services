@@ -86,11 +86,9 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
      */
     @Override
     public List<T> next() {
-        List<T> result = new ArrayList<>(batchSize);
-        int count = 0;
-
         try {
-            while (eventReader.hasNext() && (count < batchSize)) {
+            List<T> result = new ArrayList<>(batchSize);
+            while (eventReader.hasNext() && (result.size() < batchSize)) {
                 // пропуск прочих событий
                 XMLEvent event = eventReader.nextEvent();
                 if (XMLStreamConstants.START_ELEMENT != event.getEventType()) {
@@ -100,16 +98,14 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
                 if (elementName.equalsIgnoreCase(startElement.getName().getLocalPart())) {
                     T obj = createValue(startElement);
                     result.add(obj);
-                    count++;
                 }
             }
+            return result;
         } catch (XMLStreamException e) {
             log.error("Error while reading XML: {}", e.getMessage(), e);
             // В зависимости от требований, можно либо бросить Unchecked-исключение, либо вернуть то, что накопилось
             throw new RuntimeException("Failed to read next batch from XML", e);
         }
-
-        return result;
     }
 
     private T createValue(StartElement startElement) {
