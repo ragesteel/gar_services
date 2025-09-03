@@ -13,7 +13,6 @@ import java.util.List;
 @Component
 @Slf4j
 public class XmlStreamParser {
-    public static final String XML_ELEMENT = "OBJECT";
     private final int recordsPerBatch;
 
     public XmlStreamParser(
@@ -23,7 +22,7 @@ public class XmlStreamParser {
 
     public void parse(InputStream inputStream) throws IOException, XMLStreamException {
         try (XMLAttributeReader<AddressObject> reader =
-                     new XMLAttributeReader<>(inputStream, XML_ELEMENT, recordsPerBatch, AddressObject.class)) {
+                     new XMLAttributeReader<>(inputStream, AddressObject.class, recordsPerBatch)) {
             while(reader.hasNext()) {
                 List<AddressObject> batch = reader.next();
                 log.info("Number of records read: {}", batch.size());

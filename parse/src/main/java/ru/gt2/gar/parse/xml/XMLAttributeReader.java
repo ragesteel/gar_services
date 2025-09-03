@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import ru.gt2.gar.parse.domain.ElementName;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -44,14 +45,15 @@ public class XMLAttributeReader<T> implements Iterator<List<T>>, Closeable {
      * Конструктор и создание файлового reader-а.
      *
      * @param inputStream входной поток с XML
-     * @param elementName имя элемента, атрибуты которого будут считываться
-     * @param batchSize   размер пакета (сколько объектов читать за раз)
      * @param valueType класс, в который мапятся данные
-     * @throws XMLStreamException при ошибке создания XMLEventReader
+     * @param batchSize   размер пакета (сколько объектов читать за раз)
      */
-    public XMLAttributeReader(InputStream inputStream, String elementName, int batchSize, Class<T> valueType)
+    public XMLAttributeReader(InputStream inputStream, Class<T> valueType, int batchSize)
             throws XMLStreamException {
-        this.elementName = requireNonNull(elementName, "elementName must not be null");
+        this.valueType = requireNonNull(valueType, "valueType must not be null");
+        ElementName annotation = valueType.getAnnotation(ElementName.class);
+        elementName = requireNonNull(annotation, "ElementName annotation must be present on class " + valueType).value();
+
         if (batchSize <= 0) {
             throw new IllegalArgumentException("batchSize must be > 0");
         }
@@ -59,7 +61,6 @@ public class XMLAttributeReader<T> implements Iterator<List<T>>, Closeable {
 
         requireNonNull(inputStream, "inputStream must not be null");
         XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
-        this.valueType = requireNonNull(valueType);
         eventReader = factory.createXMLEventReader(inputStream);
         objectMapper = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)

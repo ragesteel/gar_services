@@ -8,6 +8,7 @@ import java.util.UUID;
  * IDEA в идеале бы вообще строить объектную модель из XSD'шек автоматически
  */
 
+@ElementName("OBJECT")
 public record AddressObject(
         /**
          * Уникальный идентификатор записи. Ключевое поле
