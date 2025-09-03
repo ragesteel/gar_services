@@ -1,16 +1,17 @@
 package ru.gt2.gar.parse.zip;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
+import com.google.common.collect.Streams;
 import com.google.common.io.CharStreams;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,64 +23,59 @@ import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
  */
 // В идеале-бы конечно сразу читать из потока и обрабатывать, но
 @Slf4j
-public class ZipFileReader {
+public class GarZipFile {
     private static final String VERSION = "version.txt";
+    private static final GarVersion NO_VERSION = new GarVersion(LocalDate.of(2000, Month.JANUARY, 1), -1);
 
-    @Getter
     private GarVersion version;
-    @Getter
-    private final Multiset<String> garNames = HashMultiset.create();
 
     private final ZipFile zipFile;
 
-    public ZipFileReader(String fileName) throws IOException {
+    public GarZipFile(String fileName) throws IOException {
         requireNonNull(fileName, "fileName must be not null!");
         zipFile = new ZipFile(fileName);
     }
 
-    public void process() throws IOException {
-        var entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-            onZipEntry(entries.nextElement());
-        }
+    public Stream<GarEntry> stream() {
+        return Streams.stream(zipFile.entries().asIterator())
+                .map(ze -> EntryNameMatcher.tryParse(ze.getName()))
+                .filter(Objects::nonNull);
     }
 
-    private void onZipEntry(ZipEntry zipEntry) throws IOException {
-        if (VERSION.equals(zipEntry.getName())) {
-            try (var is = zipFile.getInputStream(zipEntry)) {
-                parseVersion(is);
-            }
-            return;
+    public Optional<GarVersion> getVersion() {
+        if (null == version) {
+            version = readVersion();
         }
-        parseName(zipEntry.getName());
+        if (NO_VERSION.equals(version)) {
+            return Optional.empty();
+        }
+        return Optional.of(version);
     }
 
-    private void parseVersion(InputStream is) throws IOException {
-        try (var isr = new InputStreamReader(is)) {
+    private GarVersion readVersion() {
+        ZipEntry versionEntry = zipFile.getEntry(VERSION);
+        if (null == versionEntry) {
+            return NO_VERSION;
+        }
+
+        try (var isr = new InputStreamReader(zipFile.getInputStream(versionEntry))) {
             List<String> strings = CharStreams.readLines(isr);
             if (2 != strings.size()) {
                 log.warn("Version lines count != 2, {}", strings);
-                return;
+                return NO_VERSION;
             }
             var dateVer = LocalDate.parse(strings.get(0), DATE_FORMATTER);
 
             var strVer = strings.get(1);
             if (!strVer.startsWith("v.")) {
                 log.warn("Numeric version does not starts with v., {}", strings);
-                return;
+                return NO_VERSION;
             }
             var intVer = Integer.parseInt(strVer.substring(2));
-
-            version = new GarVersion(dateVer, intVer);
+            return new GarVersion(dateVer, intVer);
+        } catch (IOException e) {
+            log.warn("Unable to get version", e);
+            return NO_VERSION;
         }
-    }
-
-    private void parseName(String name) {
-        GarEntry garEntry = EntryNameMatcher.tryParse(name);
-        if (null == garEntry) {
-            log.warn("Unknown file: " + name);
-            return;
-        }
-        garNames.add(garEntry.name());
     }
 }

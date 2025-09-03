@@ -8,6 +8,5 @@ public record GarEntry(
         String name,
         LocalDate date,
         UUID id,
-        Optional<String> dir
-) {
+        Optional<String> dir) {
 }
