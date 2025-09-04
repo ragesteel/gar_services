@@ -23,3 +23,7 @@
 - Java 21+;
 - Maven 3.8+;
 - Доступ к [данным ГАР](https://fias.nalog.ru/Frontend);
+
+## Подобные проекты
+
+Если нужно что-то подобное, но на PHP, то можно посмотреть на [fias-gar-data-import-tool](https://github.com/SbWereWolf/fias-gar-data-import-tool).
