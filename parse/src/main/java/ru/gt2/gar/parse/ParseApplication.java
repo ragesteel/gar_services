@@ -1,6 +1,7 @@
 package ru.gt2.gar.parse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,7 @@ import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.domain.OperationType;
+import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -21,6 +23,9 @@ import ru.gt2.gar.parse.zip.GarZipFile;
 public class ParseApplication implements CommandLineRunner {
     @Value("${gar.parse.batch:1000}")
     private int batchSize;
+
+    @Autowired
+    private FileInfoService fileInfoService;
 
     public static void main(String... args) {
         SpringApplication.run(ParseApplication.class, args);
@@ -65,6 +70,7 @@ public class ParseApplication implements CommandLineRunner {
                 System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size()));
         System.out.println();
 
+        System.out.println(fileInfoService.getLast());
 
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
         process(garZipFile, atProcessor, atCounter);
