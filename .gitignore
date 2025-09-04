@@ -1,8 +1,9 @@
-# Служебные директории
-fias/xsd/
-fias/data/
+# D
 target/
 
-# IntelliJ IDEA и продукты на её основе.
+# IntelliJ IDEA and products based on it.
 .idea/
 *.iml
+
+# Visual Studio Code and products based on it.
+settings.json
