@@ -6,6 +6,7 @@ import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
+import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.GarType;
 
 import java.util.function.BiFunction;
@@ -28,6 +29,8 @@ public class XMLAttrMapper<T> {
             "ApartmentTypes", "ApartmentType", ApartmentType.class, GarType.APARTMENT_TYPES);
     public static final XMLAttrMapper<Apartment> APARTMENT = new XMLAttrMapper<>(
             "Apartments", "Apartment", Apartment.class, GarType.APARTMENTS, BOOL_ACTUAL_ACTIVE);
+    public static final XMLAttrMapper<OperationType> OPERATION_TYPE = new XMLAttrMapper<>(
+            "OperationTypes", "OperationType", OperationType.class, GarType.OPERATION_TYPES);
 
     public final String rootName;
     public final String elementName;

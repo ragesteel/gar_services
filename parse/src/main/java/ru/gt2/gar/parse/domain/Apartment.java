@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Информация о помещениях
+ * Помещение.
  * Основа — AS_APARTMENTS_2_251_05_04_01_01.xsd
  *
  * @param id Уникальный идентификатор записи. Ключевое поле

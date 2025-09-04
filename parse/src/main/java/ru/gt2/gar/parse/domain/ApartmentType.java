@@ -3,7 +3,7 @@ package ru.gt2.gar.parse.domain;
 import java.time.LocalDate;
 
 /**
- * Информация по типам помещений.
+ * Тип помещения.
  * Основа — AS_APARTMENT_TYPES_2_251_07_04_01_01.xsd
  *
  * @param id         Идентификатор типа (ключ).
