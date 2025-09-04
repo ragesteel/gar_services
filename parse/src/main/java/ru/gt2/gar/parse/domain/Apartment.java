@@ -1,13 +1,13 @@
-package ru.gt2.gar.parse.domain; // TODO Пока тут, а потом видимо нужно сделать модуль вроде gar-domain
+package ru.gt2.gar.parse.domain;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Классификатор адресообразующих элементов.
- * Основа — AS_ADDR_OBJ_2_251_01_04_01_01.xsd
+ * Информация о помещениях
+ * Основа — AS_APARTMENTS_2_251_05_04_01_01.xsd
  */
-public record AddressObject(
+public record Apartment(
         /**
          * Уникальный идентификатор записи. Ключевое поле
          */
@@ -29,23 +29,17 @@ public record AddressObject(
         long changeId,
 
         /**
-         * Наименование адресного объекта
-         * Длина: от 1 до 250 символов
-         */
-        String name,
-
-        /**
-         * Краткое наименование типа объекта
+         * Номер комнаты
          * Длина: от 1 до 50 символов
          */
-        String typeName,
+        String number,
 
         /**
-         * Уровень адресного объекта
-         * TODO почему String не понятно, да и regexp в схеме странный: [0-9]{1,10}
-         * Формат: число от 1 до 10 цифр
+         * Тип комнаты
+         * Формально хватило-бы и байта, но есть-ли смысл экономить.
+         * @see ApartmentType
          */
-        String level,
+        int apartType,
 
         /**
          * Статус действия над записью – причина появления записи

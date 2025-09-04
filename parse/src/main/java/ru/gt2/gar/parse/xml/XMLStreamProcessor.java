@@ -4,6 +4,7 @@ import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
+import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.domain.GarType;
 
@@ -37,6 +38,10 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<ApartmentType> forApartmentType(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.APARTMENT_TYPE, batchSize);
+    }
+
+    public static XMLStreamProcessor<Apartment> forApartment(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.APARTMENT, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

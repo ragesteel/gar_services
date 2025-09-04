@@ -9,6 +9,7 @@ import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
+import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -41,6 +42,9 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<ApartmentType> atCounter = new ListCounter<>();
         XMLStreamProcessor<ApartmentType> atProcessor = XMLStreamProcessor.forApartmentType(batchSize);
 
+        ListCounter<Apartment> aCounter = new ListCounter<>();
+        XMLStreamProcessor<Apartment> aProcessor = XMLStreamProcessor.forApartment(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -57,7 +61,9 @@ public class ParseApplication implements CommandLineRunner {
                 System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size()));
         System.out.println();
 
-        // Сначала разбираем файли из корневого каталога — справочники по сути;
+        process(garZipFile, aProcessor, aCounter);
+
+        // Сначала разбираем файлы из корневого каталога — справочники по сути;
         process(garZipFile, atProcessor, atCounter);
         process(garZipFile, aotProcessor, aotCounter);
 
