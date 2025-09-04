@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.Closeable;
@@ -98,9 +99,16 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
 
     private T createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
-                .collect(Collectors.toMap(a -> a.getName().getLocalPart(),
-                        a -> valueProcessing.apply(a.getName().getLocalPart(), a.getValue())));
+                .collect(Collectors.toMap(XMLAttrReader::getAttrName, this::getAttrValue));
         return attrConverter.apply(attributes);
+    }
+
+    private static String getAttrName(Attribute a) {
+        return a.getName().getLocalPart();
+    }
+
+    private String getAttrValue(Attribute a) {
+        return valueProcessing.apply(getAttrName(a), a.getValue());
     }
 
     /**

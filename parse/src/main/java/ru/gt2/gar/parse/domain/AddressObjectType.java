@@ -31,6 +31,7 @@ public record AddressObjectType(
 
         /**
          * Описание
+         * Опциональное поле
          * Длина: от 0 до 250 символов
          */
         String desc,

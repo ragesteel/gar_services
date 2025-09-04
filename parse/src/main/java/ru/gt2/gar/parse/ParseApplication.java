@@ -9,6 +9,7 @@ import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
+import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -41,10 +42,14 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<AdmHierarchy> ahCounter = new ListCounter<>();
         XMLStreamProcessor<AdmHierarchy> ahProcessor = XMLStreamProcessor.forAdmHierarchy(batchSize);
 
+        ListCounter<ApartmentType> atCounter = new ListCounter<>();
+        XMLStreamProcessor<ApartmentType> atProcessor = XMLStreamProcessor.forApartmentType(batchSize);
+
+        /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
             aoProcessor.process(inputStream, aoCounter);
-        }
+        }*/
 
         GarZipFile garZipFile = new GarZipFile("C:/Gar/gar_xml_2025-08-29.zip");
         garZipFile.getVersion().ifPresentOrElse(
@@ -56,6 +61,8 @@ public class ParseApplication implements CommandLineRunner {
             System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size());
         });
         System.out.println();
+
+        process(garZipFile, atProcessor, atCounter);
 
         process(garZipFile, aoProcessor, aoCounter);
         process(garZipFile, aodProcessor, aodCounter);
