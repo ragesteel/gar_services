@@ -42,12 +42,30 @@ public class GarZipFile {
         zipFile = new ZipFile(fileName);
     }
 
-    public Stream<GarEntry> stream() {
+    public Stream<GarEntry> streamEntries() {
         if (null == entries) {
             fillEntries();
         }
 
         return entries.keySet().stream();
+    }
+
+    public InputStream getInputStream(GarEntry ge) throws IOException {
+        ZipEntry entry = entries.get(requireNonNull(ge));
+        if (null == entry) {
+            throw new IOException("ZipEntry not found: " + ge);
+        }
+        return zipFile.getInputStream(entry);
+    }
+
+    public Optional<GarVersion> getVersion() {
+        if (null == version) {
+            version = readVersion();
+        }
+        if (NO_VERSION.equals(version)) {
+            return Optional.empty();
+        }
+        return Optional.of(version);
     }
 
     public Map<GarType, FileStats> getStats() {
@@ -70,24 +88,6 @@ public class GarZipFile {
             entries.put(ge, ze);
             stats.merge(GarType.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
         });
-    }
-
-    public InputStream getInputStream(GarEntry ge) throws IOException {
-        ZipEntry entry = entries.get(requireNonNull(ge));
-        if (null == entry) {
-            throw new IOException("ZipEntry not found: " + ge);
-        }
-        return zipFile.getInputStream(entry);
-    }
-
-    public Optional<GarVersion> getVersion() {
-        if (null == version) {
-            version = readVersion();
-        }
-        if (NO_VERSION.equals(version)) {
-            return Optional.empty();
-        }
-        return Optional.of(version);
     }
 
     /* TODO что-то подобное нужно добавить, чтобы убедиться в том что мы распарсим всё что есть и что мы ничего не потеряли

@@ -86,7 +86,7 @@ public class ParseApplication implements CommandLineRunner {
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {
         String garTypeName = aodProcesser.getGarType().name();
-        garZipFile.stream()
+        garZipFile.streamEntries()
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
                     try (var is = garZipFile.getInputStream(ge)) {
