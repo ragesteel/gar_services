@@ -16,15 +16,15 @@ import static ru.gt2.gar.parse.xml.AttrConverter.NOTHING;
 // TODO Придумать более правильное название для этого класса, какая-нибудь GarParseData
 public class XMLAttrMapper<T> {
     public static final XMLAttrMapper<AddressObject> ADDRESS_OBJECT = new XMLAttrMapper<>(
-            "ADDRESSOBJECTS", "OBJECT", AddressObject.class, GarType.ADDR_OBJ, BOOL_ACTUAL_ACTIVE);
+            "AddressObjects", "Object", AddressObject.class, GarType.ADDR_OBJ, BOOL_ACTUAL_ACTIVE);
     public static final XMLAttrMapper<AddressObjectDivision> ADDRESS_OBJECT_DIVISION = new XMLAttrMapper<>(
-            "ITEMS", "ITEM", AddressObjectDivision.class, GarType.ADDR_OBJ_DIVISION);
+            "Items", "Item", AddressObjectDivision.class, GarType.ADDR_OBJ_DIVISION);
     public static final XMLAttrMapper<AddressObjectType> ADDRESS_OBJECT_TYPE = new XMLAttrMapper<>(
-            "ADDRESSOBJECTTYPES", "ADDRESSOBJECTTYPE", AddressObjectType.class, GarType.ADDR_OBJ_TYPES);
+            "AddressObjectTypes", "AddressObjectType", AddressObjectType.class, GarType.ADDR_OBJ_TYPES);
     public static final XMLAttrMapper<AdmHierarchy> ADM_HIERARCHY = new XMLAttrMapper<>(
-            "ITEMS", "ITEM", AdmHierarchy.class, GarType.ADM_HIERARCHY, BOOL_ACTIVE);
+            "Items", "Item", AdmHierarchy.class, GarType.ADM_HIERARCHY, BOOL_ACTIVE);
     public static final XMLAttrMapper<ApartmentType> APARTMENT_TYPE = new XMLAttrMapper<>(
-            "APARTMENTTYPES", "APARTMENTTYPE", ApartmentType.class, GarType.APARTMENT_TYPES);
+            "ApartmentTypes", "ApartmentType", ApartmentType.class, GarType.APARTMENT_TYPES);
 
     public final String rootName;
     public final String elementName;

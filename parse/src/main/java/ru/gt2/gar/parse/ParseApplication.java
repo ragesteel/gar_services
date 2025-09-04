@@ -62,11 +62,13 @@ public class ParseApplication implements CommandLineRunner {
         });
         System.out.println();
 
+        // Сначала разбираем файли из корненевого каталога — справочники по сути;
         process(garZipFile, atProcessor, atCounter);
+        process(garZipFile, aotProcessor, aotCounter);
 
+        // Потом идём уже по регионам
         process(garZipFile, aoProcessor, aoCounter);
         process(garZipFile, aodProcessor, aodCounter);
-        process(garZipFile, aotProcessor, aotCounter);
         process(garZipFile, ahProcessor, ahCounter);
     }
 
