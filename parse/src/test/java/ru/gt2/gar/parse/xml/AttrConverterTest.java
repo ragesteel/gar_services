@@ -10,7 +10,7 @@ class AttrConverterTest {
 
     @Test
     void testJackson() {
-        record RecordUnderTest(boolean isSomething) { };
+        record RecordUnderTest(boolean isSomething) { }
         AttrConverter<RecordUnderTest> jackson = AttrConverter.jackson(RecordUnderTest.class);
         RecordUnderTest trueField = new RecordUnderTest(true);
         RecordUnderTest falseField = new RecordUnderTest(false);

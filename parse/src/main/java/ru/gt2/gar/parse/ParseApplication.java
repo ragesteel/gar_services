@@ -14,10 +14,6 @@ import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 @Slf4j
 @SpringBootApplication
 public class ParseApplication implements CommandLineRunner {
@@ -57,12 +53,11 @@ public class ParseApplication implements CommandLineRunner {
                 () -> log.warn("Gar file does not contains version information"));
 
         // Однако да, один только распакованный файл будет весить 361 Гб.
-        garZipFile.getStats().forEach((garType, fileStats) -> {
-            System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size());
-        });
+        garZipFile.getStats().forEach((garType, fileStats) ->
+                System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size()));
         System.out.println();
 
-        // Сначала разбираем файли из корненевого каталога — справочники по сути;
+        // Сначала разбираем файли из корневого каталога — справочники по сути;
         process(garZipFile, atProcessor, atCounter);
         process(garZipFile, aotProcessor, aotCounter);
 
