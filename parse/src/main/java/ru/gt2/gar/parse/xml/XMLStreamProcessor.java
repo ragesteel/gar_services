@@ -13,6 +13,9 @@ import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.House;
 import ru.gt2.gar.parse.domain.MunHierarchy;
+import ru.gt2.gar.parse.domain.NormativeDocType;
+import ru.gt2.gar.parse.domain.NormativeDocKind;
+import ru.gt2.gar.parse.domain.NormativeDoc;
 
 import java.io.InputStream;
 import java.util.List;
@@ -72,6 +75,18 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<MunHierarchy> forMunHierarchy(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.MUN_HIERARCHY, batchSize);
+    }
+
+    public static XMLStreamProcessor<NormativeDoc> forNormativeDoc(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.NORMATIVE_DOC, batchSize);
+    }
+
+    public static XMLStreamProcessor<NormativeDocKind> forNormativeDocKind(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.NORMATIVE_DOC_KIND, batchSize);
+    }
+
+    public static XMLStreamProcessor<NormativeDocType> forNormativeDocType(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.NORMATIVE_DOC_TYPE, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

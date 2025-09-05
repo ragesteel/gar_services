@@ -18,6 +18,9 @@ import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.domain.MunHierarchy;
+import ru.gt2.gar.parse.domain.NormativeDocType;
+import ru.gt2.gar.parse.domain.NormativeDocKind;
+import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -74,6 +77,15 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<MunHierarchy> mhCounter = new ListCounter<>();
         XMLStreamProcessor<MunHierarchy> mhProcessor = XMLStreamProcessor.forMunHierarchy(batchSize);
 
+        ListCounter<NormativeDocType> ndtCounter = new ListCounter<>();
+        XMLStreamProcessor<NormativeDocType> ndtProcessor = XMLStreamProcessor.forNormativeDocType(batchSize);
+
+        ListCounter<NormativeDocKind> ndkCounter = new ListCounter<>();
+        XMLStreamProcessor<NormativeDocKind> ndkProcessor = XMLStreamProcessor.forNormativeDocKind(batchSize);
+
+        ListCounter<NormativeDoc> ndCounter = new ListCounter<>();
+        XMLStreamProcessor<NormativeDoc> ndProcessor = XMLStreamProcessor.forNormativeDoc(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -97,6 +109,9 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, aotProcessor, aotCounter);
         process(garZipFile, otProcessor, otCounter);
         process(garZipFile, htProcessor, htCounter);
+        
+        process(garZipFile, ndkProcessor, ndkCounter);
+        process(garZipFile, ndtProcessor, ndtCounter);
 
         // Потом идём уже по регионам
         /*
@@ -107,8 +122,9 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, cpProcessor, cpCounter);
         process(garZipFile, chProcessor, chCounter);
         process(garZipFile, hProcessor, hCounter);
-        */
         process(garZipFile, mhProcessor, mhCounter);
+        */
+        process(garZipFile, ndProcessor, ndCounter);
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {

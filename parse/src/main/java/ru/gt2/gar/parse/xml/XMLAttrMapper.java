@@ -13,6 +13,9 @@ import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.House;
 import ru.gt2.gar.parse.domain.MunHierarchy;
+import ru.gt2.gar.parse.domain.NormativeDocType;
+import ru.gt2.gar.parse.domain.NormativeDocKind;
+import ru.gt2.gar.parse.domain.NormativeDoc;
 
 import java.util.function.BiFunction;
 
@@ -46,6 +49,12 @@ public class XMLAttrMapper<T> {
             "Houses", "House", House.class, GarType.HOUSES, BOOL_ACTUAL_ACTIVE);
     public static final XMLAttrMapper<MunHierarchy> MUN_HIERARCHY = new XMLAttrMapper<>(
             "Items", "Item", MunHierarchy.class, GarType.MUN_HIERARCHY, BOOL_ACTIVE);
+    public static final XMLAttrMapper<NormativeDoc> NORMATIVE_DOC = new XMLAttrMapper<>(
+            "NormDocs", "NormDoc", NormativeDoc.class, GarType.NORMATIVE_DOCS);
+    public static final XMLAttrMapper<NormativeDocKind> NORMATIVE_DOC_KIND = new XMLAttrMapper<>(
+            "NDocKinds", "NDocKind", NormativeDocKind.class, GarType.NORMATIVE_DOCS_KINDS);
+    public static final XMLAttrMapper<NormativeDocType> NORMATIVE_DOC_TYPE = new XMLAttrMapper<>(
+            "NDocTypes", "NDocType", NormativeDocType.class, GarType.NORMATIVE_DOCS_TYPES);
 
     public final String rootName;
     public final String elementName;
