@@ -21,6 +21,7 @@ import ru.gt2.gar.parse.domain.MunHierarchy;
 import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
+import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -86,6 +87,9 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<NormativeDoc> ndCounter = new ListCounter<>();
         XMLStreamProcessor<NormativeDoc> ndProcessor = XMLStreamProcessor.forNormativeDoc(batchSize);
 
+        ListCounter<ObjectLevel> olCounter = new ListCounter<>();
+        XMLStreamProcessor<ObjectLevel> olProcessor = XMLStreamProcessor.forObjectLevel(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -109,9 +113,9 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, aotProcessor, aotCounter);
         process(garZipFile, otProcessor, otCounter);
         process(garZipFile, htProcessor, htCounter);
-        
         process(garZipFile, ndkProcessor, ndkCounter);
         process(garZipFile, ndtProcessor, ndtCounter);
+        process(garZipFile, olProcessor, olCounter);
 
         // Потом идём уже по регионам
         /*
@@ -123,8 +127,8 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, chProcessor, chCounter);
         process(garZipFile, hProcessor, hCounter);
         process(garZipFile, mhProcessor, mhCounter);
-        */
         process(garZipFile, ndProcessor, ndCounter);
+        */
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {
