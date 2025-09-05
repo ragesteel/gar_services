@@ -27,3 +27,9 @@
 ## Подобные проекты
 
 Если нужно что-то подобное, но на PHP, то можно посмотреть на [fias-gar-data-import-tool](https://github.com/SbWereWolf/fias-gar-data-import-tool).
+
+А если у вас PHP и Laravel, то есть проект [gar](https://github.com/IggorGor/gar), там не просто импорт данных, но ещё и некоторые операции по загрузке данных.
+
+Для PHP и Symphony тоже есть соответствующий компонент [fias-component](https://github.com/liquetsoft/fias-component).
+
+А ещё есть интересная штука — преобразование XML в SQL с помощью XSLT-преобразования.
