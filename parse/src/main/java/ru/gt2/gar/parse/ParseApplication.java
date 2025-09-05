@@ -17,6 +17,7 @@ import ru.gt2.gar.parse.domain.House;
 import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
+import ru.gt2.gar.parse.domain.MunHierarchy;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -70,6 +71,9 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<House> hCounter = new ListCounter<>();
         XMLStreamProcessor<House> hProcessor = XMLStreamProcessor.forHouse(batchSize);
 
+        ListCounter<MunHierarchy> mhCounter = new ListCounter<>();
+        XMLStreamProcessor<MunHierarchy> mhProcessor = XMLStreamProcessor.forMunHierarchy(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -102,10 +106,9 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, aProcessor, aCounter);
         process(garZipFile, cpProcessor, cpCounter);
         process(garZipFile, chProcessor, chCounter);
-        */
         process(garZipFile, hProcessor, hCounter);
-
-
+        */
+        process(garZipFile, mhProcessor, mhCounter);
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {

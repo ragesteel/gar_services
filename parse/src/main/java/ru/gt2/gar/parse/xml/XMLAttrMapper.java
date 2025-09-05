@@ -12,6 +12,7 @@ import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.House;
+import ru.gt2.gar.parse.domain.MunHierarchy;
 
 import java.util.function.BiFunction;
 
@@ -43,6 +44,8 @@ public class XMLAttrMapper<T> {
             "HouseTypes", "HouseType", HouseType.class, GarType.HOUSE_TYPES);
     public static final XMLAttrMapper<House> HOUSE = new XMLAttrMapper<>(
             "Houses", "House", House.class, GarType.HOUSES, BOOL_ACTUAL_ACTIVE);
+    public static final XMLAttrMapper<MunHierarchy> MUN_HIERARCHY = new XMLAttrMapper<>(
+            "Items", "Item", MunHierarchy.class, GarType.MUN_HIERARCHY, BOOL_ACTIVE);
 
     public final String rootName;
     public final String elementName;
