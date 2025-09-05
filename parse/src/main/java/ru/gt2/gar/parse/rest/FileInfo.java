@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Информация о выгрузке.
+ * При обработке нужно учитывать, что сервис может отдавать GarXMLDeltaURL при пустой GarXMLFullURL.
  *
  * @param versionId Идентификатор версии (для прямых выгрузок — дата вида yyyyMMdd)
  * @param textVersion Описание версии файла в текстовом виде
@@ -30,6 +31,5 @@ public record FileInfo(
         String GarXMLFullURL,
         String GarXMLDeltaUrl,
         LocalDateTime expDate,
-        String date
-) {
+        String date) {
 }

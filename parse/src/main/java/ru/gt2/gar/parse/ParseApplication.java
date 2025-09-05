@@ -14,6 +14,7 @@ import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.CarPlace;
+import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -58,6 +59,9 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<CarPlace> cpCounter = new ListCounter<>();
         XMLStreamProcessor<CarPlace> cpProcessor = XMLStreamProcessor.forCarPlace(batchSize);
 
+        ListCounter<ChangeHistory> chCounter = new ListCounter<>();
+        XMLStreamProcessor<ChangeHistory> chProcessor = XMLStreamProcessor.forChangeHistory(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -75,6 +79,8 @@ public class ParseApplication implements CommandLineRunner {
         System.out.println();
 
         System.out.println(fileInfoService.getLast());
+
+        process(garZipFile, chProcessor, chCounter);
 
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
         process(garZipFile, atProcessor, atCounter);
