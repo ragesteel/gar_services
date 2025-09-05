@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,13 +18,14 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Objects.requireNonNull;
 import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
 
 /**
  * Чтение данных из архива.
  */
-// В идеале-бы конечно сразу читать из потока и обрабатывать, но
 @Slf4j
 public class GarZipFile {
     private static final String VERSION = "version.txt";
@@ -77,8 +77,8 @@ public class GarZipFile {
     }
 
     private void fillEntries() {
-        entries = new HashMap<>();
-        stats = new HashMap<>();
+        entries = newHashMap();
+        stats = newLinkedHashMap();
 
         Streams.stream(zipFile.entries().asIterator()).forEach(ze -> {
             GarEntry ge = EntryNameMatcher.tryParse(ze.getName());
