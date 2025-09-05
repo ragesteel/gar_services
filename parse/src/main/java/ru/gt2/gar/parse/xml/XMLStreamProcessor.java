@@ -11,6 +11,7 @@ import ru.gt2.gar.parse.domain.GarType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
 import ru.gt2.gar.parse.domain.HouseType;
+import ru.gt2.gar.parse.domain.House;
 
 import java.io.InputStream;
 import java.util.List;
@@ -62,6 +63,10 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<HouseType> forHouseType(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.HOUSE_TYPE, batchSize);
+    }
+
+    public static XMLStreamProcessor<House> forHouse(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.HOUSE, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {
