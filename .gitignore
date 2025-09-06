@@ -3,6 +3,7 @@ target/
 
 # IntelliJ IDEA and products based on it.
 .idea/
+.gigaide/
 *.iml
 
 # Visual Studio Code and products based on it.

@@ -17,6 +17,7 @@ import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.ParamType;
 
 import java.io.InputStream;
 import java.util.List;
@@ -92,6 +93,10 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<ObjectLevel> forObjectLevel(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.OBJECT_LEVEL, batchSize);
+    }
+
+    public static XMLStreamProcessor<ParamType> forParamType(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.PARAM_TYPE, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

@@ -17,6 +17,7 @@ import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.ParamType;
 
 import java.util.function.BiFunction;
 
@@ -58,6 +59,8 @@ public class XMLAttrMapper<T> {
             "NDocTypes", "NDocType", NormativeDocType.class, GarType.NORMATIVE_DOCS_TYPES);
     public static final XMLAttrMapper<ObjectLevel> OBJECT_LEVEL = new XMLAttrMapper<>(
             "ObjectLevels", "ObjectLevel", ObjectLevel.class, GarType.OBJECT_LEVELS);
+    public static final XMLAttrMapper<ParamType> PARAM_TYPE = new XMLAttrMapper<>(
+            "ParamTypes", "ParamType", ParamType.class, GarType.PARAM_TYPES);
 
     public final String rootName;
     public final String elementName;
