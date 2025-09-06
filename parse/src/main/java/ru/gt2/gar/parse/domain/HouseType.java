@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Информация по признакам владения.
  * Основа — AS_HOUSE_TYPES_2_251_13_04_01_01.xsd
- *
+
  * @param id         Идентификатор типа (ключ)
  * @param name       Наименование; Длина: от 1 до 50 символов
  * @param shortName  Краткое наименование; Опциональное поле; Длина: от 1 до 20 символов (в XSD — до 50)
@@ -16,14 +16,14 @@ import java.time.LocalDate;
  * @param isActive   Статус активности
  */
 public record HouseType(
-    int id,
-    String name,
-    String shortName,
-    String desc,
-    LocalDate updateDate,
-    LocalDate startDate,
-    LocalDate endDate,
-    boolean isActive) {
+        int id,
+        String name,
+        String shortName,
+        String desc,
+        LocalDate updateDate,
+        LocalDate startDate,
+        LocalDate endDate,
+        boolean isActive) {
 }
 
 

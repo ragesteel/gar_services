@@ -17,6 +17,7 @@ import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 
 import java.io.InputStream;
@@ -97,6 +98,30 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<ParamType> forParamType(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.PARAM_TYPE, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forAddrObjParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ADDR_OBJ_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forHousesParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.HOUSES_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forApartmentsParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.APARTMENTS_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forRoomsParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ROOMS_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forSteadsParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.STEADS_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<Param> forCarPlacesParam(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.CARPLACES_PARAM, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

@@ -17,6 +17,7 @@ import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 
 import java.util.function.BiFunction;
@@ -61,6 +62,18 @@ public class XMLAttrMapper<T> {
             "ObjectLevels", "ObjectLevel", ObjectLevel.class, GarType.OBJECT_LEVELS);
     public static final XMLAttrMapper<ParamType> PARAM_TYPE = new XMLAttrMapper<>(
             "ParamTypes", "ParamType", ParamType.class, GarType.PARAM_TYPES);
+    public static final XMLAttrMapper<Param> ADDR_OBJ_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.ADDR_OBJ_PARAMS);
+    public static final XMLAttrMapper<Param> HOUSES_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.HOUSES_PARAMS);
+    public static final XMLAttrMapper<Param> APARTMENTS_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.APARTMENTS_PARAMS);
+    public static final XMLAttrMapper<Param> ROOMS_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.ROOMS_PARAMS);
+    public static final XMLAttrMapper<Param> STEADS_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.STEADS_PARAMS);
+    public static final XMLAttrMapper<Param> CARPLACES_PARAM = new XMLAttrMapper<>(
+            "Params", "Param", Param.class, GarType.CARPLACES_PARAMS);
 
     public final String rootName;
     public final String elementName;

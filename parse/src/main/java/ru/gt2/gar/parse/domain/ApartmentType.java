@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Тип помещения.
  * Основа — AS_APARTMENT_TYPES_2_251_07_04_01_01.xsd
- *
+
  * @param id         Идентификатор типа (ключ).
  * @param name       Наименование адресного объекта; Длина: от 1 до 100 символов
  * @param shortName  Краткое наименование; Опциональное поле; Длина: от 0 до 50 символов
@@ -16,12 +16,12 @@ import java.time.LocalDate;
  * @param isActive   Признак действующего адресного объекта
  */
 public record ApartmentType(
-    int id,
-    String name,
-    String shortName,
-    String desc,
-    LocalDate updateDate,
-    LocalDate startDate,
-    LocalDate endDate,
-    boolean isActive) {
+        int id,
+        String name,
+        String shortName,
+        String desc,
+        LocalDate updateDate,
+        LocalDate startDate,
+        LocalDate endDate,
+        boolean isActive) {
 }
