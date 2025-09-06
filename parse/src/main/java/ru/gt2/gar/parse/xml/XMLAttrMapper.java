@@ -20,6 +20,7 @@ import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
+import ru.gt2.gar.parse.domain.Room;
 import ru.gt2.gar.parse.domain.RoomType;
 
 import java.util.function.BiFunction;
@@ -80,6 +81,8 @@ public class XMLAttrMapper<T> {
             "Reestr_Objects", "Object", ReestrObject.class, GarType.REESTR_OBJECTS, BOOL_ACTIVE);
     public static final XMLAttrMapper<RoomType> ROOM_TYPE = new XMLAttrMapper<>(
             "RoomTypes", "RoomType", RoomType.class, GarType.ROOM_TYPES);
+    public static final XMLAttrMapper<Room> ROOM = new XMLAttrMapper<>(
+            "Rooms", "Room", Room.class, GarType.ROOMS, BOOL_ACTUAL_ACTIVE);
 
     public final String rootName;
     public final String elementName;

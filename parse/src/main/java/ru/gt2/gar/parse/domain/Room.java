@@ -4,19 +4,15 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Жилые строения (дома/сооружения).
- * Основа — AS_HOUSES_2_251_08_04_01_01.xsd
+ * Комната
+ * Основа — AS_ROOMS_2_251_15_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор объекта (число)
  * @param objectGuid Глобальный уникальный идентификатор объекта (UUID)
  * @param changeId   ID изменившей транзакции
- * @param houseNum   Номер дома; Опциональное поле; Длина: от 1 до 50 символов
- * @param addNum1    Дополнительный номер 1; Опциональное поле; Длина: от 1 до 50 символов
- * @param addNum2    Дополнительный номер 2; Опциональное поле; Длина: от 1 до 50 символов
- * @param houseType  Тип дома; {@link HouseType}
- * @param addType1   Тип дополнительного номера 1; {@link HouseType} видимо из ADD_HOUSE_TYPES
- * @param addType2   Тип дополнительного номера 2; {@link HouseType} видимо из ADD_HOUSE_TYPES
+ * @param number     Номер комнаты или офиса; Длина: от 1 до 50 символов
+ * @param roomType   Тип комнаты или офиса; {@link RoomType}
  * @param operTypeId Статус действия над записью – причина появления записи; {@link OperationType}
  * @param prevId     Идентификатор записи связывания с предыдущей исторической записью; Опциональное поле
  * @param nextId     Идентификатор записи связывания с последующей исторической записью; Опциональное поле
@@ -24,19 +20,15 @@ import java.util.UUID;
  * @param startDate  Начало действия записи
  * @param endDate    Окончание действия записи
  * @param isActual   Статус актуальности адресного объекта ФИАС
- * @param isActive   Статус активности
+ * @param isActive   Признак действующего адресного объекта
  */
-public record House(
+public record Room(
         long id,
         long objectId,
         UUID objectGuid,
         long changeId,
-        String houseNum,
-        String addNum1,
-        String addNum2,
-        int houseType,
-        Integer addType1,
-        Integer addType2,
+        String number,
+        int roomType,
         int operTypeId,
         Long prevId,
         Long nextId,
@@ -46,5 +38,3 @@ public record House(
         boolean isActual,
         boolean isActive) {
 }
-
-

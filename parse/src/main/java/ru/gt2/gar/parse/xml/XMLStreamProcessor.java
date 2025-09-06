@@ -20,6 +20,7 @@ import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
+import ru.gt2.gar.parse.domain.Room;
 import ru.gt2.gar.parse.domain.RoomType;
 
 import java.io.InputStream;
@@ -132,6 +133,10 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<RoomType> forRoomType(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.ROOM_TYPE, batchSize);
+    }
+
+    public static XMLStreamProcessor<Room> forRoom(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ROOM, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

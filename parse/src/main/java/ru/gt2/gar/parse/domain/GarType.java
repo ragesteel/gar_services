@@ -37,6 +37,6 @@ public enum GarType {
     // APARTMENT_TYPES, HOUSE_TYPES, OPERATION_TYPES тоже очень похожи, разница только в ограничиениях длины полей
     // PARAM_TYPES — тот-же набор, но вместо shortName поле называется code, ROOM_TYPES = APARTMENT_TYPES.
 
-    // Недокументированные, но имеющиеся в gar_xml 2025-08-29
+    // Недокументированные, но имеющиеся в gar_xml 2025-08-29, видимо тот-же набор полей, что и HOUSE_TYPES.
     ADDHOUSE_TYPES
 }

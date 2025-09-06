@@ -25,9 +25,10 @@ import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
+import ru.gt2.gar.parse.domain.Room;
 import ru.gt2.gar.parse.domain.RoomType;
 import ru.gt2.gar.parse.rest.FileInfoService;
-import ru.gt2.gar.parse.xml.ListCounter;
+import ru.gt2.gar.parse.consumer.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
@@ -121,6 +122,8 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<RoomType> rtCounter = new ListCounter<>();
         XMLStreamProcessor<RoomType> rtProcessor = XMLStreamProcessor.forRoomType(batchSize);
 
+        ListCounter<Room> rCounter = new ListCounter<>();
+        XMLStreamProcessor<Room> rProcessor = XMLStreamProcessor.forRoom(batchSize);
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -169,6 +172,7 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, cppProcessor, cppCounter);
         process(garZipFile, roProcessor, roCounter);
         */
+        process(garZipFile, rProcessor, rCounter);
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {
@@ -179,7 +183,7 @@ public class ParseApplication implements CommandLineRunner {
                     try (var is = garZipFile.getInputStream(ge)) {
                         aodProcesser.process(is, aodCounter);
                     } catch (Exception e) {
-                        log.warn("Unable to parse entry: " + ge, e);
+                        log.warn("Unable to parse entry: {}", ge, e);
                     }
                 });
         log.info("Total {} items read: {}", garTypeName, aodCounter.getCounter());
