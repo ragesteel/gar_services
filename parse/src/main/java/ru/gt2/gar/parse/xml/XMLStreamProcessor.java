@@ -19,6 +19,8 @@ import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
+import ru.gt2.gar.parse.domain.ReestrObject;
+import ru.gt2.gar.parse.domain.RoomType;
 
 import java.io.InputStream;
 import java.util.List;
@@ -122,6 +124,14 @@ public class XMLStreamProcessor<T> {
 
     public static XMLStreamProcessor<Param> forCarPlacesParam(int batchSize) {
         return new XMLStreamProcessor<>(XMLAttrMapper.CARPLACES_PARAM, batchSize);
+    }
+
+    public static XMLStreamProcessor<ReestrObject> forReestrObject(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.REESTR_OBJECT, batchSize);
+    }
+
+    public static XMLStreamProcessor<RoomType> forRoomType(int batchSize) {
+        return new XMLStreamProcessor<>(XMLAttrMapper.ROOM_TYPE, batchSize);
     }
 
     private XMLStreamProcessor(XMLAttrMapper<T> mapper, int batchSize) {

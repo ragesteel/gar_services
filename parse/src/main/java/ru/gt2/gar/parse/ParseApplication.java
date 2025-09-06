@@ -24,6 +24,8 @@ import ru.gt2.gar.parse.domain.NormativeDoc;
 import ru.gt2.gar.parse.domain.ObjectLevel;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
+import ru.gt2.gar.parse.domain.ReestrObject;
+import ru.gt2.gar.parse.domain.RoomType;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -113,6 +115,12 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<Param> cppCounter = new ListCounter<>();
         XMLStreamProcessor<Param> cppProcessor = XMLStreamProcessor.forCarPlacesParam(batchSize);
 
+        ListCounter<ReestrObject> roCounter = new ListCounter<>();
+        XMLStreamProcessor<ReestrObject> roProcessor = XMLStreamProcessor.forReestrObject(batchSize);
+
+        ListCounter<RoomType> rtCounter = new ListCounter<>();
+        XMLStreamProcessor<RoomType> rtProcessor = XMLStreamProcessor.forRoomType(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -140,6 +148,7 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, ndtProcessor, ndtCounter);
         process(garZipFile, olProcessor, olCounter);
         process(garZipFile, ptProcessor, ptCounter);
+        process(garZipFile, rtProcessor, rtCounter);
 
         // Потом идём уже по регионам
         /*
@@ -152,13 +161,14 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, hProcessor, hCounter);
         process(garZipFile, mhProcessor, mhCounter);
         process(garZipFile, ndProcessor, ndCounter);
-        */
         process(garZipFile, aopProcessor, aopCounter);
         process(garZipFile, hpProcessor, hpCounter);
         process(garZipFile, apProcessor, apCounter);
         process(garZipFile, rpProcessor, rpCounter);
         process(garZipFile, spProcessor, spCounter);
         process(garZipFile, cppProcessor, cppCounter);
+        process(garZipFile, roProcessor, roCounter);
+        */
     }
 
     private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {
