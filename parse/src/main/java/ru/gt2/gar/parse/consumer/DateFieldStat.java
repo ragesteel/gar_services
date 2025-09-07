@@ -2,11 +2,10 @@ package ru.gt2.gar.parse.consumer;
 
 import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 
 public class DateFieldStat extends AbstractFieldStat {
-    private LocalDate minValue = LocalDate.MAX;
-    private LocalDate maxValue = LocalDate.MIN;
-    private boolean hasMinMax = false;
+    private final MinMaxStat<ChronoLocalDate> minMax = new MinMaxStat<>();
 
     public DateFieldStat(RecordComponent recordComponent) {
         super(recordComponent);
@@ -15,21 +14,12 @@ public class DateFieldStat extends AbstractFieldStat {
     @Override
     public void accept(Record record) {
         LocalDate value = (LocalDate) invokeAccessor(record);
-        if (value.isBefore(minValue)) {
-            minValue = value;
-        }
-        if (value.isAfter(maxValue)) {
-            maxValue = value;
-        }
-        hasMinMax = true;
+        minMax.update(value);
     }
 
     @Override
     public String toString() {
         StringBuilder resultBuilder = new StringBuilder(name).append(", date");
-        if (hasMinMax) {
-            resultBuilder.append(", ").append(minValue).append(" … ").append(maxValue);
-        }
-        return resultBuilder.toString();
+        return minMax.addTo(resultBuilder, "").toString();
     }
 }

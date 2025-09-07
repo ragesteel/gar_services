@@ -3,8 +3,7 @@ package ru.gt2.gar.parse.consumer;
 import java.lang.reflect.RecordComponent;
 
 public class IntFieldStat extends AbstractFieldStat {
-    private int minValue = Integer.MAX_VALUE;
-    private int maxValue =  Integer.MIN_VALUE;
+    private final MinMaxStat<Integer> minMax = new MinMaxStat<>();
 
     public IntFieldStat(RecordComponent recordComponent) {
         super(recordComponent);
@@ -12,13 +11,13 @@ public class IntFieldStat extends AbstractFieldStat {
 
     @Override
     public void accept(Record record) {
-            int value = (int) invokeAccessor(record);
-            minValue = Math.min(minValue, value);
-            maxValue = Math.max(maxValue, value);
+        int value = (int) invokeAccessor(record);
+        minMax.update(value);
     }
 
     @Override
     public String toString() {
-        return String.format("%s, int, %d … %d", name, minValue, maxValue);
+        StringBuilder resultBuilder = new StringBuilder(name).append(", int");
+        return minMax.addTo(resultBuilder, ", ").toString();
     }
 }
