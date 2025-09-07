@@ -6,6 +6,7 @@ public class StringFieldStat extends AbstractFieldStat {
     private int maxLen = 0;
     private int minLen = Integer.MAX_VALUE;
     private boolean hasMinMax = false;
+
     private int emptyCount = 0;
 
     public StringFieldStat(RecordComponent recordComponent) {
@@ -27,8 +28,7 @@ public class StringFieldStat extends AbstractFieldStat {
 
     @Override
     public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name)
-                .append(", string");
+        StringBuilder resultBuilder = new StringBuilder(name).append(", string");
         if (hasMinMax) {
             resultBuilder.append(", length ").append(minLen).append(" … ").append(maxLen);
         }

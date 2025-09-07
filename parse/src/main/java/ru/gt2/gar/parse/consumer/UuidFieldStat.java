@@ -13,6 +13,6 @@ public class UuidFieldStat extends AbstractFieldStat {
     }
 
     public String toString() {
-        return name;
+        return name + ", uuid";
     }
 }

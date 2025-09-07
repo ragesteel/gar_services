@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class DateFieldStat extends AbstractFieldStat {
     private LocalDate minValue = LocalDate.MAX;
     private LocalDate maxValue = LocalDate.MIN;
+    private boolean hasMinMax = false;
 
     public DateFieldStat(RecordComponent recordComponent) {
         super(recordComponent);
@@ -20,10 +21,15 @@ public class DateFieldStat extends AbstractFieldStat {
         if (value.isAfter(maxValue)) {
             maxValue = value;
         }
+        hasMinMax = true;
     }
 
     @Override
     public String toString() {
-        return String.format("%s, date, %s … %s", name, minValue, maxValue);
+        StringBuilder resultBuilder = new StringBuilder(name).append(", date");
+        if (hasMinMax) {
+            resultBuilder.append(", ").append(minValue).append(" … ").append(maxValue);
+        }
+        return resultBuilder.toString();
     }
 }

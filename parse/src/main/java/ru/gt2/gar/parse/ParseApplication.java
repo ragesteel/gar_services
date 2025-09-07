@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse;
 
+import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,8 +96,7 @@ public class ParseApplication implements CommandLineRunner {
                 System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size()));
         System.out.println();
 
-        System.out.println(fileInfoService.getLast());
-
+        Stopwatch stopwatch = Stopwatch.createStarted();
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
         process(garZipFile, atProcessor);
         process(garZipFile, aotProcessor);
@@ -128,6 +128,9 @@ public class ParseApplication implements CommandLineRunner {
         process(garZipFile, roProcessor);
         process(garZipFile, rProcessor);
         process(garZipFile, sProcessor);
+        System.out.printf("Total time elapsed: %s%n", stopwatch);
+
+        System.out.println(fileInfoService.getLast());
     }
 
     private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor<T> processor) {
