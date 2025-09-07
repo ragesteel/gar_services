@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNullElseGet;
@@ -48,6 +49,8 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
         Class<?> type = recordComponent.getType();
         if (long.class.equals(type)) {
             return Optional.of(new LongFieldStat(recordComponent));
+        } else if (Long.class.equals(type)) {
+            return Optional.of(new NullableFieldStat(new LongFieldStat(recordComponent)));
         } else if (int.class.equals(type)) {
             return Optional.of(new IntFieldStat(recordComponent));
         } else if (String.class.equals(type)) {
@@ -56,6 +59,8 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
             return Optional.of(new BoolFieldStat(recordComponent));
         } else if (LocalDate.class.equals(type)) {
             return Optional.of(new DateFieldStat(recordComponent));
+        } else if (UUID.class.equals(type)) {
+            return Optional.of(new NullableFieldStat(new UuidFieldStat(recordComponent)));
         } else {
             log.warn("Unsupported type: {}", type);
             return Optional.empty();
