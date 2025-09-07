@@ -22,6 +22,7 @@ import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
 import ru.gt2.gar.parse.domain.Room;
 import ru.gt2.gar.parse.domain.RoomType;
+import ru.gt2.gar.parse.domain.Stead;
 
 import java.util.function.BiFunction;
 
@@ -83,6 +84,10 @@ public class XMLAttrMapper<T> {
             "RoomTypes", "RoomType", RoomType.class, GarType.ROOM_TYPES);
     public static final XMLAttrMapper<Room> ROOM = new XMLAttrMapper<>(
             "Rooms", "Room", Room.class, GarType.ROOMS, BOOL_ACTUAL_ACTIVE);
+    public static final XMLAttrMapper<Stead> STEAD = new XMLAttrMapper<>(
+            "Steads", "Stead", Stead.class, GarType.STEADS, BOOL_ACTUAL_ACTIVE);
+    public static final XMLAttrMapper<HouseType> ADD_HOUSE_TYPE = new XMLAttrMapper<>(
+            "HouseTypes", "HouseType", HouseType.class, GarType.ADDHOUSE_TYPES);
 
     public final String rootName;
     public final String elementName;
