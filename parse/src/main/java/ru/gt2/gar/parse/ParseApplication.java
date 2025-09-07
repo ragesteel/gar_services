@@ -7,7 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.gt2.gar.parse.consumer.EntityStats;
-import ru.gt2.gar.parse.consumer.ListCounter;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
@@ -34,9 +33,6 @@ import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 @Slf4j
 @SpringBootApplication
 public class ParseApplication implements CommandLineRunner {
@@ -52,88 +48,35 @@ public class ParseApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ListCounter<AddressObject> aoCounter = new ListCounter<>();
         XMLStreamProcessor<AddressObject> aoProcessor = XMLStreamProcessor.forAddressObject(batchSize);
-
-        ListCounter<AddressObjectDivision> aodCounter = new ListCounter<>();
         XMLStreamProcessor<AddressObjectDivision> aodProcessor = XMLStreamProcessor.forAddressObjectDivision(batchSize);
-
-        ListCounter<AddressObjectType> aotCounter = new ListCounter<>();
         XMLStreamProcessor<AddressObjectType> aotProcessor = XMLStreamProcessor.forAddressObjectType(batchSize);
-
-        ListCounter<AdmHierarchy> ahCounter = new ListCounter<>();
         XMLStreamProcessor<AdmHierarchy> ahProcessor = XMLStreamProcessor.forAdmHierarchy(batchSize);
-
-        ListCounter<ApartmentType> atCounter = new ListCounter<>();
         XMLStreamProcessor<ApartmentType> atProcessor = XMLStreamProcessor.forApartmentType(batchSize);
-
-        ListCounter<Apartment> aCounter = new ListCounter<>();
         XMLStreamProcessor<Apartment> aProcessor = XMLStreamProcessor.forApartment(batchSize);
-
-        ListCounter<OperationType> otCounter = new ListCounter<>();
         XMLStreamProcessor<OperationType> otProcessor = XMLStreamProcessor.forOperationType(batchSize);
-
-        ListCounter<CarPlace> cpCounter = new ListCounter<>();
         XMLStreamProcessor<CarPlace> cpProcessor = XMLStreamProcessor.forCarPlace(batchSize);
-
-        ListCounter<ChangeHistory> chCounter = new ListCounter<>();
         XMLStreamProcessor<ChangeHistory> chProcessor = XMLStreamProcessor.forChangeHistory(batchSize);
-
-        ListCounter<HouseType> htCounter = new ListCounter<>();
         XMLStreamProcessor<HouseType> htProcessor = XMLStreamProcessor.forHouseType(batchSize);
-
-        ListCounter<House> hCounter = new ListCounter<>();
         XMLStreamProcessor<House> hProcessor = XMLStreamProcessor.forHouse(batchSize);
-
-        ListCounter<MunHierarchy> mhCounter = new ListCounter<>();
         XMLStreamProcessor<MunHierarchy> mhProcessor = XMLStreamProcessor.forMunHierarchy(batchSize);
-
-        ListCounter<NormativeDocType> ndtCounter = new ListCounter<>();
         XMLStreamProcessor<NormativeDocType> ndtProcessor = XMLStreamProcessor.forNormativeDocType(batchSize);
-
-        ListCounter<NormativeDocKind> ndkCounter = new ListCounter<>();
         XMLStreamProcessor<NormativeDocKind> ndkProcessor = XMLStreamProcessor.forNormativeDocKind(batchSize);
-
-        ListCounter<NormativeDoc> ndCounter = new ListCounter<>();
         XMLStreamProcessor<NormativeDoc> ndProcessor = XMLStreamProcessor.forNormativeDoc(batchSize);
-
-        ListCounter<ObjectLevel> olCounter = new ListCounter<>();
         XMLStreamProcessor<ObjectLevel> olProcessor = XMLStreamProcessor.forObjectLevel(batchSize);
-
-        ListCounter<ParamType> ptCounter = new ListCounter<>();
         XMLStreamProcessor<ParamType> ptProcessor = XMLStreamProcessor.forParamType(batchSize);
-
-        ListCounter<Param> aopCounter = new ListCounter<>();
         XMLStreamProcessor<Param> aopProcessor = XMLStreamProcessor.forAddrObjParam(batchSize);
-
-        ListCounter<Param> hpCounter = new ListCounter<>();
         XMLStreamProcessor<Param> hpProcessor = XMLStreamProcessor.forHousesParam(batchSize);
-
-        ListCounter<Param> apCounter = new ListCounter<>();
         XMLStreamProcessor<Param> apProcessor = XMLStreamProcessor.forApartmentsParam(batchSize);
-
-        ListCounter<Param> rpCounter = new ListCounter<>();
         XMLStreamProcessor<Param> rpProcessor = XMLStreamProcessor.forRoomsParam(batchSize);
-
-        ListCounter<Param> spCounter = new ListCounter<>();
         XMLStreamProcessor<Param> spProcessor = XMLStreamProcessor.forSteadsParam(batchSize);
-
-        ListCounter<Param> cppCounter = new ListCounter<>();
         XMLStreamProcessor<Param> cppProcessor = XMLStreamProcessor.forCarPlacesParam(batchSize);
-
-        ListCounter<ReestrObject> roCounter = new ListCounter<>();
         XMLStreamProcessor<ReestrObject> roProcessor = XMLStreamProcessor.forReestrObject(batchSize);
-
-        ListCounter<RoomType> rtCounter = new ListCounter<>();
         XMLStreamProcessor<RoomType> rtProcessor = XMLStreamProcessor.forRoomType(batchSize);
-
-        ListCounter<Room> rCounter = new ListCounter<>();
         XMLStreamProcessor<Room> rProcessor = XMLStreamProcessor.forRoom(batchSize);
-
-        ListCounter<Stead> sCounter = new ListCounter<>();
         XMLStreamProcessor<Stead> sProcessor = XMLStreamProcessor.forStead(batchSize);
-
         XMLStreamProcessor<HouseType> ahtProcessor = XMLStreamProcessor.forAddHouseType(batchSize);
+
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -153,63 +96,55 @@ public class ParseApplication implements CommandLineRunner {
         System.out.println(fileInfoService.getLast());
 
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
-        process(garZipFile, atProcessor, new EntityStats<>());
-        process(garZipFile, aotProcessor, new EntityStats<>());
-        process(garZipFile, otProcessor, new EntityStats<>());
-        process(garZipFile, htProcessor, new EntityStats<>());
-        process(garZipFile, ndkProcessor, new EntityStats<>());
-        process(garZipFile, ndtProcessor, new EntityStats<>());
-        process(garZipFile, olProcessor, new EntityStats<>());
-        process(garZipFile, ptProcessor, new EntityStats<>());
-        process(garZipFile, rtProcessor, new EntityStats<>());
-        process(garZipFile, ahtProcessor, new EntityStats<>());
+        process(garZipFile, atProcessor);
+        process(garZipFile, aotProcessor);
+        process(garZipFile, otProcessor);
+        process(garZipFile, htProcessor);
+        process(garZipFile, ndkProcessor);
+        process(garZipFile, ndtProcessor);
+        process(garZipFile, olProcessor);
+        process(garZipFile, ptProcessor);
+        process(garZipFile, rtProcessor);
+        process(garZipFile, ahtProcessor);
 
         // Потом идём уже по регионам
-        /*
-        process(garZipFile, aoProcessor, aoCounter);
-        process(garZipFile, aodProcessor, aodCounter);
-        process(garZipFile, ahProcessor, ahCounter);
-        process(garZipFile, aProcessor, aCounter);
-        process(garZipFile, cpProcessor, cpCounter);
-        process(garZipFile, chProcessor, chCounter);
-        process(garZipFile, hProcessor, hCounter);
-        process(garZipFile, mhProcessor, mhCounter);
-        process(garZipFile, ndProcessor, ndCounter);
-        process(garZipFile, aopProcessor, aopCounter);
-        process(garZipFile, hpProcessor, hpCounter);
-        process(garZipFile, apProcessor, apCounter);
-        process(garZipFile, rpProcessor, rpCounter);
-        process(garZipFile, spProcessor, spCounter);
-        process(garZipFile, cppProcessor, cppCounter);
-        process(garZipFile, roProcessor, roCounter);
-        process(garZipFile, rProcessor, rCounter);
-        process(garZipFile, sProcessor, sCounter);
-        */
+        process(garZipFile, aoProcessor);
+        process(garZipFile, aodProcessor);
+        process(garZipFile, ahProcessor);
+        process(garZipFile, aProcessor);
+        process(garZipFile, cpProcessor);
+        process(garZipFile, chProcessor);
+        process(garZipFile, hProcessor);
+        process(garZipFile, mhProcessor);
+        process(garZipFile, ndProcessor);
+        process(garZipFile, aopProcessor);
+        process(garZipFile, hpProcessor);
+        process(garZipFile, apProcessor);
+        process(garZipFile, rpProcessor);
+        process(garZipFile, spProcessor);
+        process(garZipFile, cppProcessor);
+        process(garZipFile, roProcessor);
+        process(garZipFile, rProcessor);
+        process(garZipFile, sProcessor);
     }
 
-    private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor<T> processor, Consumer<List<T>> consumer) {
+    private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor<T> processor) {
+        EntityStats<T> stats = new EntityStats<>();
+
         String garTypeName = processor.getGarType().name();
         garZipFile.streamEntries()
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
                     try (var is = garZipFile.getInputStream(ge)) {
-                        processor.process(is, consumer);
+                        processor.process(is, stats);
                     } catch (Exception e) {
                         log.warn("Unable to parse entry: {}", ge, e);
                     }
                 });
-        switch (consumer) {
-            case ListCounter<T> counter -> {
-                log.info("Total {} items read: {}", garTypeName, counter.getCounter());
-            }
-            case EntityStats<T> stats -> {
-                System.out.printf("%s, total: %d%n", garTypeName, stats.getCount());
-                stats.getFieldStats().forEach(fs -> {
-                    System.out.println("  " + fs);
-                });
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + consumer);
-        }
-        // log.info("Total {} items read: {}", garTypeName, consumer.getCounter());
+
+        System.out.printf("%s, total: %d%n", garTypeName, stats.getCount());
+        stats.getFieldStats().forEach(fs -> {
+            System.out.println("  " + fs);
+        });
     }
 }
