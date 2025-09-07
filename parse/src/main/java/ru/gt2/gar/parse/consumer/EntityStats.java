@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse.consumer;
 
+import com.google.common.base.Stopwatch;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,9 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
     private List<FieldStat> fieldStats;
     @Getter
     private int count;
+
+    @Getter
+    private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     @Override
     public void accept(List<T> entities) {
@@ -43,6 +47,7 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
                 .map(EntityStats::createFieldStat)
                 .flatMap(Optional::stream)
                 .toList();
+         stopwatch.start();
     }
 
     private static Optional<FieldStat> createFieldStat(RecordComponent recordComponent) {

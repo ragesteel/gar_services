@@ -15,6 +15,7 @@ import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
+import ru.gt2.gar.parse.domain.GarType;
 import ru.gt2.gar.parse.domain.House;
 import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.MunHierarchy;
@@ -31,6 +32,7 @@ import ru.gt2.gar.parse.domain.RoomType;
 import ru.gt2.gar.parse.domain.Stead;
 import ru.gt2.gar.parse.rest.FileInfoService;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
+import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
 @Slf4j
@@ -131,7 +133,10 @@ public class ParseApplication implements CommandLineRunner {
     private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor<T> processor) {
         EntityStats<T> stats = new EntityStats<>();
 
-        String garTypeName = processor.getGarType().name();
+        GarType garType = processor.getGarType();
+        String garTypeName = garType.name();
+        FileStats fileStats = garZipFile.getStats().get(garType);
+        System.out.printf("%s, file(s) count %d, file(s) size %d, ", garTypeName, fileStats.count(), fileStats.size());
         garZipFile.streamEntries()
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
@@ -142,7 +147,7 @@ public class ParseApplication implements CommandLineRunner {
                     }
                 });
 
-        System.out.printf("%s, total: %d%n", garTypeName, stats.getCount());
+        System.out.printf("total record(s): %d, elapsed: %s%n", stats.getCount(), stats.getStopwatch());
         stats.getFieldStats().forEach(fs -> {
             System.out.println("  " + fs);
         });
