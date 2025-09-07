@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -13,7 +15,7 @@ import java.util.UUID;
  * @param changeId   ID изменившей транзакции
  * @param name       Наименование адресного объекта; Длина: от 1 до 250 символов
  * @param typeName   Краткое наименование типа объекта; Длина: от 1 до 50 символов
- * @param level      Уровень адресного объект;. Формат: число от 1 до 10 цифр TODO почему String не понятно, да и regexp в схеме странный: [0-9]{1,10}
+ * @param level      Уровень адресного объекта. Формат: число от 1 до 10 цифр TODO почему String не понятно, да и regexp в схеме странный: [0-9]{1,10}
  * @param operTypeId Статус действия над записью – причина появления записи. {@link OperationType}
  * @param prevId     Идентификатор записи связывания с предыдущей исторической записью; Опциональное поле
  * @param nextId     Идентификатор записи связывания с последующей исторической записью; Опциональное поле
@@ -32,8 +34,8 @@ public record AddressObject(
         String typeName,
         String level,
         int operTypeId,
-        Long prevId,
-        Long nextId,
+        @Nullable Long prevId,
+        @Nullable Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

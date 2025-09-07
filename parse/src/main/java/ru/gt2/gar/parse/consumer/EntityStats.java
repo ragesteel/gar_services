@@ -52,31 +52,31 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
     }
 
     private static Optional<FieldStat> createOptionalFieldStat(RecordComponent recordComponent) {
-        return Optional.ofNullable(createFieldStat(recordComponent));
+        AbstractFieldStat fieldStat = createFieldStat(recordComponent);
+        if (null != fieldStat) {
+            Nullable nullable = recordComponent.getAnnotation(Nullable.class);
+            if (null != nullable) {
+                return Optional.of(new NullableFieldStat(fieldStat));
+            }
+        }
+        return Optional.ofNullable(fieldStat);
     }
 
     @Nullable
-    private static FieldStat createFieldStat(RecordComponent recordComponent) {
+    private static AbstractFieldStat createFieldStat(RecordComponent recordComponent) {
         Class<?> type = recordComponent.getType();
-        // TODO тут-бы хорошо оборачивать в Nullable только те поля, который опициональны по спецификации,
-        //  а для него видимо нужно воспользоваться JSpecify
-
-        if (long.class.equals(type)) {
+        if (long.class.equals(type) || Long.class.equals(type)) {
             return new LongFieldStat(recordComponent);
-        } else if (Long.class.equals(type)) {
-            return new NullableFieldStat(new LongFieldStat(recordComponent));
-        } else if (int.class.equals(type)) {
+        } else if (int.class.equals(type) || Integer.class.equals(type)) {
             return new IntFieldStat(recordComponent);
-        } else if (Integer.class.equals(type)) {
-            return new NullableFieldStat(new IntFieldStat(recordComponent));
         } else if (String.class.equals(type)) {
-            return new NullableFieldStat(new StringFieldStat(recordComponent));
+            return new StringFieldStat(recordComponent);
         } else if (boolean.class.equals(type)) {
             return new BoolFieldStat(recordComponent);
         } else if (LocalDate.class.equals(type)) {
-            return new NullableFieldStat(new DateFieldStat(recordComponent));
+            return new DateFieldStat(recordComponent);
         } else if (UUID.class.equals(type)) {
-            return new NullableFieldStat(new UuidFieldStat(recordComponent));
+            return new UuidFieldStat(recordComponent);
         } else {
             log.warn("Unsupported type: {}", type);
             return null;

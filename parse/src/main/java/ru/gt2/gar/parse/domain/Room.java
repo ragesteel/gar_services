@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -30,8 +32,8 @@ public record Room(
         String number,
         int roomType,
         int operTypeId,
-        Long prevId,
-        Long nextId,
+        @Nullable Long prevId,
+        @Nullable Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

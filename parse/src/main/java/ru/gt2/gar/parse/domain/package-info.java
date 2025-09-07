@@ -12,4 +12,7 @@
 
  Все называния — в форме единственного числа, просто для разнообразия.
 */
+@NullMarked
 package ru.gt2.gar.parse.domain;
+
+import org.jspecify.annotations.NullMarked;

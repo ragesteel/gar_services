@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 
 /**
@@ -21,7 +23,7 @@ public record AddressObjectType(
         int level,
         String shortName,
         String name,
-        String desc,
+        @Nullable String desc,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

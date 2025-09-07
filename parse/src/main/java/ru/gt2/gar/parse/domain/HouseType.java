@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 
 /**
@@ -18,8 +20,8 @@ import java.time.LocalDate;
 public record HouseType(
         int id,
         String name,
-        String shortName,
-        String desc,
+        @Nullable String shortName,
+        @Nullable String desc,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,
