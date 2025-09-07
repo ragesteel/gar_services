@@ -6,22 +6,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ru.gt2.gar.parse.consumer.EntityStats;
+import ru.gt2.gar.parse.consumer.ListCounter;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
-import ru.gt2.gar.parse.domain.HouseType;
-import ru.gt2.gar.parse.domain.House;
-import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
+import ru.gt2.gar.parse.domain.House;
+import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.MunHierarchy;
-import ru.gt2.gar.parse.domain.NormativeDocType;
-import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
+import ru.gt2.gar.parse.domain.NormativeDocKind;
+import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
@@ -29,9 +31,11 @@ import ru.gt2.gar.parse.domain.Room;
 import ru.gt2.gar.parse.domain.RoomType;
 import ru.gt2.gar.parse.domain.Stead;
 import ru.gt2.gar.parse.rest.FileInfoService;
-import ru.gt2.gar.parse.consumer.ListCounter;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarZipFile;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 @Slf4j
 @SpringBootApplication
@@ -129,7 +133,6 @@ public class ParseApplication implements CommandLineRunner {
         ListCounter<Stead> sCounter = new ListCounter<>();
         XMLStreamProcessor<Stead> sProcessor = XMLStreamProcessor.forStead(batchSize);
 
-        ListCounter<HouseType> ahtCounter = new ListCounter<>();
         XMLStreamProcessor<HouseType> ahtProcessor = XMLStreamProcessor.forAddHouseType(batchSize);
         /*
         try (InputStream inputStream =
@@ -150,16 +153,16 @@ public class ParseApplication implements CommandLineRunner {
         System.out.println(fileInfoService.getLast());
 
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
-        process(garZipFile, atProcessor, atCounter);
-        process(garZipFile, aotProcessor, aotCounter);
-        process(garZipFile, otProcessor, otCounter);
-        process(garZipFile, htProcessor, htCounter);
-        process(garZipFile, ndkProcessor, ndkCounter);
-        process(garZipFile, ndtProcessor, ndtCounter);
-        process(garZipFile, olProcessor, olCounter);
-        process(garZipFile, ptProcessor, ptCounter);
-        process(garZipFile, rtProcessor, rtCounter);
-        process(garZipFile, ahtProcessor, ahtCounter);
+        process(garZipFile, atProcessor, new EntityStats<>());
+        process(garZipFile, aotProcessor, new EntityStats<>());
+        process(garZipFile, otProcessor, new EntityStats<>());
+        process(garZipFile, htProcessor, new EntityStats<>());
+        process(garZipFile, ndkProcessor, new EntityStats<>());
+        process(garZipFile, ndtProcessor, new EntityStats<>());
+        process(garZipFile, olProcessor, new EntityStats<>());
+        process(garZipFile, ptProcessor, new EntityStats<>());
+        process(garZipFile, rtProcessor, new EntityStats<>());
+        process(garZipFile, ahtProcessor, new EntityStats<>());
 
         // Потом идём уже по регионам
         /*
@@ -184,17 +187,29 @@ public class ParseApplication implements CommandLineRunner {
         */
     }
 
-    private static<T> void process(GarZipFile garZipFile, XMLStreamProcessor<T> aodProcesser, ListCounter<T> aodCounter) {
-        String garTypeName = aodProcesser.getGarType().name();
+    private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor<T> processor, Consumer<List<T>> consumer) {
+        String garTypeName = processor.getGarType().name();
         garZipFile.streamEntries()
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
                     try (var is = garZipFile.getInputStream(ge)) {
-                        aodProcesser.process(is, aodCounter);
+                        processor.process(is, consumer);
                     } catch (Exception e) {
                         log.warn("Unable to parse entry: {}", ge, e);
                     }
                 });
-        log.info("Total {} items read: {}", garTypeName, aodCounter.getCounter());
+        switch (consumer) {
+            case ListCounter<T> counter -> {
+                log.info("Total {} items read: {}", garTypeName, counter.getCounter());
+            }
+            case EntityStats<T> stats -> {
+                System.out.printf("%s, total: %d%n", garTypeName, stats.getCount());
+                stats.getFieldStats().forEach(fs -> {
+                    System.out.println("  " + fs);
+                });
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + consumer);
+        }
+        // log.info("Total {} items read: {}", garTypeName, consumer.getCounter());
     }
 }
