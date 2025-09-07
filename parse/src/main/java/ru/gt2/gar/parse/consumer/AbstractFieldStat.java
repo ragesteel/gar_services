@@ -12,10 +12,17 @@ public abstract class AbstractFieldStat implements FieldStat {
 
     protected final Method accessor;
 
-    protected  AbstractFieldStat(RecordComponent recordComponent) {
+    protected AbstractFieldStat(RecordComponent recordComponent) {
         name = recordComponent.getName();
         accessor = recordComponent.getAccessor();
     }
+
+    @Override
+    public void accept(Record record) {
+        acceptValue(invokeAccessor(record));
+    }
+
+    protected abstract void acceptValue(Object value);
 
     protected Object invokeAccessor(Record record) {
         try {

@@ -11,9 +11,9 @@ public class StringFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
-        String value = (String) invokeAccessor(record);
-        int valueLen = value.length();
+    public void acceptValue(Object value) {
+        String string = (String) value;
+        int valueLen = string.length();
         if (0 == valueLen) {
             emptyCount++;
         } else {

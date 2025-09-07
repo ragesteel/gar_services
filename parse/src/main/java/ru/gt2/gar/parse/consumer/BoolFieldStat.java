@@ -11,9 +11,8 @@ public class BoolFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
-            boolean value = (boolean) invokeAccessor(record);
-            if (value) {
+    public void acceptValue(Object value) {
+            if ((boolean) value) {
                 trueCount++;
             } else {
                 falseCount++;

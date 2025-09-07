@@ -12,9 +12,8 @@ public class DateFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
-        LocalDate value = (LocalDate) invokeAccessor(record);
-        minMax.update(value);
+    public void acceptValue(Object value) {
+        minMax.update((LocalDate) value);
     }
 
     @Override

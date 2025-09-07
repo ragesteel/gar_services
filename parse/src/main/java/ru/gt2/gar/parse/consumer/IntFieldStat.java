@@ -10,9 +10,8 @@ public class IntFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
-        int value = (int) invokeAccessor(record);
-        minMax.update(value);
+    public void acceptValue(Object value) {
+        minMax.update((int) value);
     }
 
     @Override

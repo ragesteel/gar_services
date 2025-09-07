@@ -8,7 +8,7 @@ public class UuidFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
+    public void acceptValue(Object value) {
         // nothing
     }
 

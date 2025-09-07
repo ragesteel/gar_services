@@ -20,7 +20,7 @@ public class NullableFieldStat implements FieldStat {
         if (object == null) {
             nullCount++;
         } else {
-            fieldStat.accept(record);
+            fieldStat.acceptValue(object);
         }
     }
 

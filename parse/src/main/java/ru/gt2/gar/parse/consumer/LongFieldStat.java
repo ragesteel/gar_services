@@ -10,9 +10,8 @@ public class LongFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public void accept(Record record) {
-        long value = (long) invokeAccessor(record);
-        minMax.update(value);
+    public void acceptValue(Object value) {
+        minMax.update((long) value);
     }
 
     @Override
