@@ -51,7 +51,7 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
         } else if (int.class.equals(type)) {
             return Optional.of(new IntFieldStat(recordComponent));
         } else if (String.class.equals(type)) {
-            return Optional.of(new StringFieldStat(recordComponent));
+            return Optional.of(new NullableFieldStat(new StringFieldStat(recordComponent)));
         } else if (boolean.class.equals(type)) {
             return Optional.of(new BoolFieldStat(recordComponent));
         } else if (LocalDate.class.equals(type)) {
