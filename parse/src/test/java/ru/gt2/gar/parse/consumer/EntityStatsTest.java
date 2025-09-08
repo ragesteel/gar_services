@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EntityStatsTest {
     @Test
-    void createOptionalFieldStat() {
+    public void createOptionalFieldStat() {
         Optional<RecordComponent> optionalHouseNum = findByName("houseNum");
         assertTrue(optionalHouseNum.isPresent());
         RecordComponent houseNum = optionalHouseNum.get();

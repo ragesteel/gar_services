@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
  * @param id         Идентификатор записи
  * @param objectId   Глобальный идентификатор адресного объекта
- * @param changeId   ID изменившей транзакции; Опциональное поле
+ * @param changeId   ID изменившей транзакции; Опционально
  * @param changeIdEnd ID завершившей транзакции
  * @param typeId     Типа параметра, {@link ParamType}
  * @param value      Значение параметра; Длина от 1 до 8000 символов

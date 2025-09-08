@@ -12,12 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNullElseGet;
 
 @Slf4j
-public class EntityStats<T extends Record> implements Consumer<List<T>> {
+public class EntityStats<T extends Record> implements ListConsumer<T> {
     private List<FieldStat> fieldStats;
     @Getter
     private int count;
@@ -27,19 +26,29 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
 
     @Override
     public void accept(List<T> entities) {
-        entities.forEach(this::accept);
+        entities.forEach(this::acceptEntity);
         count += entities.size();
     }
 
-    public void accept(T entity) {
-        if (null == fieldStats) {
-            createFieldStats(entity);
-        }
-        fieldStats.forEach(fieldStat -> fieldStat.accept(entity));
+    @Override
+    public void before() {
+        stopwatch.start();
+    }
+
+    @Override
+    public void after() {
+        stopwatch.stop();
     }
 
     public List<FieldStat> getFieldStats() {
         return requireNonNullElseGet(fieldStats, List::of);
+    }
+
+    protected void acceptEntity(T entity) {
+        if (null == fieldStats) {
+            createFieldStats(entity);
+        }
+        fieldStats.forEach(fieldStat -> fieldStat.accept(entity));
     }
 
     private void createFieldStats(T entity) {
@@ -47,7 +56,6 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
                 .map(EntityStats::createOptionalFieldStat)
                 .flatMap(Optional::stream)
                 .toList();
-        stopwatch.start();
     }
 
     @VisibleForTesting

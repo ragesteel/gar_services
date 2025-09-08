@@ -9,7 +9,9 @@ import java.time.LocalDate;
  * Основа — AS_NORMATIVE_DOCS_2_251_11_04_01_01.xsd
 
  * @param id         Идентификатор нормативного документа
- * @param name       Наименование документа; Длина: от 1 до 8000 символов
+ * @param name       Наименование документа; Опционально; Длина: от 1 до 8000 символов
+ *                   Хоть и в XSD и в Word-описании это поле обязательно,
+ *                   но в данных от 29.08.2029 куча записей без этого поля
  * @param date       Дата документа
  * @param number     Номер документа; Длина: от 1 до 150 символов (в word-описании длина до 20 символов)
  * @param type       Тип документа; {@link NormativeDocType}
@@ -23,7 +25,7 @@ import java.time.LocalDate;
  */
 public record NormativeDoc(
         long id,
-        String name,
+        @Nullable String name,
         LocalDate date,
         String number,
         int type,

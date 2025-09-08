@@ -1,22 +1,23 @@
 package ru.gt2.gar.parse.xml;
 
+import ru.gt2.gar.parse.consumer.ListConsumer;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
 import ru.gt2.gar.parse.domain.AddressObjectType;
 import ru.gt2.gar.parse.domain.AdmHierarchy;
 import ru.gt2.gar.parse.domain.Apartment;
 import ru.gt2.gar.parse.domain.ApartmentType;
-import ru.gt2.gar.parse.domain.OperationType;
-import ru.gt2.gar.parse.domain.GarType;
 import ru.gt2.gar.parse.domain.CarPlace;
 import ru.gt2.gar.parse.domain.ChangeHistory;
-import ru.gt2.gar.parse.domain.HouseType;
+import ru.gt2.gar.parse.domain.GarType;
 import ru.gt2.gar.parse.domain.House;
+import ru.gt2.gar.parse.domain.HouseType;
 import ru.gt2.gar.parse.domain.MunHierarchy;
-import ru.gt2.gar.parse.domain.NormativeDocType;
-import ru.gt2.gar.parse.domain.NormativeDocKind;
 import ru.gt2.gar.parse.domain.NormativeDoc;
+import ru.gt2.gar.parse.domain.NormativeDocKind;
+import ru.gt2.gar.parse.domain.NormativeDocType;
 import ru.gt2.gar.parse.domain.ObjectLevel;
+import ru.gt2.gar.parse.domain.OperationType;
 import ru.gt2.gar.parse.domain.Param;
 import ru.gt2.gar.parse.domain.ParamType;
 import ru.gt2.gar.parse.domain.ReestrObject;
@@ -25,13 +26,11 @@ import ru.gt2.gar.parse.domain.RoomType;
 import ru.gt2.gar.parse.domain.Stead;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 // В отличие от XMLStreamParser'а этой штуке нужна «труба» куда она добавлять свои данные.
-public class XMLStreamProcessor<T> {
+public class XMLStreamProcessor<T extends Record> {
     private final XMLAttrMapper<T> mapper;
     private final int batchSize;
     private final AttrConverter<T> attrConverter;
@@ -158,13 +157,15 @@ public class XMLStreamProcessor<T> {
         return mapper.garType;
     }
 
-    public void process(InputStream inputStream, Consumer<List<T>> dataConsumer) throws Exception {
+    public void process(InputStream inputStream, ListConsumer<T> dataConsumer) throws Exception {
         requireNonNull(inputStream);
         requireNonNull(dataConsumer);
+        dataConsumer.before();
         try (XMLAttrReader<T> reader = new XMLAttrReader<>(inputStream, mapper, attrConverter, batchSize)) {
             while(reader.hasNext()) {
                 dataConsumer.accept(reader.next());
             }
         }
+        dataConsumer.after();
     }
 }
