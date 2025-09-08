@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import jakarta.annotation.Nullable;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,6 +21,6 @@ public record ChangeHistory(
         long objectID,
         UUID adrObjectId,
         int operTypeId,
-        @UseOptional Long nDocId,
+        @Nullable Long nDocId,
         LocalDate changeDate) {
 }

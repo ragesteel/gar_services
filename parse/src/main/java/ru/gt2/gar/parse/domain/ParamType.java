@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import jakarta.annotation.Nullable;
+
 import java.time.LocalDate;
 
 /**
@@ -19,7 +21,7 @@ public record ParamType(
         int id,
         String name,
         String code,
-        @UseOptional String desc,
+        @Nullable String desc,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

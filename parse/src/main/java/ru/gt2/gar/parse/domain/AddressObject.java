@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import jakarta.annotation.Nullable;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -32,8 +34,8 @@ public record AddressObject(
         String typeName,
         String level,
         int operTypeId,
-        @UseOptional Long prevId,
-        @UseOptional Long nextId,
+        @Nullable Long prevId,
+        @Nullable Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

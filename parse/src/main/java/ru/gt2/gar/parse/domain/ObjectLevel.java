@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.domain;
 
+import jakarta.annotation.Nullable;
+
 import java.time.LocalDate;
 
 /**
@@ -17,7 +19,7 @@ import java.time.LocalDate;
 public record ObjectLevel(
         int level,
         String name,
-        @UseOptional String shortName,
+        @Nullable String shortName,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,
