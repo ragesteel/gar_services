@@ -17,6 +17,6 @@ public class IntFieldStat extends AbstractFieldStat {
     @Override
     public String toString() {
         StringBuilder resultBuilder = new StringBuilder(name).append(", int");
-        return minMax.addTo(resultBuilder, ", ").toString();
+        return minMax.addTo(resultBuilder, ",").toString();
     }
 }

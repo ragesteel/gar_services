@@ -17,6 +17,6 @@ public class LongFieldStat extends AbstractFieldStat {
     @Override
     public String toString() {
         StringBuilder resultBuilder = new StringBuilder(name).append(", long");
-        return minMax.addTo(resultBuilder, ", ").toString();
+        return minMax.addTo(resultBuilder, ",").toString();
     }
 }
