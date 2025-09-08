@@ -12,6 +12,9 @@ public class StringFieldStat extends AbstractFieldStat {
 
     @Override
     public void acceptValue(Object value) {
+        if (null == value) {
+            throw new NullPointerException("value is null, field=" + name);
+        }
         String string = (String) value;
         int valueLen = string.length();
         if (0 == valueLen) {

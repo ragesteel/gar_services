@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.domain;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -32,8 +30,8 @@ public record Apartment(
         String number,
         int apartType,
         int operTypeId,
-        @Nullable Long prevId,
-        @Nullable Long nextId,
+        @UseOptional Long prevId,
+        @UseOptional Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

@@ -19,7 +19,11 @@ public abstract class AbstractFieldStat implements FieldStat {
 
     @Override
     public void accept(Record record) {
-        acceptValue(invokeAccessor(record));
+        Object value = invokeAccessor(record);
+        if (null == value) {
+            throw new NullPointerException("value is null, field=" + name);
+        }
+        acceptValue(value);
     }
 
     protected abstract void acceptValue(Object value);

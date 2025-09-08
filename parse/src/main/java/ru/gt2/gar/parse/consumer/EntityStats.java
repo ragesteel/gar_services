@@ -1,9 +1,11 @@
 package ru.gt2.gar.parse.consumer;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import ru.gt2.gar.parse.domain.UseOptional;
 
 import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
@@ -34,9 +36,7 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
         if (null == fieldStats) {
             createFieldStats(entity);
         }
-        fieldStats.forEach(fieldStat -> {
-            fieldStat.accept(entity);
-        });
+        fieldStats.forEach(fieldStat -> fieldStat.accept(entity));
     }
 
     public List<FieldStat> getFieldStats() {
@@ -48,14 +48,14 @@ public class EntityStats<T extends Record> implements Consumer<List<T>> {
                 .map(EntityStats::createOptionalFieldStat)
                 .flatMap(Optional::stream)
                 .toList();
-         stopwatch.start();
+        stopwatch.start();
     }
 
-    private static Optional<FieldStat> createOptionalFieldStat(RecordComponent recordComponent) {
+    @VisibleForTesting
+    protected static Optional<FieldStat> createOptionalFieldStat(RecordComponent recordComponent) {
         AbstractFieldStat fieldStat = createFieldStat(recordComponent);
         if (null != fieldStat) {
-            Nullable nullable = recordComponent.getAnnotation(Nullable.class);
-            if (null != nullable) {
+            if (recordComponent.isAnnotationPresent(UseOptional.class)) {
                 return Optional.of(new NullableFieldStat(fieldStat));
             }
         }

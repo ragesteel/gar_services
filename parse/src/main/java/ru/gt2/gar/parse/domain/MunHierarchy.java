@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.domain;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.LocalDate;
 
 /**
@@ -24,11 +22,11 @@ import java.time.LocalDate;
 public record MunHierarchy(
         long id,
         long objectId,
-        @Nullable Long parentObjId,
+        @UseOptional Long parentObjId,
         long changeId,
-        @Nullable String oktmo,
-        @Nullable Long prevId,
-        @Nullable Long nextId,
+        @UseOptional String oktmo,
+        @UseOptional Long prevId,
+        @UseOptional Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

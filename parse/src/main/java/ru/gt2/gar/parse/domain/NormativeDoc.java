@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.domain;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.LocalDate;
 
 /**
@@ -29,9 +27,9 @@ public record NormativeDoc(
         int type,
         int kind,
         LocalDate updateDate,
-        @Nullable String orgName,
-        @Nullable String regNum,
-        @Nullable LocalDate regDate,
-        @Nullable LocalDate accDate,
-        @Nullable String comment) {
+        @UseOptional String orgName,
+        @UseOptional String regNum,
+        @UseOptional LocalDate regDate,
+        @UseOptional LocalDate accDate,
+        @UseOptional String comment) {
 }

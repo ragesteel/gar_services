@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.domain;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.LocalDate;
 
 /**
@@ -29,16 +27,16 @@ import java.time.LocalDate;
 public record AdmHierarchy(
         long id,
         long objectId,
-        @Nullable Long parentObjId,
+        @UseOptional Long parentObjId,
         long changeId,
-        @Nullable String regionCode,
-        @Nullable String areaCode,
-        @Nullable String cityCode,
-        @Nullable String placeCode,
-        @Nullable String planCode,
-        @Nullable String streetCode,
-        @Nullable Long prevId,
-        @Nullable Long nextId,
+        @UseOptional String regionCode,
+        @UseOptional String areaCode,
+        @UseOptional String cityCode,
+        @UseOptional String placeCode,
+        @UseOptional String planCode,
+        @UseOptional String streetCode,
+        @UseOptional Long prevId,
+        @UseOptional Long nextId,
         LocalDate updateDate,
         LocalDate startDate,
         LocalDate endDate,

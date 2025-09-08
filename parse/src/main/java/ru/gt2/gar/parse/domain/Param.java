@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.domain;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.LocalDate;
 
 /**
@@ -22,7 +20,7 @@ import java.time.LocalDate;
 public record Param(
         long id,
         long objectId,
-        @Nullable Long changeId,
+        @UseOptional Long changeId,
         long changeIdEnd,
         int typeId,
         String value,
