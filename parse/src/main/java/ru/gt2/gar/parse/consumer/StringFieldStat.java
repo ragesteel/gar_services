@@ -24,7 +24,7 @@ public class StringFieldStat extends AbstractFieldStat {
     @Override
     public String toString() {
         StringBuilder resultBuilder = new StringBuilder(name).append(", string");
-        minMaxLen.addTo(resultBuilder, ", length");
+        minMaxLen.addTo(resultBuilder, ", length=", ", length ");
         if (emptyCount > 0) {
             resultBuilder.append(", empty=").append(emptyCount);
         }

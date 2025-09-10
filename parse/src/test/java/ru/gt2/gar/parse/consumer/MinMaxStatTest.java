@@ -30,7 +30,7 @@ class MinMaxStatTest {
             stat.update(value);
         }
         StringBuilder sb = new StringBuilder();
-        stat.addTo(sb, "int");
+        stat.addTo(sb, "int=", "int ");
         assertEquals(expected, sb.toString());
     }
 }

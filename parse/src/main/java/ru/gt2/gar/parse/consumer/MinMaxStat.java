@@ -28,15 +28,15 @@ public class MinMaxStat<T extends Comparable<T>> {
         }
     }
 
-    public StringBuilder addTo(StringBuilder sb, String prefix) {
+    public StringBuilder addTo(StringBuilder sb, String eqPrefix, String rangePrefix) {
         if (!hasMinMax) {
             return sb;
         }
-        sb.append(prefix);
+
         if (min.compareTo(max) == 0) {
-            sb.append('=').append(min);
+            sb.append(eqPrefix).append(min);
         } else {
-            sb.append(' ').append(min).append(" … ").append(max);
+            sb.append(rangePrefix).append(min).append(" … ").append(max);
         }
         return sb;
     }
