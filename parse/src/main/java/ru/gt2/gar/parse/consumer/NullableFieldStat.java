@@ -9,6 +9,11 @@ public class NullableFieldStat implements FieldStat {
         this.fieldStat = fieldStat;
     }
 
+    private NullableFieldStat(FieldStat fieldStat, int nullCount) {
+        this.fieldStat = (AbstractFieldStat) fieldStat;
+        this.nullCount = nullCount;
+    }
+
     @Override
     public String getName() {
         return fieldStat.getName();
@@ -31,5 +36,15 @@ public class NullableFieldStat implements FieldStat {
             return result;
         }
         return result + ", nulls=" + nullCount;
+    }
+
+    @Override
+    public NullableFieldStat sum(FieldStat other) {
+        if (!(other instanceof NullableFieldStat nullableField)) {
+            throw new IllegalArgumentException("Sum must be called on equal types");
+        }
+
+        return new NullableFieldStat(nullableField.fieldStat.sum(fieldStat),
+                nullCount + nullableField.nullCount);
     }
 }

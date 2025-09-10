@@ -7,12 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.RecordComponent;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
 @Slf4j
@@ -21,8 +24,19 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
     @Getter
     private int count;
 
-    @Getter
     private final Stopwatch stopwatch = Stopwatch.createUnstarted();
+
+    private final Duration duration;
+
+    public EntityStats() {
+        duration = null;
+    }
+
+    private EntityStats(List<FieldStat> fieldStats, int count, Duration duration) {
+        this.fieldStats = fieldStats;
+        this.count = count;
+        this.duration = duration;
+    }
 
     @Override
     public void accept(List<T> entities) {
@@ -42,6 +56,36 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
 
     public List<FieldStat> getFieldStats() {
         return requireNonNullElseGet(fieldStats, List::of);
+    }
+
+    public Duration getDuration() {
+        return requireNonNullElseGet(duration, stopwatch::elapsed);
+    }
+
+    public static <S extends Record> EntityStats<S> sum(EntityStats<S> first, EntityStats<S> second) {
+        requireNonNull(first).ensureFinished();
+        requireNonNull(second).ensureFinished();
+
+        if (!first.getFieldNames().equals(second.getFieldNames())) {
+            throw new IllegalArgumentException("Fields names are not equals!");
+        }
+
+        List<FieldStat> firstFields = first.fieldStats;
+        List<FieldStat> resultFieldStats = new ArrayList<>(firstFields.size());
+        for (int i = 0; i < firstFields.size(); i++) {
+            firstFields.add(firstFields.get(i).sum(second.fieldStats.get(i)));
+        }
+        return new EntityStats<>(resultFieldStats, first.count + second.count,
+                first.getDuration().plus(second.getDuration()));
+    }
+
+    private void ensureFinished() {
+        if (null == fieldStats) {
+            throw new IllegalStateException("Field stats is not created");
+        }
+        if (stopwatch.isRunning()) {
+            throw new IllegalStateException("Entity stats is running");
+        }
     }
 
     protected void acceptEntity(T entity) {
@@ -88,5 +132,9 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
             log.warn("Unsupported type: {}", type);
             return null;
         }
+    }
+
+    private List<String> getFieldNames() {
+        return fieldStats.stream().map(FieldStat::getName).toList();
     }
 }

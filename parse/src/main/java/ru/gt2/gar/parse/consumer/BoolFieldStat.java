@@ -10,6 +10,12 @@ public class BoolFieldStat extends AbstractFieldStat {
         super(recordComponent);
     }
 
+    private BoolFieldStat(String name, int falseCount, int trueCount) {
+        super(name);
+        this.falseCount = falseCount;
+        this.trueCount = trueCount;
+    }
+
     @Override
     public void acceptValue(Object value) {
             if ((boolean) value) {
@@ -22,5 +28,14 @@ public class BoolFieldStat extends AbstractFieldStat {
     @Override
     public String toString() {
         return String.format("%s, bool, false: %d, true: %d", name, falseCount, trueCount);
+    }
+
+    @Override
+    public BoolFieldStat sum(FieldStat other) {
+        if (!(other instanceof BoolFieldStat otherBool)) {
+            throw new IllegalArgumentException("Sum must be called on equal types");
+        }
+
+        return new BoolFieldStat(name, otherBool.falseCount + falseCount, otherBool.trueCount + trueCount);
     }
 }

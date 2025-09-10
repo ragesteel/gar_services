@@ -17,6 +17,11 @@ public abstract class AbstractFieldStat implements FieldStat {
         accessor = recordComponent.getAccessor();
     }
 
+    protected AbstractFieldStat(String name) {
+        this.name = name;
+        accessor = null;
+    }
+
     @Override
     public void accept(Record record) {
         Object value = invokeAccessor(record);

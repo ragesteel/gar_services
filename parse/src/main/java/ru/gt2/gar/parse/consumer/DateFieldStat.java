@@ -5,10 +5,16 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 
 public class DateFieldStat extends AbstractFieldStat {
-    private final MinMaxStat<ChronoLocalDate> minMax = new MinMaxStat<>();
+    private final MinMaxStat<ChronoLocalDate> minMax;
 
     public DateFieldStat(RecordComponent recordComponent) {
         super(recordComponent);
+        minMax = new MinMaxStat<>();
+    }
+
+    private DateFieldStat(String name, MinMaxStat<ChronoLocalDate> minMax) {
+        super(name);
+        this.minMax = minMax;
     }
 
     @Override
@@ -20,5 +26,14 @@ public class DateFieldStat extends AbstractFieldStat {
     public String toString() {
         StringBuilder resultBuilder = new StringBuilder(name).append(", date");
         return minMax.addTo(resultBuilder, " = ", ", ").toString();
+    }
+
+    @Override
+    public DateFieldStat sum(FieldStat other) {
+        if (!(other instanceof DateFieldStat dateField)) {
+            throw new IllegalArgumentException("Sum must be called on equal types");
+        }
+
+        return new DateFieldStat(name, minMax.sum(dateField.minMax));
     }
 }

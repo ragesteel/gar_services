@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
 import ru.gt2.gar.parse.domain.AddressObject;
 import ru.gt2.gar.parse.domain.AddressObjectDivision;
@@ -150,7 +151,8 @@ public class ParseApplication implements CommandLineRunner {
                     }
                 });
 
-        System.out.printf("total record(s): %d, elapsed: %s%n", stats.getCount(), stats.getStopwatch());
+        System.out.printf("total record(s): %d, elapsed: %s%n", stats.getCount(),
+                DurationFmt.format(stats.getDuration()));
         stats.getFieldStats().forEach(fs -> {
             System.out.println("  " + fs);
         });
