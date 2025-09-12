@@ -1,9 +1,8 @@
 package ru.gt2.gar.parse;
 
 import com.google.common.base.Stopwatch;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,14 +15,15 @@ import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
+// TODO Переименовать в DumpXMLStatsApp и сделать входной файл — параметром в application.yaml
 @Slf4j
+@RequiredArgsConstructor
 @SpringBootApplication
 public class ParseApplication implements CommandLineRunner {
-    @Value("${gar.parse.batch:1000}")
-    private int batchSize;
 
-    @Autowired
-    private FileInfoService fileInfoService;
+    private final FileInfoService fileInfoService;
+
+    private final AllXMLProcessors xmlProcessors;
 
     public static void main(String... args) {
         SpringApplication.run(ParseApplication.class, args);
@@ -31,13 +31,6 @@ public class ParseApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        AllXMLProcessors xmlProcessors = new AllXMLProcessors(batchSize);
-        /*
-        try (InputStream inputStream =
-                     Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
-            aoProcessor.process(inputStream, aoCounter);
-        }*/
-
         GarZipFile garZipFile = new GarZipFile("C:/Gar/gar_xml_2025-08-29.zip");
         garZipFile.getVersion().ifPresentOrElse(
                 v -> log.info("Gar file date: {}, version: {}", v.date(), v.number()),
