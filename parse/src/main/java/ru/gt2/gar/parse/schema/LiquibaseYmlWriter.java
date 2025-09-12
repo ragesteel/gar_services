@@ -1,7 +1,5 @@
 package ru.gt2.gar.parse.schema;
 
-import com.google.common.base.CaseFormat;
-
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,8 +27,11 @@ public class LiquibaseYmlWriter {
 
     private final PrintStream out;
 
-    public LiquibaseYmlWriter(PrintStream out) {
+    private final NamingStrategy namingStrategy;
+
+    public LiquibaseYmlWriter(PrintStream out, NamingStrategy namingStrategy) {
         this.out = out;
+        this.namingStrategy = namingStrategy;
     }
 
     // https://docs.liquibase.com/pro/user-guide/what-is-a-changeset
@@ -54,7 +55,7 @@ public class LiquibaseYmlWriter {
     // https://docs.liquibase.com/reference-guide/change-types/create-table
     public void startTable(String name, String comment) {
         print(8, "- createTable:");
-        print(12, "tableName: " + processTableName(name));
+        print(12, "tableName: " + namingStrategy.getTableName(name));
         print(12, "remarks: " + comment);
         print(12, "columns:");
     }
@@ -66,7 +67,7 @@ public class LiquibaseYmlWriter {
     // https://docs.liquibase.com/reference-guide/change-types/column
     public void writeColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
         print(14, "- column:");
-        print(18, "name: " + processColumnName(name));
+        print(18, "name: " + namingStrategy.getColumnName(name));
         print(18, "remarks: " + comment);
         print(18, "type: " + type);
         print(18, "constraints:");
@@ -74,13 +75,5 @@ public class LiquibaseYmlWriter {
             print(20, "primaryKey: true");
         }
         print(20, "nullable: " + nullable);
-    }
-
-    private String processTableName(String name) {
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_UNDERSCORE, name);
-    }
-
-    private String processColumnName(String name) {
-        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
     }
 }
