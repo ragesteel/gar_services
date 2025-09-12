@@ -7,32 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import ru.gt2.gar.domain.AddressObject;
-import ru.gt2.gar.domain.AddressObjectDivision;
-import ru.gt2.gar.domain.AddressObjectType;
-import ru.gt2.gar.domain.AdmHierarchy;
-import ru.gt2.gar.domain.Apartment;
-import ru.gt2.gar.domain.ApartmentType;
-import ru.gt2.gar.domain.CarPlace;
-import ru.gt2.gar.domain.ChangeHistory;
 import ru.gt2.gar.domain.GarType;
-import ru.gt2.gar.domain.House;
-import ru.gt2.gar.domain.HouseType;
-import ru.gt2.gar.domain.MunHierarchy;
-import ru.gt2.gar.domain.NormativeDoc;
-import ru.gt2.gar.domain.NormativeDocKind;
-import ru.gt2.gar.domain.NormativeDocType;
-import ru.gt2.gar.domain.ObjectLevel;
-import ru.gt2.gar.domain.OperationType;
-import ru.gt2.gar.domain.Param;
-import ru.gt2.gar.domain.ParamType;
-import ru.gt2.gar.domain.ReestrObject;
-import ru.gt2.gar.domain.Room;
-import ru.gt2.gar.domain.RoomType;
-import ru.gt2.gar.domain.Stead;
 import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
 import ru.gt2.gar.parse.rest.FileInfoService;
+import ru.gt2.gar.parse.xml.AllXMLProcessors;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -52,35 +31,7 @@ public class ParseApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        XMLStreamProcessor<AddressObject> aoProcessor = XMLStreamProcessor.forAddressObject(batchSize);
-        XMLStreamProcessor<AddressObjectDivision> aodProcessor = XMLStreamProcessor.forAddressObjectDivision(batchSize);
-        XMLStreamProcessor<AddressObjectType> aotProcessor = XMLStreamProcessor.forAddressObjectType(batchSize);
-        XMLStreamProcessor<AdmHierarchy> ahProcessor = XMLStreamProcessor.forAdmHierarchy(batchSize);
-        XMLStreamProcessor<ApartmentType> atProcessor = XMLStreamProcessor.forApartmentType(batchSize);
-        XMLStreamProcessor<Apartment> aProcessor = XMLStreamProcessor.forApartment(batchSize);
-        XMLStreamProcessor<OperationType> otProcessor = XMLStreamProcessor.forOperationType(batchSize);
-        XMLStreamProcessor<CarPlace> cpProcessor = XMLStreamProcessor.forCarPlace(batchSize);
-        XMLStreamProcessor<ChangeHistory> chProcessor = XMLStreamProcessor.forChangeHistory(batchSize);
-        XMLStreamProcessor<HouseType> htProcessor = XMLStreamProcessor.forHouseType(batchSize);
-        XMLStreamProcessor<House> hProcessor = XMLStreamProcessor.forHouse(batchSize);
-        XMLStreamProcessor<MunHierarchy> mhProcessor = XMLStreamProcessor.forMunHierarchy(batchSize);
-        XMLStreamProcessor<NormativeDocType> ndtProcessor = XMLStreamProcessor.forNormativeDocType(batchSize);
-        XMLStreamProcessor<NormativeDocKind> ndkProcessor = XMLStreamProcessor.forNormativeDocKind(batchSize);
-        XMLStreamProcessor<NormativeDoc> ndProcessor = XMLStreamProcessor.forNormativeDoc(batchSize);
-        XMLStreamProcessor<ObjectLevel> olProcessor = XMLStreamProcessor.forObjectLevel(batchSize);
-        XMLStreamProcessor<ParamType> ptProcessor = XMLStreamProcessor.forParamType(batchSize);
-        XMLStreamProcessor<Param> aopProcessor = XMLStreamProcessor.forAddrObjParam(batchSize);
-        XMLStreamProcessor<Param> hpProcessor = XMLStreamProcessor.forHousesParam(batchSize);
-        XMLStreamProcessor<Param> apProcessor = XMLStreamProcessor.forApartmentsParam(batchSize);
-        XMLStreamProcessor<Param> rpProcessor = XMLStreamProcessor.forRoomsParam(batchSize);
-        XMLStreamProcessor<Param> spProcessor = XMLStreamProcessor.forSteadsParam(batchSize);
-        XMLStreamProcessor<Param> cppProcessor = XMLStreamProcessor.forCarPlacesParam(batchSize);
-        XMLStreamProcessor<ReestrObject> roProcessor = XMLStreamProcessor.forReestrObject(batchSize);
-        XMLStreamProcessor<RoomType> rtProcessor = XMLStreamProcessor.forRoomType(batchSize);
-        XMLStreamProcessor<Room> rProcessor = XMLStreamProcessor.forRoom(batchSize);
-        XMLStreamProcessor<Stead> sProcessor = XMLStreamProcessor.forStead(batchSize);
-        XMLStreamProcessor<HouseType> ahtProcessor = XMLStreamProcessor.forAddHouseType(batchSize);
-
+        AllXMLProcessors xmlProcessors = new AllXMLProcessors(batchSize);
         /*
         try (InputStream inputStream =
                      Files.newInputStream(Paths.get("C:/Tmp/AS_ADDR_OBJ_20250902_07bcc4ec-d701-4cee-8326-bc0353ae95bd.XML"))) {
@@ -99,36 +50,36 @@ public class ParseApplication implements CommandLineRunner {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         // Сначала разбираем файлы из корневого каталога — справочники по сути;
-        process(garZipFile, atProcessor);
-        process(garZipFile, aotProcessor);
-        process(garZipFile, otProcessor);
-        process(garZipFile, htProcessor);
-        process(garZipFile, ndkProcessor);
-        process(garZipFile, ndtProcessor);
-        process(garZipFile, olProcessor);
-        process(garZipFile, ptProcessor);
-        process(garZipFile, rtProcessor);
-        process(garZipFile, ahtProcessor);
+        process(garZipFile, xmlProcessors.apartmentType);
+        process(garZipFile, xmlProcessors.addressObjectType);
+        process(garZipFile, xmlProcessors.operationType);
+        process(garZipFile, xmlProcessors.houseType);
+        process(garZipFile, xmlProcessors.normativeDocKind);
+        process(garZipFile, xmlProcessors.normativeDocType);
+        process(garZipFile, xmlProcessors.objectLevel);
+        process(garZipFile, xmlProcessors.paramType);
+        process(garZipFile, xmlProcessors.roomType);
+        process(garZipFile, xmlProcessors.houseType);
 
         // Потом идём уже по регионам
-        process(garZipFile, aoProcessor);
-        process(garZipFile, aodProcessor);
-        process(garZipFile, ahProcessor);
-        process(garZipFile, aProcessor);
-        process(garZipFile, cpProcessor);
-        process(garZipFile, chProcessor);
-        process(garZipFile, hProcessor);
-        process(garZipFile, mhProcessor);
-        process(garZipFile, ndProcessor);
-        process(garZipFile, aopProcessor);
-        process(garZipFile, hpProcessor);
-        process(garZipFile, apProcessor);
-        process(garZipFile, rpProcessor);
-        process(garZipFile, spProcessor);
-        process(garZipFile, cppProcessor);
-        process(garZipFile, roProcessor);
-        process(garZipFile, rProcessor);
-        process(garZipFile, sProcessor);
+        process(garZipFile, xmlProcessors.addressObject);
+        process(garZipFile, xmlProcessors.addressObjectDivision);
+        process(garZipFile, xmlProcessors.admHierarchy);
+        process(garZipFile, xmlProcessors.apartment);
+        process(garZipFile, xmlProcessors.carPlace);
+        process(garZipFile, xmlProcessors.changeHistory);
+        process(garZipFile, xmlProcessors.house);
+        process(garZipFile, xmlProcessors.munHierarchy);
+        process(garZipFile, xmlProcessors.normativeDoc);
+        process(garZipFile, xmlProcessors.addrObjParam);
+        process(garZipFile, xmlProcessors.housesParam);
+        process(garZipFile, xmlProcessors.apartmentsParam);
+        process(garZipFile, xmlProcessors.roomsParam);
+        process(garZipFile, xmlProcessors.steadsParam);
+        process(garZipFile, xmlProcessors.carPlacesParam);
+        process(garZipFile, xmlProcessors.reestrObject);
+        process(garZipFile, xmlProcessors.room);
+        process(garZipFile, xmlProcessors.stead);
         System.out.printf("Total time elapsed: %s%n", stopwatch);
 
         System.out.println(fileInfoService.getLast());

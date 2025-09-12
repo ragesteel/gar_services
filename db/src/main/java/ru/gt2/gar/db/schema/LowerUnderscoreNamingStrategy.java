@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.schema;
+package ru.gt2.gar.db.schema;
 
 import com.google.common.base.CaseFormat;
 

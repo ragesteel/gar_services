@@ -18,6 +18,7 @@
     <modules>
         <module>domain</module>
         <module>parse</module>
+        <module>db</module>
     </modules>
 
     <properties>
@@ -30,9 +31,15 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Подпроекты -->
             <dependency>
                 <groupId>ru.gt2.gar-services</groupId>
                 <artifactId>gar-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.gt2.gar-services</groupId>
+                <artifactId>gar-parse</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

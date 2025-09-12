@@ -16,6 +16,7 @@
     </properties>
 
     <dependencies>
+        <!-- Подпроекты -->
         <dependency>
             <groupId>ru.gt2.gar-services</groupId>
             <artifactId>gar-domain</artifactId>

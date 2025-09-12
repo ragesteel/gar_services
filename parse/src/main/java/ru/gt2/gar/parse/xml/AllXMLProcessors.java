@@ -1,0 +1,86 @@
+package ru.gt2.gar.parse.xml;
+
+import ru.gt2.gar.domain.AddressObject;
+import ru.gt2.gar.domain.AddressObjectDivision;
+import ru.gt2.gar.domain.AddressObjectType;
+import ru.gt2.gar.domain.AdmHierarchy;
+import ru.gt2.gar.domain.Apartment;
+import ru.gt2.gar.domain.ApartmentType;
+import ru.gt2.gar.domain.CarPlace;
+import ru.gt2.gar.domain.ChangeHistory;
+import ru.gt2.gar.domain.House;
+import ru.gt2.gar.domain.HouseType;
+import ru.gt2.gar.domain.MunHierarchy;
+import ru.gt2.gar.domain.NormativeDoc;
+import ru.gt2.gar.domain.NormativeDocKind;
+import ru.gt2.gar.domain.NormativeDocType;
+import ru.gt2.gar.domain.ObjectLevel;
+import ru.gt2.gar.domain.OperationType;
+import ru.gt2.gar.domain.Param;
+import ru.gt2.gar.domain.ParamType;
+import ru.gt2.gar.domain.ReestrObject;
+import ru.gt2.gar.domain.Room;
+import ru.gt2.gar.domain.RoomType;
+import ru.gt2.gar.domain.Stead;
+
+public class AllXMLProcessors {
+    public final XMLStreamProcessor<AddressObject> addressObject;
+    public final XMLStreamProcessor<AddressObjectDivision> addressObjectDivision;
+    public final XMLStreamProcessor<AddressObjectType> addressObjectType;
+    public final XMLStreamProcessor<AdmHierarchy> admHierarchy;
+    public final XMLStreamProcessor<ApartmentType> apartmentType;
+    public final XMLStreamProcessor<Apartment> apartment;
+    public final XMLStreamProcessor<OperationType> operationType;
+    public final XMLStreamProcessor<CarPlace> carPlace;
+    public final XMLStreamProcessor<ChangeHistory> changeHistory;
+    public final XMLStreamProcessor<HouseType> houseType;
+    public final XMLStreamProcessor<House> house;
+    public final XMLStreamProcessor<MunHierarchy> munHierarchy;
+    public final XMLStreamProcessor<NormativeDocType> normativeDocType;
+    public final XMLStreamProcessor<NormativeDocKind> normativeDocKind;
+    public final XMLStreamProcessor<NormativeDoc> normativeDoc;
+    public final XMLStreamProcessor<ObjectLevel> objectLevel;
+    public final XMLStreamProcessor<ParamType> paramType;
+    public final XMLStreamProcessor<Param>  addrObjParam;
+    public final XMLStreamProcessor<Param> housesParam;
+    public final XMLStreamProcessor<Param> apartmentsParam;
+    public final XMLStreamProcessor<Param> roomsParam;
+    public final XMLStreamProcessor<Param> steadsParam;
+    public final XMLStreamProcessor<Param> carPlacesParam;
+    public final XMLStreamProcessor<ReestrObject> reestrObject;
+    public final XMLStreamProcessor<RoomType> roomType;
+    public final XMLStreamProcessor<Room> room;
+    public final XMLStreamProcessor<Stead> stead;
+    public final XMLStreamProcessor<HouseType> addHouseType;
+
+    public AllXMLProcessors(int batchSize) {
+        addressObject = XMLStreamProcessor.forAddressObject(batchSize);
+        addressObjectDivision = XMLStreamProcessor.forAddressObjectDivision(batchSize);
+        addressObjectType = XMLStreamProcessor.forAddressObjectType(batchSize);
+        admHierarchy = XMLStreamProcessor.forAdmHierarchy(batchSize);
+        apartmentType = XMLStreamProcessor.forApartmentType(batchSize);
+        apartment = XMLStreamProcessor.forApartment(batchSize);
+        operationType = XMLStreamProcessor.forOperationType(batchSize);
+        carPlace = XMLStreamProcessor.forCarPlace(batchSize);
+        changeHistory = XMLStreamProcessor.forChangeHistory(batchSize);
+        houseType = XMLStreamProcessor.forHouseType(batchSize);
+        house = XMLStreamProcessor.forHouse(batchSize);
+        munHierarchy = XMLStreamProcessor.forMunHierarchy(batchSize);
+        normativeDocType = XMLStreamProcessor.forNormativeDocType(batchSize);
+        normativeDocKind = XMLStreamProcessor.forNormativeDocKind(batchSize);
+        normativeDoc = XMLStreamProcessor.forNormativeDoc(batchSize);
+        objectLevel = XMLStreamProcessor.forObjectLevel(batchSize);
+        paramType = XMLStreamProcessor.forParamType(batchSize);
+        addrObjParam = XMLStreamProcessor.forAddrObjParam(batchSize);
+        housesParam = XMLStreamProcessor.forHousesParam(batchSize);
+        apartmentsParam = XMLStreamProcessor.forApartmentsParam(batchSize);
+        roomsParam = XMLStreamProcessor.forRoomsParam(batchSize);
+        steadsParam = XMLStreamProcessor.forSteadsParam(batchSize);
+        carPlacesParam = XMLStreamProcessor.forCarPlacesParam(batchSize);
+        reestrObject = XMLStreamProcessor.forReestrObject(batchSize);
+        roomType = XMLStreamProcessor.forRoomType(batchSize);
+        room = XMLStreamProcessor.forRoom(batchSize);
+        stead = XMLStreamProcessor.forStead(batchSize);
+        addHouseType = XMLStreamProcessor.forAddHouseType(batchSize);
+    }
+}
