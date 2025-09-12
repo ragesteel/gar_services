@@ -1,7 +1,7 @@
 package ru.gt2.gar.parse.xml;
 
 import org.junit.jupiter.api.Test;
-import ru.gt2.gar.parse.domain.AddressObject;
+import ru.gt2.gar.domain.AddressObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

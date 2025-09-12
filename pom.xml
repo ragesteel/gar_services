@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>domain</module>
         <module>parse</module>
     </modules>
 
@@ -29,6 +30,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>ru.gt2.gar-services</groupId>
+                <artifactId>gar-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Вспомогательные библиотеки -->
             <dependency>
                 <groupId>com.google.guava</groupId>

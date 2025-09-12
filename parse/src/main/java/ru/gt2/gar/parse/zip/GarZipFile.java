@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
-import ru.gt2.gar.parse.domain.GarType;
+import ru.gt2.gar.domain.GarType;
 
 import java.io.IOException;
 import java.io.InputStream;

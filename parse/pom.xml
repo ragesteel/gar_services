@@ -12,6 +12,11 @@
     <artifactId>gar-parse</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>ru.gt2.gar-services</groupId>
+            <artifactId>gar-domain</artifactId>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

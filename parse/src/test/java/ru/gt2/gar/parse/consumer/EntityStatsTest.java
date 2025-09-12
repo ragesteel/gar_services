@@ -1,7 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
 import org.junit.jupiter.api.Test;
-import ru.gt2.gar.parse.domain.House;
+import ru.gt2.gar.domain.House;
 
 import java.lang.reflect.RecordComponent;
 import java.util.Optional;

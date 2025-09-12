@@ -1,10 +1,10 @@
 package ru.gt2.gar.parse.schema;
 
 import jakarta.annotation.Nullable;
-import ru.gt2.gar.parse.domain.GarType;
-import ru.gt2.gar.parse.domain.LengthLimit;
-import ru.gt2.gar.parse.domain.SchemaComment;
-import ru.gt2.gar.parse.domain.SchemaLink;
+import ru.gt2.gar.domain.GarType;
+import ru.gt2.gar.domain.LengthLimit;
+import ru.gt2.gar.domain.SchemaComment;
+import ru.gt2.gar.domain.SchemaLink;
 
 import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;

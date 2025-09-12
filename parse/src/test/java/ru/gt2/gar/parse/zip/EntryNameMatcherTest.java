@@ -14,7 +14,7 @@ class EntryNameMatcherTest {
     @Test
     void tryParse() {
         assertEquals(
-            new GarEntry("AS_ADDR_OBJ_TYPES", LocalDate.of(2025, Month.AUGUST, 29),
+            new GarEntry("ADDR_OBJ_TYPES", LocalDate.of(2025, Month.AUGUST, 29),
                 UUID.fromString("729c6849-8629-4ba6-9271-7be3045287ae"), Optional.empty()),
             EntryNameMatcher.tryParse("AS_ADDR_OBJ_TYPES_20250829_729c6849-8629-4ba6-9271-7be3045287ae.XML"));
     }
