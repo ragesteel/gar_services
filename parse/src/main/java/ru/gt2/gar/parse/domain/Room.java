@@ -7,7 +7,6 @@ import java.util.UUID;
 
 /**
  * Комната
- * Основа — AS_ROOMS_2_251_15_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор объекта (число)
@@ -24,6 +23,7 @@ import java.util.UUID;
  * @param isActual   Статус актуальности адресного объекта ФИАС
  * @param isActive   Признак действующего адресного объекта
  */
+@SourceSchema(part = "251_15", format = "4.01", schema = "01")
 public record Room(
         long id,
         long objectId,

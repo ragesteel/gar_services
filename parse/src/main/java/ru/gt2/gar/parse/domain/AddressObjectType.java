@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Типы адресных объектов.
- * Основа — AS_ADDR_OBJ_TYPES_2_251_03_04_01_01.xsd
 
  * @param id         Идентификатор записи. Ключевое поле
  * @param level      Уровень адресного объекта
@@ -18,6 +17,7 @@ import java.time.LocalDate;
  * @param endDate    Окончание действия записи
  * @param isActive   Статус активности
  */
+@SourceSchema(part = "251_03", format = "4.01", schema = "01")
 public record AddressObjectType(
         int id,
         int level,

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Иерархия в административном делении
- * Основа — AS_ADM_HIERARCHY_2_251_04_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор адресного объекта
@@ -26,6 +25,7 @@ import java.time.LocalDate;
  * @param isActive   Признак действующего адресного объекта
  * @param path       Материализованный путь к объекту (полная иерархия)
  */
+@SourceSchema(part = "251_04", format = "4.01", schema = "01")
 public record AdmHierarchy(
         long id,
         long objectId,

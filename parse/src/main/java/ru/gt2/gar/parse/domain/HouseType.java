@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Информация по признакам владения.
- * Основа — AS_HOUSE_TYPES_2_251_13_04_01_01.xsd
 
  * @param id         Идентификатор типа (ключ)
  * @param name       Наименование; Длина: от 1 до 50 символов
@@ -17,6 +16,7 @@ import java.time.LocalDate;
  * @param endDate    Окончание действия записи
  * @param isActive   Статус активности
  */
+@SourceSchema(part = "251_13", format = "4.01", schema = "01")
 public record HouseType(
         int id,
         String name,

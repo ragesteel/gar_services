@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Нормативный документ.
- * Основа — AS_NORMATIVE_DOCS_2_251_11_04_01_01.xsd
 
  * @param id         Идентификатор нормативного документа
  * @param name       Наименование документа; Опционально; Длина: от 1 до 8000 символов
@@ -23,6 +22,7 @@ import java.time.LocalDate;
  * @param accDate    Дата вступления в силу нормативного документа; Опционально
  * @param comment    Комментарий; Опционально; Длина: от 0 до 8000 символов
  */
+@SourceSchema(part = "251_11", format = "4.01", schema = "01")
 public record NormativeDoc(
         long id,
         @Nullable String name,

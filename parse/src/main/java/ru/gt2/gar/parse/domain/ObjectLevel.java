@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Уровни адресных объектов.
- * Основа — AS_OBJECT_LEVELS_2_251_12_04_01_01.xsd
 
  * @param level      Уникальный идентификатор записи. Ключевое поле. Номер уровня объекта
  * @param name       Наименование; Длина: от 1 до 250 символов
@@ -16,6 +15,7 @@ import java.time.LocalDate;
  * @param endDate    Окончание действия записи
  * @param isActive   Признак действующего адресного объекта
  */
+@SourceSchema(part = "251_12", format = "4.01", schema = "01")
 public record ObjectLevel(
         int level,
         String name,

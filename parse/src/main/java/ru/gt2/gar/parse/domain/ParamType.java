@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Типы параметров.
- * Основа — AS_PARAM_TYPES_2_251_20_04_01_01.xsd
 
  * @param id         Идентификатор типа параметра
  * @param name       Наименование; Длина: от 1 до 50 символов
@@ -17,6 +16,7 @@ import java.time.LocalDate;
  * @param endDate    Окончание действия записи
  * @param isActive   Статус активности
  */
+@SourceSchema(part = "251_20", format = "4.01", schema = "01")
 public record ParamType(
         int id,
         String name,

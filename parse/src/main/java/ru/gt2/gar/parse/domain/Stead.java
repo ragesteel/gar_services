@@ -7,7 +7,6 @@ import java.util.UUID;
 
 /**
  * Земельный участок.
- * Основа — AS_STEADS_2_251_18_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор объекта (число)
@@ -26,6 +25,7 @@ import java.util.UUID;
  * @param isActive   Признак действующего адресного объекта
  *
  */
+@SourceSchema(part = "251_18", format = "4.01", schema = "01")
 public record Stead(
         long id,
         long objectId,

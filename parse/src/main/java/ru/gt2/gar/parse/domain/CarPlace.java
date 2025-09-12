@@ -7,7 +7,6 @@ import java.util.UUID;
 
 /**
  * Машино-место.
- * Основа — AS_CARPLACES_2_251_06_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор объекта (число)
@@ -23,6 +22,7 @@ import java.util.UUID;
  * @param isActual   Статус актуальности адресного объекта ФИАС
  * @param isActive   Признак действующего адресного объекта
  */
+@SourceSchema(part = "251_06", format = "4.01", schema = "01")
 public record CarPlace(
         long id,
         long objectId,

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 /**
  * История изменений.
- * Основа — AS_CHANGE_HISTORY_251_21_04_01_01.xsd
 
  * @param changeId   ID изменившей транзакции
  * @param objectID   Глобальный уникальный идентификатор адресного объекта
@@ -16,6 +15,7 @@ import java.util.UUID;
  * @param nDocId     Идентификатор нормативного документа
  * @param changeDate Дата изменения
  */
+@SourceSchema(suffix = "", part = "251_21", format = "4.01", schema = "01")
 public record ChangeHistory(
         long changeId,
         long objectID,

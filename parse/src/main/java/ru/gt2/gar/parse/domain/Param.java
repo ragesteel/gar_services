@@ -7,7 +7,6 @@ import java.time.LocalDate;
 /**
  * Параметры адресообразующих элементов и объектов недвижимости
  * (здания, строения, земельные участки, помещения, комнаты, машино-места).
- * Основа — AS_PARAM_2_251_02_04_01_01.xsd
 
  * @param id         Идентификатор записи
  * @param objectId   Глобальный идентификатор адресного объекта
@@ -19,6 +18,7 @@ import java.time.LocalDate;
  * @param startDate  Дата начала действия записи
  * @param endDate    Дата окончания действия записи
  */
+@SourceSchema(part = "251_02", format = "4.01", schema = "01")
 public record Param(
         long id,
         long objectId,

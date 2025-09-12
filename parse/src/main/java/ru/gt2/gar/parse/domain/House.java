@@ -7,7 +7,6 @@ import java.util.UUID;
 
 /**
  * Жилые строения (дома/сооружения).
- * Основа — AS_HOUSES_2_251_08_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор объекта (число)
@@ -28,6 +27,7 @@ import java.util.UUID;
  * @param isActual   Статус актуальности адресного объекта ФИАС
  * @param isActive   Статус активности
  */
+@SourceSchema(part = "251_08", format = "4.01", schema = "01")
 public record House(
         long id,
         long objectId,

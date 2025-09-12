@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Иерархия в муниципальном делении.
- * Основа — AS_MUN_HIERARCHY_2_251_04_04_01_01.xsd
 
  * @param id         Уникальный идентификатор записи. Ключевое поле
  * @param objectId   Глобальный уникальный идентификатор адресного объекта
@@ -21,6 +20,7 @@ import java.time.LocalDate;
  * @param isActive   Признак действующего адресного объекта
  * @param path       Материализованный путь к объекту (полная иерархия)
  */
+@SourceSchema(part = "251_10", format = "4.01", schema = "01")
 public record MunHierarchy(
         long id,
         long objectId,

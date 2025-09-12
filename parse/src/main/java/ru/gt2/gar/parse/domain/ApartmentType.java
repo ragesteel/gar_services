@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * Тип помещения.
- * Основа — AS_APARTMENT_TYPES_2_251_07_04_01_01.xsd
 
  * @param id         Идентификатор типа (ключ).
  * @param name       Наименование адресного объекта; Длина: от 1 до 100 символов
@@ -17,6 +16,7 @@ import java.time.LocalDate;
  * @param endDate    Окончание действия записи
  * @param isActive   Признак действующего адресного объекта
  */
+@SourceSchema(part = "251_07", format = "4.01", schema = "01")
 public record ApartmentType(
         int id,
         String name,

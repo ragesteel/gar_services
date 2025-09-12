@@ -5,7 +5,6 @@ import java.util.UUID;
 
 /**
  * Реестр адресных элементов.
- * Основа — AS_REESTR_OBJECTS_2_251_22_04_01_01.xsd
 
  * @param objectId   Уникальный идентификатор адресного объекта
  * @param objectGuid Глобальный уникальный идентификатор адресного объекта
@@ -15,6 +14,7 @@ import java.util.UUID;
  * @param createDate Дата создания
  * @param updateDate Дата изменения
  */
+@SourceSchema(part = "251_22", format = "4.01", schema = "01")
 public record ReestrObject(
         long objectId,
         UUID objectGuid,

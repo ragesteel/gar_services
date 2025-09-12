@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 /**
  * Тип нормативного документа.
- * Основа — AS_NORMATIVE_DOCS_TYPES_2_251_16_04_01_01.xsd
 
  * @param id         Идентификатор записи
  * @param name       Наименование; Длина: от 1 до 500 символов
  * @param startDate  Дата начала действия записи
  * @param endDate    Дата окончания действия записи
  */
+@SourceSchema(part = "251_16", format = "4.01", schema = "01")
 public record NormativeDocType(
         int id,
         String name,
