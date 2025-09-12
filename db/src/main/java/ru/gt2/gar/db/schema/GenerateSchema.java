@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-/// Генерация Yaml-файлов для Liquibase
+/// Генерация Yml-файлов для Liquibase
 public class GenerateSchema {
     private final LiquibaseYmlWriter writer = new LiquibaseYmlWriter(System.out, NamingStrategy.LOWER_UNDERSCORE);
     private final Set<GarType> remainingTypes = EnumSet.allOf(GarType.class);

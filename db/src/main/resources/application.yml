@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: gar-db
+
+  # Настройки для цветного вывода в терминале
+  output:
+    ansi:
+      enabled: always
+gar:
+  parse:
+    # Размер пачки для потоковой обработки, по умолчанию — 1000
+    batch: 1000

@@ -8,3 +8,6 @@ target/
 
 # Visual Studio Code and products based on it.
 settings.json
+
+# Personal application settings
+/application.yml

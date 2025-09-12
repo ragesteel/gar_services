@@ -1,0 +1,6 @@
+# Пример конфигурации
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/gar
+    username: gar
+    password: some-gar-password

@@ -38,7 +38,7 @@ public class LiquibaseYmlWriter {
     public void start(String author) {
         print(0, "# AUTO GENERATED FILE");
         print(0, "# You should change source classes (" + author + ") instead of manual editing!");
-        print(0, "# Copy to src/main/resources/db/changelog/db.changelog-generated.yaml");
+        print(0, "# Copy to src/main/resources/db/changelog/db.changelog-generated.yml");
         print(0, "# And add dependency on org.liquibase:liquibase-core to your build file");
         print(0, "databaseChangeLog:");
         print(2, "- changeSet:");

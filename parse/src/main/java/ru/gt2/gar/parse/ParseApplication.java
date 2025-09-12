@@ -15,7 +15,7 @@ import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
-// TODO Переименовать в DumpXMLStatsApp и сделать входной файл — параметром в application.yaml
+// TODO Переименовать в DumpXMLStatsApp и сделать входной файл — параметром в application.yml
 @Slf4j
 @RequiredArgsConstructor
 @SpringBootApplication
