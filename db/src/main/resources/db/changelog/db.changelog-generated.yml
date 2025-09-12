@@ -1,0 +1,1763 @@
+# AUTO GENERATED FILE
+# You should change source classes (GenerateSchema(LiquibaseYmlWriter)) instead of manual editing!
+# Copy to src/main/resources/db/changelog/db.changelog-generated.yml
+# And add dependency on org.liquibase:liquibase-core to your build file
+databaseChangeLog:
+  - changeSet:
+      id: 2025-09-12_23-43
+      author: GenerateSchema(LiquibaseYmlWriter)
+      changes:
+        - createTable:
+            tableName: addr_obj_division
+            remarks: "Переподчинение адресных элементов"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: parent_id
+                  remarks: "Глобальный уникальный идентификатор родительского адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: child_id
+                  remarks: "Глобальный уникальный идентификатор дочернего адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: addr_obj_types
+            remarks: "Типы адресных объектов"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи. Ключевое поле"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: level
+                  remarks: "Уровень адресного объекта"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование типа объекта"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Полное наименование типа объекта"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: adm_hierarchy
+            remarks: "Иерархия в административном делении"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_obj_id
+                  remarks: "Идентификатор родительского объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: region_code
+                  remarks: "Код региона"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: area_code
+                  remarks: "Код района"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: city_code
+                  remarks: "Код города"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: place_code
+                  remarks: "Код населенного пункта"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: plan_code
+                  remarks: "Код ЭПС"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: street_code
+                  remarks: "Код улицы"
+                  type: VARCHAR(4)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: path
+                  remarks: "Материализованный путь к объекту (полная иерархия)"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: apartment_types
+            remarks: "Тип помещения"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор типа (ключ)"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование адресного объекта"
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: house_types
+            remarks: "Типы домов"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор типа (ключ)"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: mun_hierarchy
+            remarks: "Иерархия в муниципальном делении"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_obj_id
+                  remarks: "Идентификатор родительского объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oktmo
+                  remarks: "Код ОКТМО"
+                  type: VARCHAR(11)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: path
+                  remarks: "Материализованный путь к объекту (полная иерархия)"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: normative_docs_kinds
+            remarks: "Вид нормативного документа"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор вида нормативного документа"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: normative_docs_types
+            remarks: "Тип нормативного документа"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: normative_docs
+            remarks: "Нормативный документ"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор нормативного документа"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование документа"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: date
+                  remarks: "Дата документа"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  remarks: "Номер документа"
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  remarks: "Тип документа"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: kind
+                  remarks: "Вид документа"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата обновления"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: org_name
+                  remarks: "Наименование органа, создавшего нормативный документ"
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: reg_num
+                  remarks: "Номер государственной регистрации"
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: reg_date
+                  remarks: "Дата государственной регистрации"
+                  type: DATE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: acc_date
+                  remarks: "Дата вступления в силу нормативного документа"
+                  type: DATE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: comment
+                  remarks: "Комментарий"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: true
+        - createTable:
+            tableName: object_levels
+            remarks: "Уровни адресных объектов"
+            columns:
+              - column:
+                  name: level
+                  remarks: "Уникальный идентификатор записи. Ключевое поле. Номер уровня объекта"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: operation_types
+            remarks: "Статус действия"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор статуса (ключ)"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: addr_obj
+            remarks: "Классификатор адресообразующих элементов"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор адресного объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор адресного объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование адресного объекта"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_name
+                  remarks: "Краткое наименование типа объекта"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: level
+                  remarks: "Уровень адресного объекта. Формат: число от 1 до 10 цифр"
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: apartments
+            remarks: "Помещение"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор адресного объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор адресного объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  remarks: "Номер комнаты"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: apart_type
+                  remarks: "Тип комнаты"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: carplaces
+            remarks: "Машино-место"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  remarks: "Номер машино-места."
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: change_history
+            remarks: "История изменений"
+            columns:
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_i_d
+                  remarks: "Глобальный уникальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: adr_object_id
+                  remarks: "Глобальный уникальный идентификатор ID изменившей транзакции (UUID); Соответствует полю AOID выгрузки в формате ФИАС"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oper_type_id
+                  remarks: "ID статуса действия"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: n_doc_id
+                  remarks: "Идентификатор нормативного документа"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_date
+                  remarks: "Дата изменения"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: param_types
+            remarks: "Типы параметров"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор типа параметра"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  remarks: "Кодовое обозначение"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: reestr_objects
+            remarks: "Реестр адресных элементов"
+            columns:
+              - column:
+                  name: object_id
+                  remarks: "Уникальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор адресного объекта"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: level_id
+                  remarks: "Уровень объекта"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: create_date
+                  remarks: "Дата создания"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата изменения"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: room_types
+            remarks: "Тип помещения"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор типа (ключ)"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: rooms
+            remarks: "Комната"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  remarks: "Номер комнаты или офиса"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: room_type
+                  remarks: "Тип комнаты или офиса"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: steads
+            remarks: "Земельный участок"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  remarks: "Номер земельного участка"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Признак действующего адресного объекта"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: addr_obj_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: houses_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: apartments_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: rooms_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: steads_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: carplaces_params
+            remarks: "Параметры адресообразующих элементов и объектов недвижимости (здания, строения, земельные участки, помещения, комнаты, машино-места)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор записи"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный идентификатор адресного объекта"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: change_id_end
+                  remarks: "ID завершившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_id
+                  remarks: "Тип параметра"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  remarks: "Значение параметра"
+                  type: VARCHAR(8000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Дата начала действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Дата окончания действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: addhouse_types
+            remarks: "Типы домов"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Идентификатор типа (ключ)"
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  remarks: "Наименование"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_name
+                  remarks: "Краткое наименование"
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: desc
+                  remarks: "Описание"
+                  type: VARCHAR(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: houses
+            remarks: "Жилые строения (дома/сооружения)"
+            columns:
+              - column:
+                  name: id
+                  remarks: "Уникальный идентификатор записи. Ключевое поле"
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: object_id
+                  remarks: "Глобальный уникальный идентификатор объекта (число)"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: object_guid
+                  remarks: "Глобальный уникальный идентификатор объекта (UUID)"
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: change_id
+                  remarks: "ID изменившей транзакции"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: house_num
+                  remarks: "Номер дома"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: add_num1
+                  remarks: "Дополнительный номер 1"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: add_num2
+                  remarks: "Дополнительный номер 2"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: house_type
+                  remarks: "Тип дома"
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: add_type1
+                  remarks: "Тип дополнительного номера 1"
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: add_type2
+                  remarks: "Тип дополнительного номера 2"
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: oper_type_id
+                  remarks: "Статус действия над записью – причина появления записи"
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prev_id
+                  remarks: "Идентификатор записи связывания с предыдущей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: next_id
+                  remarks: "Идентификатор записи связывания с последующей исторической записью"
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: update_date
+                  remarks: "Дата внесения (обновления) записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  remarks: "Начало действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  remarks: "Окончание действия записи"
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_actual
+                  remarks: "Статус актуальности адресного объекта ФИАС"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  remarks: "Статус активности"
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false

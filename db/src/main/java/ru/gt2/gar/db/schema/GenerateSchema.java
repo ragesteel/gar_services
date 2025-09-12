@@ -1,12 +1,15 @@
 package ru.gt2.gar.db.schema;
 
 import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.LengthLimit;
 import ru.gt2.gar.domain.SchemaComment;
 import ru.gt2.gar.domain.SchemaLink;
 
+import java.io.PrintStream;
 import java.lang.reflect.RecordComponent;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -17,12 +20,17 @@ import java.util.Set;
 import java.util.UUID;
 
 /// Генерация Yml-файлов для Liquibase
+@RequiredArgsConstructor
 public class GenerateSchema {
-    private final LiquibaseYmlWriter writer = new LiquibaseYmlWriter(System.out, NamingStrategy.LOWER_UNDERSCORE);
+    private final LiquibaseYmlWriter writer;
     private final Set<GarType> remainingTypes = EnumSet.allOf(GarType.class);
 
-    public static void main(String[] args) {
-        new GenerateSchema().generate();
+    public static void main(String[] args) throws Exception {
+        try (PrintStream printStream = new PrintStream(
+                "db/src/main/resources/db/changelog/db.changelog-generated.yml", StandardCharsets.UTF_8)) {
+            LiquibaseYmlWriter liquibaseYmlWriter = new LiquibaseYmlWriter(printStream, NamingStrategy.LOWER_UNDERSCORE);
+            new GenerateSchema(liquibaseYmlWriter).generate();
+        }
     }
 
     private void generate() {

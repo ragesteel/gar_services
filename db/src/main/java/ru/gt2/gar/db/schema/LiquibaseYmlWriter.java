@@ -44,6 +44,7 @@ public class LiquibaseYmlWriter {
         print(2, "- changeSet:");
         print(6, "id: " + ID_DATE_TIME_FORMATTER.format(LocalDateTime.now()));
         print(6, "author: " + author);
+        print(6, "changes:");
     }
 
     public void end() {
@@ -58,7 +59,7 @@ public class LiquibaseYmlWriter {
     public void startTable(String name, String comment) {
         print(8, "- createTable:");
         print(12, "tableName: " + namingStrategy.getTableName(name));
-        print(12, "remarks: " + comment);
+        print(12, "remarks: \"" + comment + "\"");
         print(12, "columns:");
     }
 
@@ -70,7 +71,7 @@ public class LiquibaseYmlWriter {
     public void writeColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
         print(14, "- column:");
         print(18, "name: " + namingStrategy.getColumnName(name));
-        print(18, "remarks: " + comment);
+        print(18, "remarks: \"" + comment + "\"");
         print(18, "type: " + type);
         print(18, "constraints:");
         if (primaryKey) {
