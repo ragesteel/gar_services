@@ -153,8 +153,6 @@ public class ParseApplication implements CommandLineRunner {
 
         System.out.printf("total record(s): %d, elapsed: %s%n", stats.getCount(),
                 DurationFmt.format(stats.getDuration()));
-        stats.getFieldStats().forEach(fs -> {
-            System.out.println("  " + fs);
-        });
+        stats.getFieldStats().forEach(fs -> System.out.println("  " + fs));
     }
 }
