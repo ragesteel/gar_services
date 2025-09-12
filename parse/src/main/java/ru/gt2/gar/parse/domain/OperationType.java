@@ -4,26 +4,33 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Статус действия.
-
- * @param id         Идентификатор статуса (ключ)
- * @param name       Наименование; Длина: от 1 до 100 символов
- * @param shortName  Краткое наименование; Опционально; Длина: от 0 до 100 символов
- * @param desc       Описание; Опционально; Длина: от 0 до 250 символов
- * @param updateDate Дата внесения (обновления) записи
- * @param startDate  Начало действия записи
- * @param endDate    Окончание действия записи
- * @param isActive   Статус активности
- */
+@SchemaComment("Статус действия")
 @SourceSchema(part = "251_14", format = "4.01", schema = "01")
 public record OperationType(
-        int id, 
+        @SchemaComment("Идентификатор статуса (ключ)")
+        int id,
+
+        @SchemaComment("Наименование")
+        @LengthLimit(100)
         String name,
+
+        @SchemaComment("Краткое наименование")
+        @LengthLimit(100)
         @Nullable String shortName,
+
+        @SchemaComment("Описание")
+        @LengthLimit(250)
         @Nullable String desc,
+
+        @SchemaComment("Дата внесения (обновления) записи")
         LocalDate updateDate,
+
+        @SchemaComment("Начало действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Окончание действия записи")
         LocalDate endDate,
+
+        @SchemaComment("Статус активности")
         boolean isActive) {
 }

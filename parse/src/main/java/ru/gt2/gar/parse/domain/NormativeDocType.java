@@ -2,19 +2,20 @@ package ru.gt2.gar.parse.domain;
 
 import java.time.LocalDate;
 
-/**
- * Тип нормативного документа.
-
- * @param id         Идентификатор записи
- * @param name       Наименование; Длина: от 1 до 500 символов
- * @param startDate  Дата начала действия записи
- * @param endDate    Дата окончания действия записи
- */
+@SchemaComment("Тип нормативного документа")
 @SourceSchema(part = "251_16", format = "4.01", schema = "01")
 public record NormativeDocType(
+        @SchemaComment("Идентификатор записи")
         int id,
+
+        @SchemaComment("Наименование")
+        @LengthLimit(500)
         String name,
+
+        @SchemaComment("Дата начала действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Дата окончания действия записи")
         LocalDate endDate) {
 }
 

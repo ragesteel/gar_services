@@ -4,26 +4,33 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Типы параметров.
-
- * @param id         Идентификатор типа параметра
- * @param name       Наименование; Длина: от 1 до 50 символов
- * @param code       Кодовое обозначение; Длина: от 1 до 50 символов
- * @param desc       Описание; Опционально; Длина: от 0 до 120 символов
- * @param updateDate Дата внесения (обновления) записи
- * @param startDate  Начало действия записи
- * @param endDate    Окончание действия записи
- * @param isActive   Статус активности
- */
+@SchemaComment("Типы параметров")
 @SourceSchema(part = "251_20", format = "4.01", schema = "01")
 public record ParamType(
+        @SchemaComment("Идентификатор типа параметра")
         int id,
+
+        @SchemaComment("Наименование")
+        @LengthLimit(50)
         String name,
+
+        @SchemaComment("Кодовое обозначение")
+        @LengthLimit(50)
         String code,
+
+        @SchemaComment("Описание")
+        @LengthLimit(120)
         @Nullable String desc,
+
+        @SchemaComment("Дата внесения (обновления) записи")
         LocalDate updateDate,
+
+        @SchemaComment("Начало действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Окончание действия записи")
         LocalDate endDate,
+
+        @SchemaComment("Статус активности")
         boolean isActive) {
 }

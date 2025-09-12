@@ -4,36 +4,50 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Нормативный документ.
-
- * @param id         Идентификатор нормативного документа
- * @param name       Наименование документа; Опционально; Длина: от 1 до 8000 символов
- *                   Хоть и в XSD и в Word-описании это поле обязательно,
- *                   но в данных от 29.08.2029 куча записей без этого поля
- * @param date       Дата документа
- * @param number     Номер документа; Длина: от 1 до 150 символов (в word-описании длина до 20 символов)
- * @param type       Тип документа; {@link NormativeDocType}
- * @param kind       Вид документа; {@link NormativeDocKind}
- * @param updateDate Дата обновления
- * @param orgName    Наименование органа, создавшего нормативный документ; Опционально; Длина: от 0 до 255 символов
- * @param regNum     Номер государственной регистрации; Опционально; Длина: от 0 до 100 символов
- * @param regDate    Дата государственной регистрации; Опционально
- * @param accDate    Дата вступления в силу нормативного документа; Опционально
- * @param comment    Комментарий; Опционально; Длина: от 0 до 8000 символов
- */
+@SchemaComment("Нормативный документ")
 @SourceSchema(part = "251_11", format = "4.01", schema = "01")
 public record NormativeDoc(
+        @SchemaComment("Идентификатор нормативного документа")
         long id,
+
+        // Хоть и в XSD и в Word-описании это поле обязательно,но в данных от 29.08.2029 куча записей без этого поля
+        @SchemaComment("Наименование документа")
+        @LengthLimit(8000)
         @Nullable String name,
+
+        @SchemaComment("Дата документа")
         LocalDate date,
+
+        @SchemaComment("Номер документа")
+        @LengthLimit(150)
         String number,
+
+        @SchemaComment("Тип документа")
+        @SchemaLink(GarType.NORMATIVE_DOCS_TYPES)
         int type,
+
+        @SchemaComment("Вид документа")
+        @SchemaLink(GarType.NORMATIVE_DOCS_KINDS)
         int kind,
+
+        @SchemaComment("Дата обновления")
         LocalDate updateDate,
+
+        @SchemaComment("Наименование органа, создавшего нормативный документ")
+        @LengthLimit(255)
         @Nullable String orgName,
+
+        @SchemaComment("Номер государственной регистрации")
+        @LengthLimit(100)
         @Nullable String regNum,
+
+        @SchemaComment("Дата государственной регистрации")
         @Nullable LocalDate regDate,
+
+        @SchemaComment("Дата вступления в силу нормативного документа")
         @Nullable LocalDate accDate,
+
+        @SchemaComment("Комментарий")
+        @LengthLimit(8000)
         @Nullable String comment) {
 }
