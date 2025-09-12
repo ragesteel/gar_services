@@ -74,6 +74,7 @@ public enum GarType {
         return result;
     }
 
+    @VisibleForTesting
     static void forEach(@Nullable Consumer<Class<? extends Record>> classConsumer,
                         @Nullable Consumer<RecordComponent> componentConsumer) {
         if (null != classConsumer) {
