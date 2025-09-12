@@ -4,44 +4,62 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Иерархия в административном делении
-
- * @param id         Уникальный идентификатор записи. Ключевое поле
- * @param objectId   Глобальный уникальный идентификатор адресного объекта
- * @param parentObjId Идентификатор родительского объекта. Опционально
- * @param changeId   ID изменившей транзакции
- * @param regionCode Код региона; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param areaCode   Код района; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param cityCode   Код города; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param placeCode  Код населенного пункта; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param planCode   Код ЭПС; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param streetCode Код улицы; Опционально; Длина: от 1 до 4 символов, только цифры
- * @param prevId     Идентификатор записи связывания с предыдущей исторической записью; Опционально
- * @param nextId     Идентификатор записи связывания с последующей исторической записью; Опционально
- * @param updateDate Дата внесения (обновления) записи
- * @param startDate  Начало действия записи
- * @param endDate    Окончание действия записи
- * @param isActive   Признак действующего адресного объекта
- * @param path       Материализованный путь к объекту (полная иерархия)
- */
 @SourceSchema(part = "251_04", format = "4.01", schema = "01")
 public record AdmHierarchy(
+        @SchemaComment("Уникальный идентификатор записи. Ключевое поле")
         long id,
+
+        @SchemaComment("Глобальный уникальный идентификатор адресного объекта")
         long objectId,
+
+        @SchemaComment("Идентификатор родительского объекта")
         @Nullable Long parentObjId,
+
+        @SchemaComment("ID изменившей транзакции")
         long changeId,
+
+        @SchemaComment("Код региона")
+        @LengthLimit(4)
         @Nullable String regionCode,
+
+        @SchemaComment("Код района")
+        @LengthLimit(4)
         @Nullable String areaCode,
+
+        @SchemaComment("Код города")
+        @LengthLimit(4)
         @Nullable String cityCode,
+
+        @SchemaComment("Код населенного пункта")
+        @LengthLimit(4)
         @Nullable String placeCode,
+
+        @SchemaComment("Код ЭПС")
+        @LengthLimit(4)
         @Nullable String planCode,
+
+        @SchemaComment("Код улицы")
+        @LengthLimit(4)
         @Nullable String streetCode,
+
+        @SchemaComment("Идентификатор записи связывания с предыдущей исторической записью")
         @Nullable Long prevId,
+
+        @SchemaComment("Идентификатор записи связывания с последующей исторической записью")
         @Nullable Long nextId,
+
+        @SchemaComment("Дата внесения (обновления) записи")
         LocalDate updateDate,
+
+        @SchemaComment("Начало действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Окончание действия записи")
         LocalDate endDate,
+
+        @SchemaComment("Признак действующего адресного объекта")
         boolean isActive,
+
+        @SchemaComment("Материализованный путь к объекту (полная иерархия)")
         String path) {
 }

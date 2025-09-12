@@ -4,35 +4,44 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Иерархия в муниципальном делении.
-
- * @param id         Уникальный идентификатор записи. Ключевое поле
- * @param objectId   Глобальный уникальный идентификатор адресного объекта
- * @param parentObjId Идентификатор родительского объекта; Опционально
- * @param changeId   ID изменившей транзакции
- * @param oktmo      Код ОКТМО; Опционально; Длина: от 8 до 11 символов, только цифры
- * @param prevId     Идентификатор записи связывания с предыдущей исторической записью; Опционально
- * @param nextId     Идентификатор записи связывания с последующей исторической записью; Опционально
- * @param updateDate Дата внесения (обновления) записи
- * @param startDate  Начало действия записи
- * @param endDate    Окончание действия записи
- * @param isActive   Признак действующего адресного объекта
- * @param path       Материализованный путь к объекту (полная иерархия)
- */
+@SchemaComment("Иерархия в муниципальном делении")
 @SourceSchema(part = "251_10", format = "4.01", schema = "01")
 public record MunHierarchy(
+        @SchemaComment("Уникальный идентификатор записи. Ключевое поле")
         long id,
+
+        @SchemaComment("Глобальный уникальный идентификатор адресного объекта")
         long objectId,
+
+        @SchemaComment("Идентификатор родительского объекта")
         @Nullable Long parentObjId,
+
+        @SchemaComment("ID изменившей транзакции")
         long changeId,
+
+        @SchemaComment("Код ОКТМО")
+        @LengthLimit(11)
         @Nullable String oktmo,
+
+        @SchemaComment("Идентификатор записи связывания с предыдущей исторической записью")
         @Nullable Long prevId,
+
+        @SchemaComment("Идентификатор записи связывания с последующей исторической записью")
         @Nullable Long nextId,
+
+        @SchemaComment("Дата внесения (обновления) записи")
         LocalDate updateDate,
+
+        @SchemaComment("Начало действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Окончание действия записи")
         LocalDate endDate,
+
+        @SchemaComment("Признак действующего адресного объекта")
         boolean isActive,
+
+        @SchemaComment("Материализованный путь к объекту (полная иерархия)")
         String path) {
 }
 

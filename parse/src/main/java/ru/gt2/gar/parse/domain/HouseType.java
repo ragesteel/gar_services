@@ -4,27 +4,34 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-/**
- * Информация по признакам владения.
-
- * @param id         Идентификатор типа (ключ)
- * @param name       Наименование; Длина: от 1 до 50 символов
- * @param shortName  Краткое наименование; Опционально; Длина: от 1 до 20 символов (в XSD — до 50)
- * @param desc       Описание; Опционально; Длина: от 1 до 250 символов
- * @param updateDate Дата внесения (обновления) записи
- * @param startDate  Начало действия записи
- * @param endDate    Окончание действия записи
- * @param isActive   Статус активности
- */
+@SchemaComment("Типы домов")
 @SourceSchema(part = "251_13", format = "4.01", schema = "01")
 public record HouseType(
+        @SchemaComment("Идентификатор типа (ключ)")
         int id,
+
+        @SchemaComment("Наименование")
+        @LengthLimit(50)
         String name,
+
+        @SchemaComment("Краткое наименование")
+        @LengthLimit(20) // В XSD — до 50
         @Nullable String shortName,
+
+        @SchemaComment("Описание")
+        @LengthLimit(250)
         @Nullable String desc,
+
+        @SchemaComment("Дата внесения (обновления) записи")
         LocalDate updateDate,
+
+        @SchemaComment("Начало действия записи")
         LocalDate startDate,
+
+        @SchemaComment("Окончание действия записи")
         LocalDate endDate,
+
+        @SchemaComment("Статус активности")
         boolean isActive) {
 }
 
