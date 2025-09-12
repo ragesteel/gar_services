@@ -13,8 +13,7 @@ public class LengthLimitTest {
     // Убедиться в том, что только String содержит аннотацию @LengthLimit и что на всех String есть эта аннотация
     @Test
     public void testOnlyStringType() {
-        GarType.forEach(null,
-                recordComponent -> assertOnlyStringHaveLimit(recordComponent));
+        GarType.forEach(null, LengthLimitTest::assertOnlyStringHaveLimit);
     }
 
     private static void assertOnlyStringHaveLimit(RecordComponent recordComponent) {
