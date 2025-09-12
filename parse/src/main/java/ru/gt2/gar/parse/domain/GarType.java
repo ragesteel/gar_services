@@ -1,6 +1,14 @@
 package ru.gt2.gar.parse.domain;
 
+import com.google.common.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+
+import java.lang.reflect.RecordComponent;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Все разновидности объектов для файлов, по крайней мере для которых имеется описание.
@@ -55,5 +63,25 @@ public enum GarType {
             }
         }
         return Optional.empty();
+    }
+
+    @VisibleForTesting
+    static Set<Class<? extends Record>> getRecordClasses() {
+        Set<Class<? extends Record>> result = new HashSet<>();
+        for (GarType garType : values()) {
+            result.add(garType.recordClass);
+        }
+        return result;
+    }
+
+    static void forEach(@Nullable Consumer<Class<? extends Record>> classConsumer,
+                        @Nullable Consumer<RecordComponent> componentConsumer) {
+        if (null != classConsumer) {
+            GarType.getRecordClasses().forEach(classConsumer);
+        }
+        if (null != componentConsumer) {
+            GarType.getRecordClasses().stream().map(Class::getRecordComponents).
+                    flatMap(Arrays::stream).forEach(componentConsumer);
+        }
     }
 }

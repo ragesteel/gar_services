@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@SchemaComment("Жилые строения (дома/сооружения)")
 @SourceSchema(part = "251_08", format = "4.01", schema = "01")
 public record House(
         @SchemaComment("Уникальный идентификатор записи. Ключевое поле")

@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
+@SchemaComment("Иерархия в административном делении")
 @SourceSchema(part = "251_04", format = "4.01", schema = "01")
 public record AdmHierarchy(
         @SchemaComment("Уникальный идентификатор записи. Ключевое поле")
@@ -61,5 +62,6 @@ public record AdmHierarchy(
         boolean isActive,
 
         @SchemaComment("Материализованный путь к объекту (полная иерархия)")
+        @LengthLimit(250) // В схемах нет, но в реальности не больше 69 символов
         String path) {
 }
