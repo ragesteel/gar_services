@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
 @Slf4j
-public class EntityStats<T extends Record> implements ListConsumer<T> {
+public class EntityStats implements ListConsumer {
     private List<FieldStat> fieldStats;
     @Getter
     private int count;
@@ -32,14 +32,15 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
         duration = null;
     }
 
-    private EntityStats(List<FieldStat> fieldStats, int count, Duration duration) {
+    @VisibleForTesting
+    protected EntityStats(List<FieldStat> fieldStats, int count, Duration duration) {
         this.fieldStats = fieldStats;
         this.count = count;
         this.duration = duration;
     }
 
     @Override
-    public void accept(List<T> entities) {
+    public void accept(List<Record> entities) {
         entities.forEach(this::acceptEntity);
         count += entities.size();
     }
@@ -62,7 +63,7 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
         return requireNonNullElseGet(duration, stopwatch::elapsed);
     }
 
-    public static <S extends Record> EntityStats<S> sum(EntityStats<S> first, EntityStats<S> second) {
+    public static EntityStats sum(EntityStats first, EntityStats second) {
         requireNonNull(first).ensureFinished();
         requireNonNull(second).ensureFinished();
 
@@ -73,9 +74,9 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
         List<FieldStat> firstFields = first.fieldStats;
         List<FieldStat> resultFieldStats = new ArrayList<>(firstFields.size());
         for (int i = 0; i < firstFields.size(); i++) {
-            firstFields.add(firstFields.get(i).sum(second.fieldStats.get(i)));
+            resultFieldStats.add(firstFields.get(i).sum(second.fieldStats.get(i)));
         }
-        return new EntityStats<>(resultFieldStats, first.count + second.count,
+        return new EntityStats(resultFieldStats, first.count + second.count,
                 first.getDuration().plus(second.getDuration()));
     }
 
@@ -88,14 +89,14 @@ public class EntityStats<T extends Record> implements ListConsumer<T> {
         }
     }
 
-    protected void acceptEntity(T entity) {
+    protected void acceptEntity(Record entity) {
         if (null == fieldStats) {
             createFieldStats(entity);
         }
         fieldStats.forEach(fieldStat -> fieldStat.accept(entity));
     }
 
-    private void createFieldStats(T entity) {
+    private void createFieldStats(Record entity) {
         fieldStats = Arrays.stream(entity.getClass().getRecordComponents())
                 .map(EntityStats::createOptionalFieldStat)
                 .flatMap(Optional::stream)

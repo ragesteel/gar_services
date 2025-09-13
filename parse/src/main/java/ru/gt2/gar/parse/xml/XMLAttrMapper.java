@@ -107,4 +107,38 @@ public class XMLAttrMapper<T> {
     private XMLAttrMapper(String rootName, String elementName, Class<T> valueClass, GarType garType) {
         this(rootName, elementName, valueClass, garType, NOTHING);
     }
+
+    /*
+    public static XMLAttrMapper<Record> forGarType(GarType garType) {
+        return switch (garType) {
+            case ADDR_OBJ -> ADDRESS_OBJECT;
+            case ADDR_OBJ_DIVISION -> ADDRESS_OBJECT_DIVISION;
+            case ADDR_OBJ_TYPES -> ADDRESS_OBJECT_TYPE;
+            case ADM_HIERARCHY -> ADM_HIERARCHY;
+            case APARTMENT_TYPES -> APARTMENT_TYPE;
+            case APARTMENTS -> APARTMENT;
+            case CARPLACES -> CAR_PLACE;
+            case CHANGE_HISTORY -> CHANGE_HISTORY;
+            case HOUSE_TYPES -> HOUSE_TYPE;
+            case HOUSES -> HOUSE;
+            case MUN_HIERARCHY -> MUN_HIERARCHY;
+            case NORMATIVE_DOCS -> NORMATIVE_DOC;
+            case NORMATIVE_DOCS_KINDS -> NORMATIVE_DOC_KIND;
+            case NORMATIVE_DOCS_TYPES -> NORMATIVE_DOC_TYPE;
+            case OBJECT_LEVELS -> OBJECT_LEVEL;
+            case PARAM_TYPES -> PARAM_TYPE;
+            case ADDR_OBJ_PARAMS -> ADDR_OBJ_PARAM;
+            case HOUSES_PARAMS -> HOUSES_PARAM;
+            case APARTMENTS_PARAMS -> APARTMENTS_PARAM;
+            case ROOMS_PARAMS -> ROOMS_PARAM;
+            case STEADS_PARAMS -> STEADS_PARAM;
+            case CARPLACES_PARAMS -> CARPLACES_PARAM;
+            case REESTR_OBJECTS -> REESTR_OBJECT;
+            case ROOM_TYPES -> ROOM_TYPE;
+            case ROOMS -> ROOM;
+            case STEADS -> STEAD;
+            case OPERATION_TYPES -> OPERATION_TYPE;
+            case ADDHOUSE_TYPES -> ADD_HOUSE_TYPE;
+        };
+    }*/
 }

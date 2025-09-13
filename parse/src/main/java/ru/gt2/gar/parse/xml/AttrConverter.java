@@ -13,8 +13,8 @@ import java.util.function.Function;
 /**
  * Преобразователи для более правильных преобразований типов, чтобы вместо цифр 0 и 1 получить boolean.
  */
-public interface AttrConverter<T> extends Function<Map<String, String>, T> {
-    static <T> AttrConverter<T> jackson(Class<T> valueType) {
+public interface AttrConverter<T extends Record> extends Function<Map<String, String>, T> {
+    static <T extends Record> AttrConverter<T> jackson(Class<T> valueType) {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                 // .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

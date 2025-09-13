@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.lang.reflect.RecordComponent;
 
 public class IntFieldStat extends AbstractFieldStat {
@@ -10,7 +12,8 @@ public class IntFieldStat extends AbstractFieldStat {
         minMax = new MinMaxStat<>();
     }
 
-    private IntFieldStat(String name, MinMaxStat<Integer> minMax) {
+    @VisibleForTesting
+    protected IntFieldStat(String name, MinMaxStat<Integer> minMax) {
         super(name);
         this.minMax = minMax;
     }

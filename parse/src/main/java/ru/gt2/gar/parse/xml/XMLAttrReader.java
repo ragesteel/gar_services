@@ -29,17 +29,17 @@ import static java.util.Objects.requireNonNull;
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
+public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
 
     private final XMLEventReader eventReader;
     private final String rootName;
     private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
     private final int batchSize;
-    private final AttrConverter<T> attrConverter;
+    private final AttrConverter<? extends Record> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<T> mapper, AttrConverter<T> attrConverter, int batchSize)
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper mapper, AttrConverter<? extends Record> attrConverter, int batchSize)
             throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
@@ -70,9 +70,9 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
      * Читает следующую "пачку" объектов, используя атрибуты элемента как поля.
      */
     @Override
-    public List<T> next() {
+    public List<Record> next() {
         try {
-            List<T> result = new ArrayList<>(batchSize);
+            List<Record> result = new ArrayList<>(batchSize);
             while (eventReader.hasNext() && (result.size() < batchSize)) {
                 XMLEvent event = eventReader.nextEvent();
                 if (!event.isStartElement()) {
@@ -97,7 +97,7 @@ public class XMLAttrReader<T> implements Iterator<List<T>>, Closeable {
         }
     }
 
-    private T createValue(StartElement startElement) {
+    private Record createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
                 .collect(Collectors.toMap(XMLAttrReader::getAttrName, this::getAttrValue));
         return attrConverter.apply(attributes);
