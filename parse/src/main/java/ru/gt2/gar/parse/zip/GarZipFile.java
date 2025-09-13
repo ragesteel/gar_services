@@ -6,6 +6,8 @@ import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
 import ru.gt2.gar.domain.GarType;
 
+import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +29,7 @@ import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
  * Чтение данных из архива.
  */
 @Slf4j
-public class GarZipFile {
+public class GarZipFile implements Closeable {
     private static final String VERSION = "version.txt";
     private static final GarVersion NO_VERSION = new GarVersion(LocalDate.of(2000, Month.JANUARY, 1), -1);
 
@@ -40,6 +42,16 @@ public class GarZipFile {
     public GarZipFile(String fileName) throws IOException {
         requireNonNull(fileName, "fileName must be not null!");
         zipFile = new ZipFile(fileName);
+    }
+
+    public GarZipFile(File file) throws IOException {
+        requireNonNull(file, "file must be not null!");
+        zipFile = new ZipFile(file);
+    }
+
+    @Override
+    public void close() throws IOException {
+        zipFile.close();
     }
 
     public Stream<GarEntry> streamEntries() {

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /// Генерация Yml-файлов для Liquibase
+/// TODO Добавить отдельные комментарии таблицам с сущностями {@link ru.gt2.gar.domain.Param}
 @RequiredArgsConstructor
 public class GenerateSchema {
     private final LiquibaseYmlWriter writer;
