@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.task.AsyncTaskExecutor;
 import ru.gt2.gar.domain.Gar;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.DurationFmt;
@@ -20,8 +21,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /// Вывод статистики по архиву ГАР.
 @Slf4j
@@ -30,13 +33,16 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     private final AllXMLProcessors xmlProcessors;
 
+    private final AsyncTaskExecutor taskExecutor;
+
     private final File zipFile;
 
-    private final Map<GarType, EntityStats> stats = new HashMap<>();
+    private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
-    public DumpXMLStatsApp(AllXMLProcessors xmlProcessors,
+    public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file) {
         this.xmlProcessors = xmlProcessors;
+        this.taskExecutor = taskExecutor;
         this.zipFile = file;
     }
 
@@ -59,15 +65,22 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
             Stopwatch stopwatch = Stopwatch.createStarted();
             // simpleProcess(garZipFile);
-            processSerial(garZipFile);
+            // processSerial(garZipFile);
+            processParallel(garZipFile);
+            dumpStats(garZipFile);
             System.out.printf("Total time elapsed: %s%n", stopwatch);
+        } catch (Exception e) {
+            log.warn("Unable to parse gar zip file: {}", zipFile, e);
         }
     }
 
     // Последовательная обработка каждого индивидуального файла
     private void processSerial(GarZipFile garZipFile) {
         garZipFile.streamEntries().forEach(garEntry -> processGarEntry(garEntry, garZipFile));
+    }
 
+    private void dumpStats(GarZipFile garZipFile) {
+        // Печать итоговой статистики
         for (GarType garType : GarType.values()) {
             FileStats fileStats = garZipFile.getStats().get(garType);
             EntityStats garStats = stats.get(garType);
@@ -76,6 +89,16 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                     DurationFmt.format(garStats.getDuration()));
             garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs));
         }
+    }
+
+    // Параллельная обработка файлов
+    private void processParallel(GarZipFile garZipFile) {
+        List<CompletableFuture<Void>> list = garZipFile.streamEntries()
+                .map(garEntry -> taskExecutor.submitCompletable(() -> processGarEntry(garEntry, garZipFile)))
+                .toList();
+        log.info("Finished adding tasks");
+        list.forEach(CompletableFuture::join);
+        log.info("Finished join on all tasks");
     }
 
     private void processGarEntry(GarEntry garEntry, GarZipFile garZipFile) {

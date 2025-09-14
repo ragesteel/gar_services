@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import ru.gt2.gar.domain.GarType;
 
 import java.io.Closeable;
@@ -32,10 +33,15 @@ public class GarZipFile implements Closeable {
     private static final String VERSION = "version.txt";
     private static final GarVersion NO_VERSION = new GarVersion(LocalDate.of(2000, Month.JANUARY, 1), -1);
 
+    private final ZipFile zipFile;
+
+    @Nullable
     private GarVersion version;
 
-    private final ZipFile zipFile;
+    @Nullable
     private Map<GarEntry, ZipEntry> entries;
+
+    @Nullable
     private Map<GarType, FileStats> stats;
 
     public GarZipFile(String fileName) throws IOException {
@@ -107,6 +113,7 @@ public class GarZipFile implements Closeable {
     }
 
     /* TODO что-то подобное нужно добавить, чтобы убедиться в том что мы распарсим всё что есть и что мы ничего не потеряли
+    // TODO проверять ещё идентичность дат во всех файлах
     public void validateNames() {
         Multiset<String> garNames = stream().collect(Multisets.toMultiset(GarEntry::name, ge -> 1, HashMultiset::create));
         EnumSet<GarTypes> enumSet = EnumSet.allOf(GarTypes.class);
