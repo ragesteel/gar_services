@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Objects.requireNonNull;
 import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
@@ -89,7 +88,7 @@ public class GarZipFile implements Closeable {
     }
 
     private void fillEntries() {
-        entries = newHashMap();
+        entries = newLinkedHashMap();
         stats = newLinkedHashMap();
 
         Streams.stream(zipFile.entries().asIterator()).forEach(ze -> {
@@ -97,6 +96,7 @@ public class GarZipFile implements Closeable {
             if (null == ge) {
                 return;
             }
+            ge = ge.withSize(ze.getSize());
             entries.put(ge, ze);
             stats.merge(GarType.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
         });

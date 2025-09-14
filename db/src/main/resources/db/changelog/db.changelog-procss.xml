@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Хранение информации об обработке файлов -->
+    <changeSet author="ragesteel" id="2025-09-13_23-11" ignore="true">
+
+        <createTable tableName="gar_zip" remarks="Информация об архивах">
+            <column name="zip_size" type="BIGINT" remarks="Размер файла архива">
+                <constraints nullable="false" /></column>
+            <column name="full" type="BOOLEAN" remarks="Полный архив (true) или дельта (false)">
+                <constraints nullable="false" /></column>
+            <column name="version_date" type="DATE" remarks="Дата из файла версии">
+                <constraints nullable="false" /></column>
+            <column name="version_num"  type="INT" remarks="Номер из файла версии">
+                <constraints nullable="false" /></column>
+        </createTable>
+
+        <createTable tableName="gar_file" remarks="Информация об обработанных файлах из архива">
+            <!-- TODO продумать первичные индексы и связи -->
+            <column name="base_name" type="VARCHAR(50)" remarks="Базовое имя файла">
+                <constraints nullable="false" /></column>
+            <!-- Особого смысла хранить эту дату я не вижу.
+            <column name="name_date" type="DATE" remarks="Дата из имени файла">
+                <constraints nullable="false" /></column> -->
+            <column name="name_uuid" type="UUID" remarks="UUID из имени файла">
+                <constraints nullable="false" /></column>
+            <column name="sub_dir" type="TINYINT" remarks="Каталог файла, может отсутствовать">
+                <constraints nullable="true" /></column>
+            <column name="file_size" type="BIGINT" remarks="Размер файла">
+                <constraints nullable="false" /></column>
+
+            <!-- TODO Возможно нужно информацию об обработке отдельно хранить -->
+            <column name="record_count" type="BIGINT" remarks="Количество записей">
+                <constraints nullable="false" /></column>
+            <column name="duration_ms" type="BIGINT" remarks="Время обработки, миллисекунды">
+                <constraints nullable="false" /></column>
+        </createTable>
+        
+        <createTable tableName="gar_zip_process">
+            <column name=""></column>
+        </createTable>
+        <createTable tableName="gar_file_process">
+            <column name=""></column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

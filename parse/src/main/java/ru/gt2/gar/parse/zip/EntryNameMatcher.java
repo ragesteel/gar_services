@@ -3,7 +3,6 @@ package ru.gt2.gar.parse.zip;
 import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +23,6 @@ public class EntryNameMatcher {
         var year = Integer.parseInt(matcher.group("Year"));
 
         return new GarEntry(matcher.group("Name"), LocalDate.of(year, month, day),
-                UUID.fromString(matcher.group("UUID")), Optional.ofNullable(matcher.group("Dir")));
+                UUID.fromString(matcher.group("UUID")), matcher.group("Dir"));
     }
 }
