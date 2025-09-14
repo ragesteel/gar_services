@@ -96,7 +96,11 @@ public class GarZipFile implements Closeable {
             if (null == ge) {
                 return;
             }
-            ge = ge.withSize(ze.getSize());
+            long crc32 = ze.getCrc();
+            if (-1 == crc32) {
+                crc32 = 0;
+            }
+            ge = ge.withSizeCrc32(ze.getSize(), (int)crc32);
             entries.put(ge, ze);
             stats.merge(GarType.valueOf(ge.name()), new FileStats(1, ze.getSize()), FileStats::add);
         });

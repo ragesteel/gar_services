@@ -19,6 +19,6 @@ public class GarTypeTest {
     public void getMaxNameLength() {
         OptionalInt max = Arrays.stream(GarType.values()).map(Enum::name).mapToInt(String::length).max();
         assertTrue(max.isPresent());
-        assertEquals(20, max.getAsInt());
+        assertEquals(Gar.MAX_NAME_LENGTH, max.getAsInt());
     }
 }

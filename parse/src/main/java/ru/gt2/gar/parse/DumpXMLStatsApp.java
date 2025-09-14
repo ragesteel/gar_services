@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import ru.gt2.gar.domain.Gar;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
@@ -91,8 +92,21 @@ public class DumpXMLStatsApp implements CommandLineRunner {
         EntityStats fileStats = new EntityStats();
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, fileStats);
-            if (fileStats.getCount() > 0) {
+
+            String nameWithDir = garEntry.nameWithDir();
+            int pad = Gar.MAX_NAME_LENGTH + 3 - nameWithDir.length();
+            if (pad > 0) {
+                nameWithDir += " ".repeat(pad);
+            }
+            int recordCount = fileStats.getCount();
+            String duration = DurationFmt.format(fileStats.getDuration());
+            if (recordCount > 0) {
                 stats.merge(garType, fileStats, EntityStats::sum);
+                log.info("Finished processing of file: {} elapsed: {}, record(s): {}", //  (~ {} byte(s) per record)
+                        nameWithDir, duration, recordCount); // , garEntry.size() / recordCount
+            } else {
+                log.info("Finished processing of file: {} elapsed: {}, no records",
+                        nameWithDir, duration);
             }
         } catch (Exception e) {
             log.warn("Unable to parse entry: {}", garEntry, e);

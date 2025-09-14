@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-
+    <!-- https://www.baeldung.com/java-liquibase-list-sql-types -->
     <!-- Хранение информации об обработке файлов -->
     <changeSet author="ragesteel" id="2025-09-13_23-11" ignore="true">
 
@@ -29,19 +29,36 @@
                 <constraints nullable="true" /></column>
             <column name="file_size" type="BIGINT" remarks="Размер файла">
                 <constraints nullable="false" /></column>
-
+            <column name="file_crc32" type="INT" remarks="Контрольная сумма CRC32">
+                <constraints nullable="false" /></column>
             <!-- TODO Возможно нужно информацию об обработке отдельно хранить -->
-            <column name="record_count" type="BIGINT" remarks="Количество записей">
-                <constraints nullable="false" /></column>
-            <column name="duration_ms" type="BIGINT" remarks="Время обработки, миллисекунды">
-                <constraints nullable="false" /></column>
         </createTable>
-        
+
+        <createTable tableName="gar_process" remarks="Обработки gar-файлов">
+            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
+                <constraints nullable="false" /></column>
+            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
+                <constraints nullable="true" /></column>
+        </createTable>
         <createTable tableName="gar_zip_process">
-            <column name=""></column>
+            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
+                <constraints nullable="false" /></column>
+            <!-- Поля NULL до окончания обработки -->
+            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
+                <constraints nullable="true" /></column>
+            <column name="duration_ms" type="BIGINT" remarks="Время обработки, миллисекунды">
+                <constraints nullable="true" /></column>
         </createTable>
         <createTable tableName="gar_file_process">
-            <column name=""></column>
+            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
+                <constraints nullable="false" /></column>
+            <!-- Поля NULL до окончания обработки -->
+            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
+                <constraints nullable="true" /></column>
+            <column name="record_count" type="BIGINT" remarks="Количество записей">
+                <constraints nullable="true" /></column>
+            <column name="duration_ms" type="BIGINT" remarks="Время обработки, миллисекунды">
+                <constraints nullable="true" /></column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
