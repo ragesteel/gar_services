@@ -4,6 +4,14 @@ spring:
     url: jdbc:postgresql://localhost/gar
     username: gar
     password: some-gar-password
+  # Тут видимо нужно определиться или мы включаем виртуальные потоки или просто пул на количество ядер
+  task:
+    execution:
+      pool:
+        core-size: 16
+  threads:
+    virtual:
+      enabled: true
 gar:
   zip:
 # архив полной версии

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: gar-parse
+    name: dump-xml-stats
 
   # Настройки для цветного вывода в терминале
   output:

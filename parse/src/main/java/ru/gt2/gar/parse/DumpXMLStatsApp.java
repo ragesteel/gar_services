@@ -33,6 +33,8 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     private final AllXMLProcessors xmlProcessors;
 
+    // Это будет Bean с именем applicationTaskExecutor, который создаётся Spring'ом.
+    // https://docs.spring.io/spring-boot/reference/features/task-execution-and-scheduling.html
     private final AsyncTaskExecutor taskExecutor;
 
     private final File zipFile;
@@ -93,6 +95,8 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     // Параллельная обработка файлов
     private void processParallel(GarZipFile garZipFile) {
+        // IDEA возможно в одну задачу запихивать несколько файлов, пока сумма пачки не превысит 1 Мб к примеру.
+        //  Но, не факт, что это поможет, всё-таки всего меньше 2000 файлов, а это не такие большие накладные расходы.
         List<CompletableFuture<Void>> list = garZipFile.streamEntries()
                 .map(garEntry -> taskExecutor.submitCompletable(() -> processGarEntry(garEntry, garZipFile)))
                 .toList();
