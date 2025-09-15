@@ -8,7 +8,7 @@ import ru.gt2.gar.parse.xml.AllXMLProcessors;
 @Configuration
 public class SpringConfiguration {
     @Bean
-    public AllXMLProcessors allXMLProcessors(@Value("${gar.parse.batch:1000}") int batchSize) {
+    public AllXMLProcessors allXMLProcessors(@Value("${gar.parse.batch:1024}") int batchSize) {
         return new AllXMLProcessors(batchSize);
     }
 }

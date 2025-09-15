@@ -35,6 +35,11 @@ public class LoadDataApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // TODO Сначала сделать загрузку для одной таблицы, из корневых справочников
+        // TODO Потом — всех корневых справочников
+        // TODO И наконец — всех данных по регионам
+        // TODO Сохранение данных вынести в отдельный класс с интерфейсом
+        //  и реализациями на BatchPreparedStatement, UNNEST и COPY
         Connection connection = dataSource.getConnection();
         ;
         ResultSet typeInfo = connection.getMetaData().getTypeInfo();
@@ -50,6 +55,7 @@ public class LoadDataApp implements CommandLineRunner {
             }
             System.out.println();
         }
+
         // ?reWriteBatchedInserts=true
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO table_name (column_name1, column_name2) VALUES (?, ?)");
         // batch
