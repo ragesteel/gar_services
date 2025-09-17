@@ -3,6 +3,7 @@ package ru.gt2.gar.db.schema;
 import lombok.RequiredArgsConstructor;
 
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -67,7 +68,7 @@ public class LiquibaseYmlWriter implements TableVisitor {
 
     // https://docs.liquibase.com/reference-guide/change-types/column
     @Override
-    public void onColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
+    public void onColumn(String name, String comment, String type, boolean primaryKey, boolean nullable, Method accessor) {
         print(14, "- column:");
         print(18, "name: " + name);
         print(18, "remarks: \"" + comment + "\"");

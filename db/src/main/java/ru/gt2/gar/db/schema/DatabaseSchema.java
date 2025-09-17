@@ -23,7 +23,7 @@ public class DatabaseSchema {
         boolean primaryKey = true;
         for (RecordComponent rc : recordClass.getRecordComponents()) {
             tableVisitor.onColumn(namingStrategy.getColumnName(rc.getName()), rc.getAnnotation(SchemaComment.class).value(), getType(rc),
-                    primaryKey, rc.isAnnotationPresent(Nullable.class));
+                    primaryKey, rc.isAnnotationPresent(Nullable.class), rc.getAccessor());
             primaryKey = false;
             // TODO добавить внешние ключи, но только после проверки на то,
             //  что они будут работать для текущего набора данных
