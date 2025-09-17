@@ -1,5 +1,7 @@
 package ru.gt2.gar.db.schema;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +14,8 @@ import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 
-public class LiquibaseYmlWriter {
+@RequiredArgsConstructor
+public class LiquibaseYmlWriter implements TableVisitor {
     private static final DateTimeFormatter ID_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
@@ -26,13 +29,6 @@ public class LiquibaseYmlWriter {
             .toFormatter();
 
     private final PrintStream out;
-
-    private final NamingStrategy namingStrategy;
-
-    public LiquibaseYmlWriter(PrintStream out, NamingStrategy namingStrategy) {
-        this.out = out;
-        this.namingStrategy = namingStrategy;
-    }
 
     // https://docs.liquibase.com/pro/user-guide/what-is-a-changeset
     public void start(String author) {
@@ -56,21 +52,24 @@ public class LiquibaseYmlWriter {
     }
 
     // https://docs.liquibase.com/reference-guide/change-types/create-table
-    public void startTable(String name, String comment) {
+    @Override
+    public void onStartTable(String name, String comment) {
         print(8, "- createTable:");
-        print(12, "tableName: " + namingStrategy.getTableName(name));
+        print(12, "tableName: " + name);
         print(12, "remarks: \"" + comment + "\"");
         print(12, "columns:");
     }
 
-    public void endTable() {
+    @Override
+    public void onEndTable() {
         // nothing
     }
 
     // https://docs.liquibase.com/reference-guide/change-types/column
-    public void writeColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
+    @Override
+    public void onColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
         print(14, "- column:");
-        print(18, "name: " + namingStrategy.getColumnName(name));
+        print(18, "name: " + name);
         print(18, "remarks: \"" + comment + "\"");
         print(18, "type: " + type);
         print(18, "constraints:");
