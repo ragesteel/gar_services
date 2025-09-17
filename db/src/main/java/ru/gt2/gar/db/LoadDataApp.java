@@ -11,7 +11,6 @@ import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarEntry;
 import ru.gt2.gar.parse.zip.GarZipFile;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -22,15 +21,13 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class LoadDataApp implements CommandLineRunner {
     private final AllXMLProcessors xmlProcessors;
-    private final DataSource dataSource;
     private final File zipFile;
     private final GarDataWriter garDataWriter;
 
-    public LoadDataApp(AllXMLProcessors xmlProcessors, DataSource dataSource,
+    public LoadDataApp(AllXMLProcessors xmlProcessors,
                        @Value("${gar.zip.full}") File zipFile, GarDataWriter garDataWriter) {
 
         this.xmlProcessors = xmlProcessors;
-        this.dataSource = dataSource;
         this.zipFile = zipFile;
         this.garDataWriter = garDataWriter;
     }
