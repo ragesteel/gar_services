@@ -38,14 +38,17 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     private final AsyncTaskExecutor taskExecutor;
 
     private final File zipFile;
+    private final int maxGeneralEntitySizeLimit;
 
     private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
     public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
-                           @Value("${gar.zip.full}") File file) {
+                           @Value("${gar.zip.full}") File file,
+                           @Value("${gar.xml.maxGeneralEntitySizeLimit}") int maxGeneralEntitySizeLimit) {
         this.xmlProcessors = xmlProcessors;
         this.taskExecutor = taskExecutor;
         this.zipFile = file;
+        this.maxGeneralEntitySizeLimit = maxGeneralEntitySizeLimit;
     }
 
     public static void main(String... args) {
@@ -53,7 +56,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         try (GarZipFile garZipFile = new GarZipFile(zipFile)) {
             garZipFile.getVersion().ifPresentOrElse(
                     v -> log.info("Gar file date: {} ({} day(s) ago), version: {}",
@@ -86,6 +89,11 @@ public class DumpXMLStatsApp implements CommandLineRunner {
         for (GarType garType : GarType.values()) {
             FileStats fileStats = garZipFile.getStats().get(garType);
             EntityStats garStats = stats.get(garType);
+            if (null == garStats) {
+                System.out.printf("%s file(s) count %d, file(s) size %,d, no stats%n",
+                        garType.name(), fileStats.count(), fileStats.size());
+                continue;
+            }
             System.out.printf("%s, file(s) count %d, file(s) size %,d, total record(s): %,d, elapsed: %s%n",
                     garType.name(), fileStats.count(), fileStats.size(), garStats.getCount(),
                     DurationFmt.format(garStats.getDuration()));
@@ -118,7 +126,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
         XMLStreamProcessor processor = xmlProcessors.getProcessor(garType);
         EntityStats fileStats = new EntityStats();
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
-            processor.process(inputStream, fileStats);
+            processor.process(inputStream, fileStats, maxGeneralEntitySizeLimit);
 
             String nameWithDir = garEntry.nameWithDir();
             int pad = Gar.MAX_NAME_LENGTH + 3 - nameWithDir.length();
@@ -174,7 +182,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
         process(garZipFile, xmlProcessors.stead);
     }
 
-    private static<T extends Record> void process(GarZipFile garZipFile, XMLStreamProcessor processor) {
+    private void process(GarZipFile garZipFile, XMLStreamProcessor processor) {
         EntityStats garStats = new EntityStats();
 
         GarType garType = processor.getGarType();
@@ -185,7 +193,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
                     try (var is = garZipFile.getInputStream(ge)) {
-                        processor.process(is, garStats);
+                        processor.process(is, garStats, maxGeneralEntitySizeLimit);
                     } catch (Exception e) {
                         log.warn("Unable to parse entry: {}", ge, e);
                     }

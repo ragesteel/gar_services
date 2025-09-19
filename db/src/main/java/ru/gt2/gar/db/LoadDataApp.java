@@ -23,13 +23,16 @@ public class LoadDataApp implements CommandLineRunner {
     private final AllXMLProcessors xmlProcessors;
     private final File zipFile;
     private final GarDataWriter garDataWriter;
+    private final int maxGeneralEntitySizeLimit;
 
     public LoadDataApp(AllXMLProcessors xmlProcessors,
-                       @Value("${gar.zip.full}") File zipFile, GarDataWriter garDataWriter) {
+                       @Value("${gar.zip.full}") File zipFile, GarDataWriter garDataWriter,
+                       @Value("${gar.xml.maxGeneralEntitySizeLimit}") int maxGeneralEntitySizeLimit) {
 
         this.xmlProcessors = xmlProcessors;
         this.zipFile = zipFile;
         this.garDataWriter = garDataWriter;
+        this.maxGeneralEntitySizeLimit = maxGeneralEntitySizeLimit;
     }
 
     public static void main(String... args) {
@@ -61,7 +64,8 @@ public class LoadDataApp implements CommandLineRunner {
 
         XMLStreamProcessor processor = xmlProcessors.getProcessor(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
-            processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge));
+            processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
+                    maxGeneralEntitySizeLimit);
         } catch (Exception e) {
             throw new RuntimeException("Unable to process " + garEntry, e);
         }

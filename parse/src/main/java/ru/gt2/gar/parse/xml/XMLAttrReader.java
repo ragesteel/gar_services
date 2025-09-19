@@ -39,7 +39,8 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
     private final AttrConverter<? extends Record> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper mapper, AttrConverter<? extends Record> attrConverter, int batchSize)
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends Record> mapper, AttrConverter<? extends Record> attrConverter,
+                         int batchSize, int maxGeneralEntitySizeLimit)
             throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
@@ -55,6 +56,7 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
 
         requireNonNull(inputStream, "inputStream must not be null");
         XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
+        factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", maxGeneralEntitySizeLimit);
         eventReader = factory.createXMLEventReader(inputStream);
     }
 

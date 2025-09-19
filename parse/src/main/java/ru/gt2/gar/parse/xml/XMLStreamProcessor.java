@@ -140,11 +140,11 @@ public class XMLStreamProcessor {
         return mapper.garType;
     }
 
-    public void process(InputStream inputStream, ListConsumer dataConsumer) throws Exception {
+    public void process(InputStream inputStream, ListConsumer dataConsumer, int maxGeneralEntitySizeLimit) throws Exception {
         requireNonNull(inputStream);
         requireNonNull(dataConsumer);
         dataConsumer.before();
-        try (XMLAttrReader reader = new XMLAttrReader(inputStream, mapper, attrConverter, batchSize)) {
+        try (XMLAttrReader reader = new XMLAttrReader(inputStream, mapper, attrConverter, batchSize, maxGeneralEntitySizeLimit)) {
             while(reader.hasNext()) {
                 dataConsumer.accept(reader.next());
             }
