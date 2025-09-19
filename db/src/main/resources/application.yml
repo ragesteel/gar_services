@@ -3,6 +3,7 @@ spring:
     name: gar-db
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yml
+    analytics-enabled: false
 
   # Настройки для цветного вывода в терминале
   output:
