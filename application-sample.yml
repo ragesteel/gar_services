@@ -14,7 +14,9 @@ spring:
       enabled: true
 gar:
   xml:
-    entitySizeLimit: 200000
+    # Установка параметров jdk.xml.maxGeneralEntitySizeLimit и jdk.xml.totalEntitySizeLimit
+    # Ибо начиная с java 24 появилось ограничение 100000, а как минимум для ГАР от 09.09.2025 нужно больше
+    entitySizeLimit: 800000
   zip:
 # архив полной версии
     full: C:/Tmp/2025-09-09_gar_xml.zip
