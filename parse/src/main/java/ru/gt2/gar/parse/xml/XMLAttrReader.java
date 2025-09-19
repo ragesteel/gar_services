@@ -39,9 +39,9 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
     private final AttrConverter<? extends Record> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends Record> mapper, AttrConverter<? extends Record> attrConverter,
-                         int batchSize, int maxGeneralEntitySizeLimit)
-            throws XMLStreamException {
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends Record> mapper,
+            AttrConverter<? extends Record> attrConverter, int batchSize, int entitySizeLimit)
+                throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
         elementName = mapper.elementName;
@@ -56,7 +56,11 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
 
         requireNonNull(inputStream, "inputStream must not be null");
         XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
-        factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", maxGeneralEntitySizeLimit);
+        if (entitySizeLimit >= 0) {
+            // Да, соответствующие константы есть в JdkConstants, но этот класс не экспортируется!
+            factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", entitySizeLimit);
+            factory.setProperty("jdk.xml.totalEntitySizeLimit", entitySizeLimit);
+        }
         eventReader = factory.createXMLEventReader(inputStream);
     }
 

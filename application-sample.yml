@@ -14,7 +14,7 @@ spring:
       enabled: true
 gar:
   xml:
-    maxGeneralEntitySizeLimit: 200000
+    entitySizeLimit: 200000
   zip:
 # архив полной версии
     full: C:/Tmp/2025-09-09_gar_xml.zip

@@ -38,17 +38,17 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     private final AsyncTaskExecutor taskExecutor;
 
     private final File zipFile;
-    private final int maxGeneralEntitySizeLimit;
+    private final int entitySizeLimit;
 
     private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
     public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
-                           @Value("${gar.xml.maxGeneralEntitySizeLimit}") int maxGeneralEntitySizeLimit) {
+                           @Value("${gar.xml.entitySizeLimit}") int entitySizeLimit) {
         this.xmlProcessors = xmlProcessors;
         this.taskExecutor = taskExecutor;
         this.zipFile = file;
-        this.maxGeneralEntitySizeLimit = maxGeneralEntitySizeLimit;
+        this.entitySizeLimit = entitySizeLimit;
     }
 
     public static void main(String... args) {
@@ -126,7 +126,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
         XMLStreamProcessor processor = xmlProcessors.getProcessor(garType);
         EntityStats fileStats = new EntityStats();
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
-            processor.process(inputStream, fileStats, maxGeneralEntitySizeLimit);
+            processor.process(inputStream, fileStats, entitySizeLimit);
 
             String nameWithDir = garEntry.nameWithDir();
             int pad = Gar.MAX_NAME_LENGTH + 3 - nameWithDir.length();
@@ -193,7 +193,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                 .filter(ge -> ge.name().equals(garTypeName))
                 .forEach(ge -> {
                     try (var is = garZipFile.getInputStream(ge)) {
-                        processor.process(is, garStats, maxGeneralEntitySizeLimit);
+                        processor.process(is, garStats, entitySizeLimit);
                     } catch (Exception e) {
                         log.warn("Unable to parse entry: {}", ge, e);
                     }
