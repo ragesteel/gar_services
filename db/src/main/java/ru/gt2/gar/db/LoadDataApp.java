@@ -27,7 +27,7 @@ public class LoadDataApp implements CommandLineRunner {
 
     public LoadDataApp(AllXMLProcessors xmlProcessors,
                        @Value("${gar.zip.full}") File zipFile, GarDataWriter garDataWriter,
-                       @Value("${gar.xml.entitySizeLimit}") int entitySizeLimit) {
+                       @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit) {
 
         this.xmlProcessors = xmlProcessors;
         this.zipFile = zipFile;

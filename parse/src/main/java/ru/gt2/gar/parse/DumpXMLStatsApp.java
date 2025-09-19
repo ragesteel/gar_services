@@ -44,7 +44,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
-                           @Value("${gar.xml.entitySizeLimit}") int entitySizeLimit) {
+                           @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit) {
         this.xmlProcessors = xmlProcessors;
         this.taskExecutor = taskExecutor;
         this.zipFile = file;
