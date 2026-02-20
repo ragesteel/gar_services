@@ -10,6 +10,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    </properties>
+
     <artifactId>gar-domain</artifactId>
 
     <dependencies>
