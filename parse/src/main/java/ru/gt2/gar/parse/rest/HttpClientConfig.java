@@ -16,6 +16,8 @@ public class HttpClientConfig {
     @Bean
     public FileInfoService fileInfoServiceClient(RestClient.Builder restClientBuilder) {
         RestClient restClient = restClientBuilder.baseUrl("https://fias.nalog.ru").build();
-        return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build().createClient(FileInfoService.class);
+        return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient))
+                .build()
+                .createClient(FileInfoService.class);
     }
 }

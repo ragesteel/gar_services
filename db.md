@@ -35,3 +35,11 @@
 ### 2025-09-20 01:17 MSK
 
 Вот вроде классная штука — MapStruct, но нет простых способов сделать так, чтобы она вызывала метода `PreparedStatement`'а! ChatGPT предлагает какую-то шляпу с обёрткой, которая не работает. А писать всю установку параметров вручную не хочется…
+
+### 2026-03-01 20:16 MSK
+
+Что-то мне всё сильней и сильней кажется что нужно использовать JavaPoet для кодогенерации вызовов `PreparedStatement`.
+https://medium.com/skyro-tech/code-generation-with-javapoet-on-practice-bfbe8ca56a61
+https://levelup.gitconnected.com/annotation-based-code-generator-using-java-poet-ce5893d1fa1a
+
+Но сначала пожалуй стоит обновить локальный PostgreSQL до последней версии.
