@@ -2,6 +2,7 @@ package ru.gt2.gar.parse;
 
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -39,22 +40,26 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     private final File zipFile;
     private final int entitySizeLimit;
+    private final ProcessingMode processingMode;
 
     private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
     public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
-                           @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit) {
+                           @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit,
+                           @Value("${gar.processing.mode:PARALLEL}") ProcessingMode processingMode) {
         this.xmlProcessors = xmlProcessors;
         this.taskExecutor = taskExecutor;
         this.zipFile = file;
         this.entitySizeLimit = entitySizeLimit;
+        this.processingMode = processingMode;
     }
 
-    public static void main(String... args) {
+    static void main(String... args) {
         SpringApplication.run(DumpXMLStatsApp.class, args);
     }
 
+    @NullMarked
     @Override
     public void run(String... args) {
         try (GarZipFile garZipFile = new GarZipFile(zipFile)) {
@@ -69,9 +74,11 @@ public class DumpXMLStatsApp implements CommandLineRunner {
             System.out.println();*/
 
             Stopwatch stopwatch = Stopwatch.createStarted();
-            // simpleProcess(garZipFile);
-            // processSerial(garZipFile);
-            processParallel(garZipFile);
+            switch (processingMode) {
+                case SIMPLE -> simpleProcess(garZipFile);
+                case SERIAL -> processSerial(garZipFile);
+                case PARALLEL -> processParallel(garZipFile);
+            }
             dumpStats(garZipFile);
             System.out.printf("Total time elapsed: %s%n", stopwatch);
         } catch (Exception e) {

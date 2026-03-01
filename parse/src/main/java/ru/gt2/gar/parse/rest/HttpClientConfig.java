@@ -9,6 +9,11 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class HttpClientConfig {
     @Bean
+    public RestClient.Builder restClientBuilder() {
+        return RestClient.builder();
+    }
+
+    @Bean
     public FileInfoService fileInfoServiceClient(RestClient.Builder restClientBuilder) {
         RestClient restClient = restClientBuilder.baseUrl("https://fias.nalog.ru").build();
         return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build().createClient(FileInfoService.class);
