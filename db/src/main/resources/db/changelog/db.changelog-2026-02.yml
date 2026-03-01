@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-03-01_21-10
+      author: Rage Steel
+      changes:
+      - modifyDataType:
+          tableName: normative_docs
+          columnName: org_name
+          newDataType: VARCHAR(500)

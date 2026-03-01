@@ -34,7 +34,7 @@ public record NormativeDoc(
         LocalDate updateDate,
 
         @SchemaComment("Наименование органа, создавшего нормативный документ")
-        @LengthLimit(255)
+        @LengthLimit(500)
         @Nullable String orgName,
 
         @SchemaComment("Номер государственной регистрации")
