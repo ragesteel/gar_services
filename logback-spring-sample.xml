@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Получаем имя приложения из application.yml -->
+    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="gar-db-loader"/>
+    <property name="LOGS_DIR" value="./log"/>
+
+    <!-- Формат даты для имени файла (время старта приложения) -->
+    <timestamp key="START_TIME" timeReference="contextBirth" datePattern="yyyy-MM-dd_HH-mm-ss"/>
+
+    <!-- Имя файла лога: например, gar-db-loader_2025-04-05_14-30-00.log -->
+    <property name="LOG_FILE" value="${LOGS_DIR}/${APP_NAME}_${START_TIME}.log"/>
+
+    <!-- Консольный вывод -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Файловый аппендер (один файл на запуск) -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Корневой логгер -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- Логи своего пакета — DEBUG -->
+    <logger name="ru.gt2.gar" level="DEBUG"/>
+</configuration>

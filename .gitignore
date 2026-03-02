@@ -11,3 +11,7 @@ settings.json
 
 # Personal application settings
 /application.yml
+/logback-spring.xml
+
+# Logs directory
+log/
