@@ -43,3 +43,7 @@ https://medium.com/skyro-tech/code-generation-with-javapoet-on-practice-bfbe8ca5
 https://levelup.gitconnected.com/annotation-based-code-generator-using-java-poet-ce5893d1fa1a
 
 Но сначала пожалуй стоит обновить локальный PostgreSQL до последней версии.
+
+### 2026-03-01 23:01 MSK
+
+Ещё хочется-таки чуть-ли не отдельную базу под информацию об обработках вынести.

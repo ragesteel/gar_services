@@ -4,6 +4,18 @@
     <!-- https://www.baeldung.com/java-liquibase-list-sql-types -->
     <!-- Хранение информации об обработке файлов -->
     <changeSet author="ragesteel" id="2025-09-13_23-11" ignore="true">
+        <createTable tableName="gar_process" remarks="Обработки gar-файлов">
+            <column name="id" type="UUID" remarks="Уникальный идентификатор обработки">
+                <constraints primaryKey="true" /></column>
+            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
+                <constraints nullable="false" /></column>
+            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
+                <constraints nullable="true" /></column>
+            <column name="computer" type="VARCHAR(64)" remarks="Имя компьютера, где запущен процесс">
+                <constraints nullable="false" /></column>
+            <column name="pid" type="BIGINT" remarks="Идентификатор процесса">
+                <constraints nullable="false" /></column>
+        </createTable>
 
         <createTable tableName="gar_zip" remarks="Информация об архивах">
             <column name="zip_size" type="BIGINT" remarks="Размер файла архива">
@@ -17,12 +29,8 @@
         </createTable>
 
         <createTable tableName="gar_file" remarks="Информация об обработанных файлах из архива">
-            <!-- TODO продумать первичные индексы и связи -->
             <column name="base_name" type="VARCHAR(50)" remarks="Базовое имя файла">
                 <constraints nullable="false" /></column>
-            <!-- Особого смысла хранить эту дату я не вижу.
-            <column name="name_date" type="DATE" remarks="Дата из имени файла">
-                <constraints nullable="false" /></column> -->
             <column name="name_uuid" type="UUID" remarks="UUID из имени файла">
                 <constraints nullable="false" /></column>
             <column name="sub_dir" type="TINYINT" remarks="Каталог файла, может отсутствовать">
@@ -31,15 +39,8 @@
                 <constraints nullable="false" /></column>
             <column name="file_crc32" type="INT" remarks="Контрольная сумма CRC32">
                 <constraints nullable="false" /></column>
-            <!-- TODO Возможно нужно информацию об обработке отдельно хранить -->
         </createTable>
 
-        <createTable tableName="gar_process" remarks="Обработки gar-файлов">
-            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
-                <constraints nullable="false" /></column>
-            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
-                <constraints nullable="true" /></column>
-        </createTable>
         <createTable tableName="gar_zip_process">
             <column name="started" type="DATETIME" remarks="Начало работы над архивом">
                 <constraints nullable="false" /></column>
@@ -49,11 +50,12 @@
             <column name="duration_ms" type="BIGINT" remarks="Время обработки, миллисекунды">
                 <constraints nullable="true" /></column>
         </createTable>
+
         <createTable tableName="gar_file_process">
-            <column name="started" type="DATETIME" remarks="Начало работы над архивом">
+            <column name="started" type="DATETIME" remarks="Начало работы над файлом">
                 <constraints nullable="false" /></column>
             <!-- Поля NULL до окончания обработки -->
-            <column name="finished" type="DATETIME" remarks="Окончание работы над архивом">
+            <column name="finished" type="DATETIME" remarks="Окончание работы над файлом">
                 <constraints nullable="true" /></column>
             <column name="record_count" type="BIGINT" remarks="Количество записей">
                 <constraints nullable="true" /></column>
