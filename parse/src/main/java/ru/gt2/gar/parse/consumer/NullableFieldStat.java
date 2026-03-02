@@ -33,9 +33,9 @@ public class NullableFieldStat implements FieldStat {
     public String toString() {
         String result = fieldStat.toString();
         if (0 == nullCount) {
-            return result;
+            return result + ", no nulls";
         }
-        return result + ", nulls=" + nullCount;
+        return result + ", nulls = " + nullCount;
     }
 
     @Override
