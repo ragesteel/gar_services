@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gt2.gar.db.GarDataWriter;
 import ru.gt2.gar.db.schema.DatabaseSchema;
+import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 
 import javax.sql.DataSource;
@@ -21,7 +22,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
     private final DataSource dataSource;
 
     @Override
-    public void writeEntities(GarType garType, List<? extends Record> entities) {
+    public void writeEntities(GarType garType, List<? extends GarRecord> entities) {
         if (entities.isEmpty()) {
             return;
         }
@@ -31,7 +32,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertData.insertSQL())) {
-            for (Record entity : entities) {
+            for (GarRecord entity : entities) {
                 addEntityParams(preparedStatement, entity, insertData.accessors());
                 preparedStatement.addBatch();
             }
@@ -46,7 +47,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
         }
     }
 
-    private void addEntityParams(PreparedStatement preparedStatement, Record entity, ImmutableList<Method> accessors) {
+    private void addEntityParams(PreparedStatement preparedStatement, GarRecord entity, ImmutableList<Method> accessors) {
         for (int i = 0; i < accessors.size(); i++) {
             Method method = accessors.get(i);
             try {

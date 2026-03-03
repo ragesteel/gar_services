@@ -35,5 +35,5 @@ public record AddressObjectType(
         LocalDate endDate,
 
         @SchemaComment("Статус активности")
-        boolean isActive) {
+        boolean isActive) implements GarRecord {
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import ru.gt2.gar.domain.GarRecord;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,8 +14,8 @@ import java.util.function.Function;
 /**
  * Преобразователи для более правильных преобразований типов, чтобы вместо цифр 0 и 1 получить boolean.
  */
-public interface AttrConverter<T extends Record> extends Function<Map<String, String>, T> {
-    static <T extends Record> AttrConverter<T> jackson(Class<T> valueType) {
+public interface AttrConverter<T extends GarRecord> extends Function<Map<String, String>, T> {
+    static <T extends GarRecord> AttrConverter<T> jackson(Class<T> valueType) {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                 // .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

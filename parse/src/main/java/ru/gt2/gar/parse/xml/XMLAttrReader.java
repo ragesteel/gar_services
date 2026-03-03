@@ -2,6 +2,7 @@ package ru.gt2.gar.parse.xml;
 
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
+import ru.gt2.gar.domain.GarRecord;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -28,18 +29,18 @@ import static java.util.Objects.requireNonNull;
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
+public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
 
     private final XMLEventReader eventReader;
     private final String rootName;
     private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
     private final int batchSize;
-    private final AttrConverter<? extends Record> attrConverter;
+    private final AttrConverter<? extends GarRecord> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends Record> mapper,
-            AttrConverter<? extends Record> attrConverter, int batchSize, int entitySizeLimit)
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends GarRecord> mapper,
+            AttrConverter<? extends GarRecord> attrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.rootName;
@@ -75,9 +76,9 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
      * Читает следующую "пачку" объектов, используя атрибуты элемента как поля.
      */
     @Override
-    public List<Record> next() {
+    public List<GarRecord> next() {
         try {
-            List<Record> result = new ArrayList<>(batchSize);
+            List<GarRecord> result = new ArrayList<>(batchSize);
             while (eventReader.hasNext() && (result.size() < batchSize)) {
                 XMLEvent event = eventReader.nextEvent();
                 if (!event.isStartElement()) {
@@ -102,7 +103,7 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
         }
     }
 
-    private Record createValue(StartElement startElement) {
+    private GarRecord createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
                 .collect(Collectors.toMap(XMLAttrReader::getAttrName, this::getAttrValue));
         return attrConverter.apply(attributes);

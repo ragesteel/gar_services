@@ -8,7 +8,7 @@ public record NormativeDocKind(
 
         @SchemaComment("Наименование")
         @LengthLimit(500)
-        String name) {
+        String name) implements GarRecord {
 }
 
 

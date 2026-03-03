@@ -3,6 +3,7 @@ package ru.gt2.gar.db.schema;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.LengthLimit;
 import ru.gt2.gar.domain.SchemaComment;
@@ -18,7 +19,7 @@ public class DatabaseSchema {
 
     /// Обход таблицы и её колонок
     public void visitTable(GarType garType, TableVisitor tableVisitor) {
-        Class<? extends Record> recordClass = garType.recordClass;
+        Class<? extends GarRecord> recordClass = garType.recordClass;
         tableVisitor.onStartTable(namingStrategy.getTableName(garType.name()), recordClass.getAnnotation(SchemaComment.class).value());
         boolean primaryKey = true;
         for (RecordComponent rc : recordClass.getRecordComponents()) {

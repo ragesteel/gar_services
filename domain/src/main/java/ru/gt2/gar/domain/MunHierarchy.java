@@ -43,7 +43,7 @@ public record MunHierarchy(
 
         @SchemaComment("Материализованный путь к объекту (полная иерархия)")
         @LengthLimit(250) // В схемах нет, но в реальности не больше 79 символов
-        String path) {
+        String path) implements GarRecord {
 }
 
 
