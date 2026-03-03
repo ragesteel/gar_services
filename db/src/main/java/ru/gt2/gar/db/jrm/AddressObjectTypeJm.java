@@ -8,14 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.util.function.Function;
 
 /// Пример того, как я хочу видеть реализацию класса
 /// Везде используем порядковые номера
 /// Да, тут из-за использования LocalDate нужен JDBC 4.2+
 public class AddressObjectTypeJm implements JdbcMapper<AddressObjectType> {
-    private static final PrimaryKeyMeta<AddressObjectType> PRIMARY_KEY_META =
-            new PrimaryKeyMeta<>("id", AddressObjectType::id);
-
     @Override
     public void write(AddressObjectType source, PreparedStatement ps) throws SQLException {
         ps.setInt(1, source.id());
@@ -54,7 +52,7 @@ public class AddressObjectTypeJm implements JdbcMapper<AddressObjectType> {
     }
 
     @Override
-    public PrimaryKeyMeta<AddressObjectType> primaryKey() {
-        return PRIMARY_KEY_META;
+    public Function<AddressObjectType, ?> primaryKey() {
+        return AddressObjectType::id;
     }
 }

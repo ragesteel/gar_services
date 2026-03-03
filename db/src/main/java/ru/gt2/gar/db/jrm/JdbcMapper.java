@@ -3,6 +3,7 @@ package ru.gt2.gar.db.jrm;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Function;
 
 public interface JdbcMapper<T> {
     /// Вызов ps.set…(#, source.(get)) для установки значений
@@ -14,6 +15,6 @@ public interface JdbcMapper<T> {
     /// Вернуть количество ожидаемых колонок, можно использовать для проверок соответствия
     int columnCount();
 
-    /// Вернуть данные о первичном ключе
-    PrimaryKeyMeta<T> primaryKey();
+    /// Вернуть данные первичного ключа
+    Function<T, ?> primaryKey();
 }
