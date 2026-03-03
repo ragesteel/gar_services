@@ -1,14 +1,9 @@
 package ru.gt2.gar.db.ps;
 
-import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.schema.TableVisitor;
 import ru.gt2.gar.domain.GarType;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class InsertGenerator implements TableVisitor {
@@ -18,8 +13,6 @@ public class InsertGenerator implements TableVisitor {
 
     private final StringBuilder generationResult = new StringBuilder();
 
-    private final List<Method> accessors = new ArrayList<>();
-
     private int columnCount = 0;
 
     public InsertData generate() {
@@ -28,7 +21,7 @@ public class InsertGenerator implements TableVisitor {
         }
         schema.visitTable(garType, this);
 
-        return new InsertData(generationResult.toString(), ImmutableList.copyOf(accessors));
+        return new InsertData(generationResult.toString());
     }
 
     @Override
@@ -37,12 +30,11 @@ public class InsertGenerator implements TableVisitor {
     }
 
     @Override
-    public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable, Method accessor) {
+    public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         if (columnCount > 0) {
             generationResult.append(", ");
         }
         generationResult.append('"').append(columnName).append('"');
-        accessors.add(accessor);
         columnCount++;
     }
 

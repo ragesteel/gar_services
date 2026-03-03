@@ -1,15 +1,15 @@
 package ru.gt2.gar.db.ps;
 
-import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gt2.gar.db.GarDataWriter;
+import ru.gt2.gar.db.jrm.AddressObjectTypeJm;
 import ru.gt2.gar.db.schema.DatabaseSchema;
+import ru.gt2.gar.domain.AddressObjectType;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.List;
 public class GarDataPrepStatWriter implements GarDataWriter {
     private final DatabaseSchema schema;
     private final DataSource dataSource;
+    private final AddressObjectTypeJm addressObjectTypeJm = new AddressObjectTypeJm();
 
     @Override
     public void writeEntities(GarType garType, List<? extends GarRecord> entities) {
@@ -30,10 +31,18 @@ public class GarDataPrepStatWriter implements GarDataWriter {
         // TODO сделать кэширование insertData в ConcurrentHashMap.
         InsertData insertData = new InsertGenerator(garType, schema).generate();
 
+
+
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertData.insertSQL())) {
+
+
+
+            PreparedStatement preparedStatement = connection.prepareStatement(insertData.insertSQL())) {
             for (GarRecord entity : entities) {
-                addEntityParams(preparedStatement, entity, insertData.accessors());
+                switch (garType) {
+                    case ADDR_OBJ_TYPES -> addressObjectTypeJm.write((AddressObjectType) entity, preparedStatement);
+                    default -> throw new IllegalStateException("Unexpected value: " + garType);
+                }
                 preparedStatement.addBatch();
             }
 
@@ -44,17 +53,6 @@ public class GarDataPrepStatWriter implements GarDataWriter {
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to write entities", e);
-        }
-    }
-
-    private void addEntityParams(PreparedStatement preparedStatement, GarRecord entity, ImmutableList<Method> accessors) {
-        for (int i = 0; i < accessors.size(); i++) {
-            Method method = accessors.get(i);
-            try {
-                preparedStatement.setObject(i + 1, method.invoke(entity));
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to get value via accessor " + method, e);
-            }
         }
     }
 }
