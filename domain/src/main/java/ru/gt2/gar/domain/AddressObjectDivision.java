@@ -13,5 +13,5 @@ public record AddressObjectDivision(
         long childId,
 
         @SchemaComment("ID изменившей транзакции")
-        long changeId) {
+        long changeId) implements GarRecord {
 }
