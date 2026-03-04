@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-/// Генерация Yml-файлов для Liquibase
 /// TODO Добавить отдельные комментарии таблицам с сущностями {@link ru.gt2.gar.domain.Param}
 @RequiredArgsConstructor
 public class GenerateSchema {
@@ -21,7 +20,7 @@ public class GenerateSchema {
     private final DatabaseSchema databaseSchema;
     private final Set<GarType> remainingTypes = EnumSet.allOf(GarType.class);
 
-    public static void main(String[] args) throws Exception {
+    static void main() throws Exception {
         try (PrintStream printStream = new PrintStream(
                 "db/src/main/resources/db/changelog/db.changelog-generated.yml", StandardCharsets.UTF_8)) {
             LiquibaseYmlWriter liquibaseYmlWriter = new LiquibaseYmlWriter(printStream);

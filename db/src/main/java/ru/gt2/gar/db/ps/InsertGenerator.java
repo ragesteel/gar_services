@@ -1,14 +1,9 @@
 package ru.gt2.gar.db.ps;
 
-import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.schema.TableVisitor;
 import ru.gt2.gar.domain.GarType;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class InsertGenerator implements TableVisitor {
@@ -16,45 +11,57 @@ public class InsertGenerator implements TableVisitor {
 
     private final DatabaseSchema schema;
 
-    private final StringBuilder generationResult = new StringBuilder();
+    private final StringBuilder selectBuilder = new StringBuilder();
+    private final StringBuilder insertBuilder = new StringBuilder();
 
-    private final List<Method> accessors = new ArrayList<>();
-
+    private String tableName = "";
+    private String idColumnName = "";
     private int columnCount = 0;
 
     public InsertData generate() {
-        if (!generationResult.isEmpty()) {
+        if (!selectBuilder.isEmpty()) {
             throw new IllegalStateException("Already generated");
         }
         schema.visitTable(garType, this);
 
-        return new InsertData(generationResult.toString(), ImmutableList.copyOf(accessors));
+        return new InsertData(selectBuilder.toString(), insertBuilder.toString());
     }
 
     @Override
     public void onStartTable(String tableName, String tableComment) {
-        generationResult.append("INSERT INTO ").append(tableName).append(" (");
+        this.tableName = tableName;
+        insertBuilder.append("INSERT INTO ").append(tableName).append(" (");
+        insertBuilder.append("SELECT ");
     }
 
     @Override
-    public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable, Method accessor) {
+    public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         if (columnCount > 0) {
-            generationResult.append(", ");
+            selectBuilder.append(", ");
+            insertBuilder.append(", ");
         }
-        generationResult.append('"').append(columnName).append('"');
-        accessors.add(accessor);
+        selectBuilder.append('"').append(columnName).append('"');
+        insertBuilder.append('"').append(columnName).append('"');
+
+        if (primaryKey) {
+            idColumnName = columnName;
+        }
         columnCount++;
     }
 
     @Override
     public void onEndTable() {
-        generationResult.append(") VALUES (");
+        selectBuilder.append(" FROM ").append(tableName)
+                .append(" WHERE ").append('"').append(idColumnName).append('"')
+                .append(" IN (?)");
+
+        insertBuilder.append(") VALUES (");
         for (int i = 0; i < columnCount; i++) {
             if (i > 0) {
-                generationResult.append(", ");
+                insertBuilder.append(", ");
             }
-            generationResult.append('?');
+            insertBuilder.append('?');
         }
-        generationResult.append(");");
+        insertBuilder.append(");");
     }
 }
