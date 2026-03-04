@@ -80,6 +80,8 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                 case PARALLEL -> processParallel(garZipFile);
             }
             dumpStats(garZipFile);
+            // TODO Добавить общую статистику по файлам, общий размер, количество записей и время обработки!
+            // Хотя нет, вот как раз время сравнивать не нужно!
             System.out.printf("Total time elapsed: %s%n", stopwatch);
         } catch (Exception e) {
             log.warn("Unable to parse gar zip file: {}", zipFile, e);
