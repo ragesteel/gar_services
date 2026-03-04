@@ -49,5 +49,5 @@ public record NormativeDoc(
 
         @SchemaComment("Комментарий")
         @LengthLimit(8000)
-        @Nullable String comment) {
+        @Nullable String comment) implements GarRecord {
 }

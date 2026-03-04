@@ -32,5 +32,5 @@ public record ApartmentType(
         LocalDate endDate,
 
         @SchemaComment("Признак действующего адресного объекта")
-        boolean isActive) {
+        boolean isActive) implements GarRecord {
 }

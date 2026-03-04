@@ -53,5 +53,5 @@ public record AddressObject(
         boolean isActual,
 
         @SchemaComment("Признак действующего адресного объекта")
-        boolean isActive) {
+        boolean isActive) implements GarRecord {
 }

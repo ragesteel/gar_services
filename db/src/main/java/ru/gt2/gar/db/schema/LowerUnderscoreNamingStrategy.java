@@ -2,7 +2,7 @@ package ru.gt2.gar.db.schema;
 
 import com.google.common.base.CaseFormat;
 
-public final class LowerUnderscoreNamingStrategy implements NamingStrategy{
+public final class LowerUnderscoreNamingStrategy implements NamingStrategy {
 
     LowerUnderscoreNamingStrategy() {
     }

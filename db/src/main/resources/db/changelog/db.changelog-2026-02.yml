@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 2026-03-01_21-10
-      author: Rage Steel
+      author: ragesteel
       changes:
       - modifyDataType:
           tableName: normative_docs
