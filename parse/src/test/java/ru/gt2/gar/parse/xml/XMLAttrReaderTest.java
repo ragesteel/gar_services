@@ -2,6 +2,7 @@ package ru.gt2.gar.parse.xml;
 
 import org.junit.jupiter.api.Test;
 import ru.gt2.gar.domain.AddressObject;
+import ru.gt2.gar.domain.GarRecord;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class XMLAttrReaderTest {
 </ADDRESSOBJECTS>
                 """.getBytes(UTF_8));
         try (var xmlAttrReader = new XMLAttrReader(inputStream, XMLAttrMapper.ADDRESS_OBJECT, AttrConverter.jackson(AddressObject.class), 10, 0)) {
-            List<Record> next = xmlAttrReader.next();
+            List<GarRecord> next = xmlAttrReader.next();
             assertEquals(new AddressObject(52185551L, 174296886L,
                     UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,
                     "Садрыя Мингазова", "ул.", "8", 10, 0L, 0L,

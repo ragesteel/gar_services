@@ -33,7 +33,7 @@ public class SourceSchemaTest {
         assertEquals(      "AS_REESTR_OBJECTS_2_251_22_04_01_01.xsd", getXsd(ReestrObject.class));
     }
 
-    private String getXsd(Class<? extends Record> recordClass) {
+    private String getXsd(Class<? extends GarRecord> recordClass) {
         SourceSchema annotation = recordClass.getAnnotation(SourceSchema.class);
         if (null == annotation) {
             return "";

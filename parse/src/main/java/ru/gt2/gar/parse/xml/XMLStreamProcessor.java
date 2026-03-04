@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse.xml;
 
+import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.ListConsumer;
 
@@ -9,9 +10,9 @@ import static java.util.Objects.requireNonNull;
 
 // В отличие от XMLStreamParser'а этой штуке нужна «труба» куда она добавлять свои данные.
 public class XMLStreamProcessor {
-    private final XMLAttrMapper<? extends Record> mapper;
+    private final XMLAttrMapper<? extends GarRecord> mapper;
     private final int batchSize;
-    private final AttrConverter<? extends Record> attrConverter;
+    private final AttrConverter<? extends GarRecord> attrConverter;
 
     public static XMLStreamProcessor forAddressObject(int batchSize) {
         return new XMLStreamProcessor(XMLAttrMapper.ADDRESS_OBJECT, batchSize);
@@ -125,7 +126,7 @@ public class XMLStreamProcessor {
         return new XMLStreamProcessor(XMLAttrMapper.ADD_HOUSE_TYPE, batchSize);
     }
 
-    private XMLStreamProcessor(XMLAttrMapper<? extends Record> mapper, int batchSize) {
+    private XMLStreamProcessor(XMLAttrMapper<? extends GarRecord> mapper, int batchSize) {
         this.mapper = mapper;
         this.batchSize = batchSize;
         // TODO Вот тут можно вместо конвертора от JackSon'а применить к примеру JAXB, если получится.

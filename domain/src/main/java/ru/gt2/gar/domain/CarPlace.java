@@ -64,5 +64,5 @@ public record CarPlace(
         boolean isActual,
 
         @SchemaComment("Признак действующего адресного объекта")
-        boolean isActive) {
+        boolean isActive) implements GarRecord {
 }

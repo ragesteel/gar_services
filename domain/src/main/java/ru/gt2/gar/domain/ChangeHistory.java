@@ -25,5 +25,5 @@ public record ChangeHistory(
         @Nullable Long nDocId,
 
         @SchemaComment("Дата изменения")
-        LocalDate changeDate) {
+        LocalDate changeDate) implements GarRecord {
 }

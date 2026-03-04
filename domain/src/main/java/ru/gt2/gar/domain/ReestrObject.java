@@ -25,5 +25,5 @@ public record ReestrObject(
         LocalDate createDate,
 
         @SchemaComment("Дата изменения")
-        LocalDate updateDate) {
+        LocalDate updateDate) implements GarRecord {
 }

@@ -35,7 +35,7 @@ public class LoadDataApp implements CommandLineRunner {
         this.entitySizeLimit = entitySizeLimit;
     }
 
-    public static void main(String... args) {
+    static void main(String... args) {
         SpringApplication.run(LoadDataApp.class, args);
     }
 

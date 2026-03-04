@@ -50,8 +50,9 @@ public enum GarType {
     // Недокументированные, но имеющиеся в gar_xml 2025-08-29, видимо тот-же набор полей, что и HOUSE_TYPES.
     ADDHOUSE_TYPES(HouseType.class);
 
-    public final Class<? extends Record> recordClass;
+    public final Class<? extends GarRecord> recordClass;
 
+    GarType(Class<? extends GarRecord> recordClass) {
     public final String outerTagName;
 
     public final String elementName;
@@ -72,7 +73,7 @@ public enum GarType {
         this.elementName = elementName;
     }
 
-    public static Optional<GarType> findGarType(Class<? extends Record> recordClass) {
+    public static Optional<GarType> findGarType(Class<? extends GarRecord> recordClass) {
         for (GarType garType : values()) {
             if (garType.recordClass.equals(recordClass)) {
                 return Optional.of(garType);
@@ -82,8 +83,8 @@ public enum GarType {
     }
 
     @VisibleForTesting
-    static Set<Class<? extends Record>> getRecordClasses() {
-        Set<Class<? extends Record>> result = new HashSet<>();
+    static Set<Class<? extends GarRecord>> getRecordClasses() {
+        Set<Class<? extends GarRecord>> result = new HashSet<>();
         for (GarType garType : values()) {
             result.add(garType.recordClass);
         }
@@ -91,7 +92,7 @@ public enum GarType {
     }
 
     @VisibleForTesting
-    static void forEach(@Nullable Consumer<Class<? extends Record>> classConsumer,
+    static void forEach(@Nullable Consumer<Class<? extends GarRecord>> classConsumer,
                         @Nullable Consumer<RecordComponent> componentConsumer) {
         if (null != classConsumer) {
             GarType.getRecordClasses().forEach(classConsumer);

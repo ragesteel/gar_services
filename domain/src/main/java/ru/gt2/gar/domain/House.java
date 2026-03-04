@@ -67,5 +67,5 @@ public record House(
         boolean isActual,
 
         @SchemaComment("Статус активности")
-        boolean isActive) {
+        boolean isActive) implements GarRecord {
 }

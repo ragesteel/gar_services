@@ -3,6 +3,7 @@ package ru.gt2.gar.db.schema;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.LengthLimit;
 import ru.gt2.gar.domain.SchemaComment;
@@ -18,12 +19,12 @@ public class DatabaseSchema {
 
     /// Обход таблицы и её колонок
     public void visitTable(GarType garType, TableVisitor tableVisitor) {
-        Class<? extends Record> recordClass = garType.recordClass;
+        Class<? extends GarRecord> recordClass = garType.recordClass;
         tableVisitor.onStartTable(namingStrategy.getTableName(garType.name()), recordClass.getAnnotation(SchemaComment.class).value());
         boolean primaryKey = true;
         for (RecordComponent rc : recordClass.getRecordComponents()) {
             tableVisitor.onColumn(namingStrategy.getColumnName(rc.getName()), rc.getAnnotation(SchemaComment.class).value(), getType(rc),
-                    primaryKey, rc.isAnnotationPresent(Nullable.class), rc.getAccessor());
+                    primaryKey, rc.isAnnotationPresent(Nullable.class));
             primaryKey = false;
             // TODO добавить внешние ключи, но только после проверки на то,
             //  что они будут работать для текущего набора данных
