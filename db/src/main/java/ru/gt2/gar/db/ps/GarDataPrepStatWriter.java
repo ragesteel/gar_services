@@ -31,12 +31,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
         // TODO сделать кэширование insertData в ConcurrentHashMap.
         InsertData insertData = new InsertGenerator(garType, schema).generate();
 
-
-
         try (Connection connection = dataSource.getConnection();
-
-
-
             PreparedStatement preparedStatement = connection.prepareStatement(insertData.insertSQL())) {
             for (GarRecord entity : entities) {
                 switch (garType) {
