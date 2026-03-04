@@ -52,22 +52,21 @@ public enum GarType {
 
     public final Class<? extends GarRecord> recordClass;
 
-    GarType(Class<? extends GarRecord> recordClass) {
     public final String outerTagName;
 
     public final String elementName;
 
-    GarType(Class<? extends Record> recordClass) {
+    GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;
         this.elementName = recordClass.getSimpleName();
         outerTagName = elementName + 's';
     }
 
-    GarType(Class<? extends Record> recordClass, String elementName) {
+    GarType(Class<? extends GarRecord> recordClass, String elementName) {
         this(recordClass, elementName + 's', elementName);
     }
 
-    GarType(Class<? extends Record> recordClass, String outerTagName, String elementName) {
+    GarType(Class<? extends GarRecord> recordClass, String outerTagName, String elementName) {
         this.recordClass = recordClass;
         this.outerTagName = outerTagName;
         this.elementName = elementName;
