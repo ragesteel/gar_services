@@ -129,6 +129,8 @@ public class XMLStreamProcessor {
     private XMLStreamProcessor(XMLAttrMapper<? extends GarRecord> mapper, int batchSize) {
         this.mapper = mapper;
         this.batchSize = batchSize;
+        // TODO Вот тут можно вместо конвертора от JackSon'а применить к примеру JAXB, если получится.
+        // Ещё вариант — просто взять MapStruct, он вполне себе так умеет!
         attrConverter = AttrConverter.jackson(mapper.valueClass);
     }
 
