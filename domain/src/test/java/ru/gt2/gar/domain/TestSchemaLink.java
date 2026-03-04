@@ -8,7 +8,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestSchemaLink {
-    private static final Set<Class<? extends Record>> ENTITIES = GarType.getRecordClasses();
+    private static final Set<Class<? extends GarRecord>> ENTITIES = GarType.getRecordClasses();
 
     @Test
     public void testLinks() {
@@ -20,7 +20,7 @@ public class TestSchemaLink {
         if (null == schemaLink) {
             return;
         }
-        Class<? extends Record> linkClass = schemaLink.value().recordClass;
+        Class<? extends GarRecord> linkClass = schemaLink.value().recordClass;
         assertTrue(ENTITIES.contains(linkClass),
                 () ->  "Field " + recordComponent.getName() + " has invalid link type " + linkClass);
 

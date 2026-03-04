@@ -35,5 +35,5 @@ public record Param(
         LocalDate startDate,
 
         @SchemaComment("Дата окончания действия записи")
-        LocalDate endDate) {
+        LocalDate endDate) implements GarRecord {
 }

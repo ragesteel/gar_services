@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
+import ru.gt2.gar.domain.GarRecord;
+
 public class NullableFieldStat implements FieldStat {
     private final AbstractFieldStat fieldStat;
 
@@ -20,7 +22,7 @@ public class NullableFieldStat implements FieldStat {
     }
 
     @Override
-    public void accept(Record record) {
+    public void accept(GarRecord record) {
         Object object = fieldStat.invokeAccessor(record);
         if (object == null) {
             nullCount++;

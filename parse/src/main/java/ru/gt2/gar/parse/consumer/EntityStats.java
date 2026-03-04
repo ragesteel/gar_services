@@ -5,6 +5,7 @@ import com.google.common.base.Stopwatch;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import ru.gt2.gar.domain.GarRecord;
 
 import java.lang.reflect.RecordComponent;
 import java.time.Duration;
@@ -40,7 +41,7 @@ public class EntityStats implements ListConsumer {
     }
 
     @Override
-    public void accept(List<Record> entities) {
+    public void accept(List<GarRecord> entities) {
         entities.forEach(this::acceptEntity);
         count += entities.size();
     }
@@ -89,14 +90,14 @@ public class EntityStats implements ListConsumer {
         }
     }
 
-    protected void acceptEntity(Record entity) {
+    protected void acceptEntity(GarRecord entity) {
         if (null == fieldStats) {
             createFieldStats(entity);
         }
         fieldStats.forEach(fieldStat -> fieldStat.accept(entity));
     }
 
-    private void createFieldStats(Record entity) {
+    private void createFieldStats(GarRecord entity) {
         fieldStats = Arrays.stream(entity.getClass().getRecordComponents())
                 .map(EntityStats::createOptionalFieldStat)
                 .flatMap(Optional::stream)

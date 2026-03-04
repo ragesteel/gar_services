@@ -1,6 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
 import lombok.Getter;
+import ru.gt2.gar.domain.GarRecord;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,7 +24,7 @@ public abstract class AbstractFieldStat implements FieldStat {
     }
 
     @Override
-    public void accept(Record record) {
+    public void accept(GarRecord record) {
         Object value = invokeAccessor(record);
         if (null == value) {
             throw new NullPointerException("value is null, field=" + name);
@@ -33,7 +34,7 @@ public abstract class AbstractFieldStat implements FieldStat {
 
     protected abstract void acceptValue(Object value);
 
-    protected Object invokeAccessor(Record record) {
+    protected Object invokeAccessor(GarRecord record) {
         try {
             return accessor.invoke(record);
         } catch (IllegalAccessException | InvocationTargetException e) {
