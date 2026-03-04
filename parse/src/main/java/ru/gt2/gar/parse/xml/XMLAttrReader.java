@@ -42,8 +42,8 @@ public class XMLAttrReader implements Iterator<List<Record>>, Closeable {
             AttrConverter<? extends Record> attrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
-        rootName = mapper.rootName;
-        elementName = mapper.elementName;
+        rootName = mapper.garType.outerTagName;
+        elementName = mapper.garType.elementName;
         valueProcessing = mapper.valueProcessing;
 
         this.attrConverter = requireNonNull(attrConverter, "converter must not be null");
