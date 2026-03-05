@@ -30,6 +30,7 @@ import static ru.gt2.gar.parse.xml.AttrConverter.BOOL_ACTIVE;
 import static ru.gt2.gar.parse.xml.AttrConverter.BOOL_ACTUAL_ACTIVE;
 import static ru.gt2.gar.parse.xml.AttrConverter.NOTHING;
 
+// TODO Убрать ссылку на объект, ибо она и так имеется в GarType.
 // TODO Придумать более правильное название для этого класса, какая-нибудь GarParseData
 public class XMLAttrMapper<T> {
     public static final XMLAttrMapper<AddressObject> ADDRESS_OBJECT = new XMLAttrMapper<>(
