@@ -14,25 +14,25 @@ import java.util.function.Consumer;
  * Все разновидности объектов для файлов, по крайней мере для которых имеется описание.
  */
 public enum GarType {
-    ADDR_OBJ(AddressObject.class),
-    ADDR_OBJ_DIVISION(AddressObjectDivision.class),
+    ADDR_OBJ(AddressObject.class, "AddressObjects", "Object"),
+    ADDR_OBJ_DIVISION(AddressObjectDivision.class, "Item"),
     ADDR_OBJ_TYPES(AddressObjectType.class),
-    ADM_HIERARCHY(AdmHierarchy.class),
+    ADM_HIERARCHY(AdmHierarchy.class, "Item"),
     APARTMENT_TYPES(ApartmentType.class),
     APARTMENTS(Apartment.class),
     CARPLACES(CarPlace.class),
-    CHANGE_HISTORY(ChangeHistory.class),
+    CHANGE_HISTORY(ChangeHistory.class, "Item"),
     HOUSE_TYPES(HouseType.class),
     HOUSES(House.class),
-    MUN_HIERARCHY(MunHierarchy.class),
-    NORMATIVE_DOCS(NormativeDoc.class),
-    NORMATIVE_DOCS_KINDS(NormativeDocKind.class),
-    NORMATIVE_DOCS_TYPES(NormativeDocType.class),
+    MUN_HIERARCHY(MunHierarchy.class, "Item"),
+    NORMATIVE_DOCS(NormativeDoc.class, "NormDoc"),
+    NORMATIVE_DOCS_KINDS(NormativeDocKind.class, "NDocKind"),
+    NORMATIVE_DOCS_TYPES(NormativeDocType.class, "NDocType"),
     OBJECT_LEVELS(ObjectLevel.class),
     OPERATION_TYPES(OperationType.class),
     // PARAM,
     PARAM_TYPES(ParamType.class),
-    REESTR_OBJECTS(ReestrObject.class),
+    REESTR_OBJECTS(ReestrObject.class, "Reestr_Objects", "Object"),
     ROOM_TYPES(RoomType.class),
     ROOMS(Room.class),
     STEADS(Stead.class),
@@ -52,8 +52,24 @@ public enum GarType {
 
     public final Class<? extends GarRecord> recordClass;
 
+    public final String outerTagName;
+
+    public final String elementName;
+
     GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;
+        this.elementName = recordClass.getSimpleName();
+        outerTagName = elementName + 's';
+    }
+
+    GarType(Class<? extends GarRecord> recordClass, String elementName) {
+        this(recordClass, elementName + 's', elementName);
+    }
+
+    GarType(Class<? extends GarRecord> recordClass, String outerTagName, String elementName) {
+        this.recordClass = recordClass;
+        this.outerTagName = outerTagName;
+        this.elementName = elementName;
     }
 
     public static Optional<GarType> findGarType(Class<? extends GarRecord> recordClass) {

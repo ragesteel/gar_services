@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
 
 // В отличие от XMLStreamParser'а этой штуке нужна «труба» куда она добавлять свои данные.
 public class XMLStreamProcessor {
-    private final XMLAttrMapper<? extends GarRecord> mapper;
+    private final XMLAttrMapper mapper;
     private final int batchSize;
     private final AttrConverter<? extends GarRecord> attrConverter;
 
@@ -126,10 +126,12 @@ public class XMLStreamProcessor {
         return new XMLStreamProcessor(XMLAttrMapper.ADD_HOUSE_TYPE, batchSize);
     }
 
-    private XMLStreamProcessor(XMLAttrMapper<? extends GarRecord> mapper, int batchSize) {
+    private XMLStreamProcessor(XMLAttrMapper mapper, int batchSize) {
         this.mapper = mapper;
         this.batchSize = batchSize;
-        attrConverter = AttrConverter.jackson(mapper.valueClass);
+        // TODO Вот тут можно вместо конвертора от JackSon'а применить к примеру JAXB, если получится.
+        // Ещё вариант — просто взять MapStruct, он вполне себе так умеет!
+        attrConverter = AttrConverter.jackson(mapper.garType.recordClass);
     }
 
     /*
