@@ -39,7 +39,7 @@ public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
     private final AttrConverter<? extends GarRecord> attrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper<? extends GarRecord> mapper,
+    public XMLAttrReader(InputStream inputStream, XMLAttrMapper mapper,
             AttrConverter<? extends GarRecord> attrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
