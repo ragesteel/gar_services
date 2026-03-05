@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax2;
 
 import com.ctc.wstx.sr.TypedStreamReader;
 import com.ctc.wstx.stax.WstxInputFactory;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.xmlunit.builder.Input;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.NormativeDocType;
-import ru.gt2.gar.parse.xml.stax2.LocalDateValueDecoder;
 
 import javax.xml.transform.Source;
 import java.time.LocalDate;
@@ -16,11 +15,10 @@ import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StaxReaderTest {
+public class Stax2ReaderTest {
     @Test
     public void testReadWithStax() throws Exception {
         XMLInputFactory2 xmlInputFactory = new WstxInputFactory();
-//        Source
         Source source = Input.fromString("""
                 <NDOCTYPES>
                     <NDOCTYPE ID="0" NAME="Не указан" STARTDATE="1900-01-01" ENDDATE="2016-03-31"/>

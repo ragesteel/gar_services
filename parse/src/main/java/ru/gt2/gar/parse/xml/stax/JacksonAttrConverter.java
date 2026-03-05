@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,8 +14,8 @@ import java.util.function.Function;
 /**
  * Преобразователи для более правильных преобразований типов, чтобы вместо цифр 0 и 1 получить boolean.
  */
-public interface AttrConverter<T extends GarRecord> extends Function<Map<String, String>, T> {
-    static <T extends GarRecord> AttrConverter<T> jackson(Class<T> valueType) {
+public interface JacksonAttrConverter<T extends GarRecord> extends Function<Map<String, String>, T> {
+    static <T extends GarRecord> JacksonAttrConverter<T> jackson(Class<T> valueType) {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                 // .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

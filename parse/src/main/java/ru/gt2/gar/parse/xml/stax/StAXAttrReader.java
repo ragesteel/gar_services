@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax;
 
 import com.ctc.wstx.stax.WstxInputFactory;
 import com.google.common.collect.Streams;
@@ -30,25 +30,25 @@ import static java.util.Objects.requireNonNull;
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
+public class StAXAttrReader implements Iterator<List<GarRecord>>, Closeable {
 
     private final XMLEventReader2 eventReader;
     private final String rootName;
     private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
     private final int batchSize;
-    private final AttrConverter<? extends GarRecord> attrConverter;
+    private final JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper mapper,
-            AttrConverter<? extends GarRecord> attrConverter, int batchSize, int entitySizeLimit)
+    public StAXAttrReader(InputStream inputStream, StAXAttrMapper mapper,
+                          JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.garType.outerTagName;
         elementName = mapper.garType.elementName;
         valueProcessing = mapper.valueProcessing;
 
-        this.attrConverter = requireNonNull(attrConverter, "converter must not be null");
+        this.jacksonAttrConverter = requireNonNull(jacksonAttrConverter, "converter must not be null");
 
         if (batchSize <= 0) {
             throw new IllegalArgumentException("batchSize must be > 0");
@@ -107,8 +107,8 @@ public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
 
     private GarRecord createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
-                .collect(Collectors.toMap(XMLAttrReader::getAttrName, this::getAttrValue));
-        return attrConverter.apply(attributes);
+                .collect(Collectors.toMap(StAXAttrReader::getAttrName, this::getAttrValue));
+        return jacksonAttrConverter.apply(attributes);
     }
 
     private static String getAttrName(Attribute a) {

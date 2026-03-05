@@ -12,8 +12,8 @@ import ru.gt2.gar.domain.Gar;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
-import ru.gt2.gar.parse.xml.AllXMLProcessors;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
+import ru.gt2.gar.parse.xml.stax.AllStAXProcessors;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarEntry;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SpringBootApplication
 public class DumpXMLStatsApp implements CommandLineRunner {
 
-    private final AllXMLProcessors xmlProcessors;
+    private final AllStAXProcessors xmlProcessors;
 
     // Это будет Bean с именем applicationTaskExecutor, который создаётся Spring'ом.
     // https://docs.spring.io/spring-boot/reference/features/task-execution-and-scheduling.html
@@ -44,7 +44,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
-    public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
+    public DumpXMLStatsApp(AllStAXProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
                            @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit,
                            @Value("${gar.processing.mode:PARALLEL}") ProcessingMode processingMode) {
