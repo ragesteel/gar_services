@@ -1,11 +1,12 @@
 package ru.gt2.gar.parse.xml;
 
+import com.ctc.wstx.stax.WstxInputFactory;
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.stax2.XMLEventReader2;
+import org.codehaus.stax2.XMLInputFactory2;
 import ru.gt2.gar.domain.GarRecord;
 
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
@@ -31,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
 
-    private final XMLEventReader eventReader;
+    private final XMLEventReader2 eventReader;
     private final String rootName;
     private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
@@ -55,13 +56,14 @@ public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
         this.batchSize = batchSize;
 
         requireNonNull(inputStream, "inputStream must not be null");
-        XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
+        XMLInputFactory2 factory = new WstxInputFactory(); // Не ясно, нужно-ли постоянно новую создавать?…
+
         if (entitySizeLimit >= 0) {
             // Да, соответствующие константы есть в JdkConstants, но этот класс не экспортируется!
-            factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", entitySizeLimit);
-            factory.setProperty("jdk.xml.totalEntitySizeLimit", entitySizeLimit);
+//            factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", entitySizeLimit);
+//            factory.setProperty("jdk.xml.totalEntitySizeLimit", entitySizeLimit);
         }
-        eventReader = factory.createXMLEventReader(inputStream);
+        eventReader = (XMLEventReader2) factory.createXMLEventReader(inputStream);
     }
 
     /**
