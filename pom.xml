@@ -19,6 +19,7 @@
         <module>domain</module>
         <module>parse</module>
         <module>db</module>
+        <module>fias-client</module>
     </modules>
 
     <properties>

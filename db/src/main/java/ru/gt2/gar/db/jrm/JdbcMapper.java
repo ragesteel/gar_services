@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Function;
 
-public interface JdbcMapper<T> {
+public interface JdbcMapper<T, K> {
     /// Вызов ps.set…(#, source.(get)) для установки значений
     void write(T source, PreparedStatement ps) throws SQLException;
 
@@ -16,5 +16,5 @@ public interface JdbcMapper<T> {
     int columnCount();
 
     /// Вернуть данные первичного ключа
-    Function<T, ?> primaryKey();
+    Function<T, K> primaryKey();
 }

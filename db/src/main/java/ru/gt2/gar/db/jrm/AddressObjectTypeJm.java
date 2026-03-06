@@ -13,7 +13,7 @@ import java.util.function.Function;
 /// Пример того, как я хочу видеть реализацию класса
 /// Везде используем порядковые номера
 /// Да, тут из-за использования LocalDate нужен JDBC 4.2+
-public class AddressObjectTypeJm implements JdbcMapper<AddressObjectType> {
+public class AddressObjectTypeJm implements JdbcMapper<AddressObjectType, Integer> {
     @Override
     public void write(AddressObjectType source, PreparedStatement ps) throws SQLException {
         ps.setInt(1, source.id());
@@ -52,7 +52,7 @@ public class AddressObjectTypeJm implements JdbcMapper<AddressObjectType> {
     }
 
     @Override
-    public Function<AddressObjectType, ?> primaryKey() {
+    public Function<AddressObjectType, Integer> primaryKey() {
         return AddressObjectType::id;
     }
 }
