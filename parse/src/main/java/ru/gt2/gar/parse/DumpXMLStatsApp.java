@@ -13,7 +13,7 @@ import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
-import ru.gt2.gar.parse.xml.stax.AllStAXProcessors;
+import ru.gt2.gar.parse.xml.stax.event.AllStAXProcessors;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarEntry;
 import ru.gt2.gar.parse.zip.GarZipFile;

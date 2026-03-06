@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml.stax;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class StAXAttrReader implements Iterator<List<GarRecord>>, Closeable {
+public class StAXEventReader implements Iterator<List<GarRecord>>, Closeable {
 
     private final XMLEventReader eventReader;
     private final String rootName;
@@ -39,8 +39,8 @@ public class StAXAttrReader implements Iterator<List<GarRecord>>, Closeable {
     private final JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter;
     private boolean expectOuter = true;
 
-    public StAXAttrReader(InputStream inputStream, StAXAttrMapper mapper,
-                          JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter, int batchSize, int entitySizeLimit)
+    public StAXEventReader(InputStream inputStream, StAXAttrMapperData mapper,
+                           JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
         requireNonNull(mapper, "mapper must not be null");
         rootName = mapper.garType.outerTagName;
@@ -55,7 +55,8 @@ public class StAXAttrReader implements Iterator<List<GarRecord>>, Closeable {
         this.batchSize = batchSize;
 
         requireNonNull(inputStream, "inputStream must not be null");
-        XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
+        // Не ясно, нужно-ли постоянно новую создавать?…
+        XMLInputFactory factory = XMLInputFactory.newDefaultFactory();
 
         if (entitySizeLimit >= 0) {
             // Да, соответствующие константы есть в JdkConstants, но этот класс не экспортируется!
@@ -106,7 +107,7 @@ public class StAXAttrReader implements Iterator<List<GarRecord>>, Closeable {
 
     private GarRecord createValue(StartElement startElement) {
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
-                .collect(Collectors.toMap(StAXAttrReader::getAttrName, this::getAttrValue));
+                .collect(Collectors.toMap(StAXEventReader::getAttrName, this::getAttrValue));
         return jacksonAttrConverter.apply(attributes);
     }
 

@@ -1,9 +1,7 @@
 package ru.gt2.gar.parse.xml.stax2;
 
-import com.ctc.wstx.sr.TypedStreamReader;
 import org.codehaus.stax2.typed.TypedValueDecoder;
 
-import javax.xml.stream.XMLStreamException;
 import java.time.LocalDate;
 
 /// Простая и наивная реализация, только для дат формата YYYY-MM-DD.
@@ -23,6 +21,11 @@ public class LocalDateValueDecoder extends TypedValueDecoder {
         decodeValue(new SimpleCharSequence(buffer, start, end));
     }
 
+    @Override
+    public void handleEmptyValue() throws IllegalArgumentException {
+        throw new IllegalArgumentException("Unable to parse date from empty string");
+    }
+
     private void decodeValue(CharSequence charSequence) {
         if (charSequence.length() != 10) {
             throw new IllegalArgumentException("Unable to parse date from string: " + charSequence);
@@ -33,15 +36,6 @@ public class LocalDateValueDecoder extends TypedValueDecoder {
         int month = Integer.parseInt(charSequence, 5, 7, 10);
         int day = Integer.parseInt(charSequence, 8, 10, 10);
         value = LocalDate.of(year, month, day);
-    }
-
-    @Override
-    public void handleEmptyValue() throws IllegalArgumentException {
-        throw new IllegalArgumentException("Unable to parse date from empty string");
-    }
-
-    public LocalDate parse(TypedStreamReader xsr, String localName) throws XMLStreamException {
-        xsr.getAttributeAs(xsr.getAttributeIndex(null, localName), this);
-        return value;
+        // В идеале бы ещё проверить на наличие разделителей, но сейчас приоритет - скорость обработки!
     }
 }

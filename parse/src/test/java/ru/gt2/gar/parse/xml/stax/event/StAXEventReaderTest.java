@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml.stax;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import org.junit.jupiter.api.Test;
 import ru.gt2.gar.domain.AddressObject;
@@ -15,7 +15,7 @@ import static java.time.Month.AUGUST;
 import static java.time.Month.JUNE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StAXAttrReaderTest {
+public class StAXEventReaderTest {
     @Test
     public void testAddrObj() throws Exception {
         InputStream inputStream = new ByteArrayInputStream("""
@@ -28,7 +28,7 @@ public class StAXAttrReaderTest {
         ENDDATE="2079-06-06" ISACTUAL="1" ISACTIVE="1" />
 </ADDRESSOBJECTS>
                 """.getBytes(UTF_8));
-        try (var xmlAttrReader = new StAXAttrReader(inputStream, StAXAttrMapper.ADDRESS_OBJECT, JacksonAttrConverter.jackson(AddressObject.class), 10, 0)) {
+        try (var xmlAttrReader = new StAXEventReader(inputStream, StAXAttrMapperData.ADDRESS_OBJECT, JacksonAttrConverter.jackson(AddressObject.class), 10, 0)) {
             List<GarRecord> next = xmlAttrReader.next();
             assertEquals(new AddressObject(52185551L, 174296886L,
                     UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,

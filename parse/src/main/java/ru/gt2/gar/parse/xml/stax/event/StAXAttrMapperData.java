@@ -1,83 +1,81 @@
-package ru.gt2.gar.parse.xml.stax;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import ru.gt2.gar.domain.GarType;
 
 import java.util.function.BiFunction;
 
-import static ru.gt2.gar.parse.xml.stax.JacksonAttrConverter.BOOL_ACTIVE;
-import static ru.gt2.gar.parse.xml.stax.JacksonAttrConverter.BOOL_ACTUAL_ACTIVE;
-import static ru.gt2.gar.parse.xml.stax.JacksonAttrConverter.NOTHING;
+import static ru.gt2.gar.parse.xml.stax.event.JacksonAttrConverter.BOOL_ACTIVE;
+import static ru.gt2.gar.parse.xml.stax.event.JacksonAttrConverter.BOOL_ACTUAL_ACTIVE;
+import static ru.gt2.gar.parse.xml.stax.event.JacksonAttrConverter.NOTHING;
 
-// TODO Убрать ссылку на объект, ибо она и так имеется в GarType.
-// TODO Придумать более правильное название для этого класса, какая-нибудь GarParseData
-public class StAXAttrMapper {
-    public static final StAXAttrMapper ADDRESS_OBJECT = new StAXAttrMapper(
+public class StAXAttrMapperData {
+    public static final StAXAttrMapperData ADDRESS_OBJECT = new StAXAttrMapperData(
             GarType.ADDR_OBJ, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper ADDRESS_OBJECT_DIVISION = new StAXAttrMapper(
+    public static final StAXAttrMapperData ADDRESS_OBJECT_DIVISION = new StAXAttrMapperData(
             GarType.ADDR_OBJ_DIVISION);
-    public static final StAXAttrMapper ADDRESS_OBJECT_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData ADDRESS_OBJECT_TYPE = new StAXAttrMapperData(
             GarType.ADDR_OBJ_TYPES);
-    public static final StAXAttrMapper ADM_HIERARCHY = new StAXAttrMapper(
+    public static final StAXAttrMapperData ADM_HIERARCHY = new StAXAttrMapperData(
             GarType.ADM_HIERARCHY, BOOL_ACTIVE);
-    public static final StAXAttrMapper APARTMENT_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData APARTMENT_TYPE = new StAXAttrMapperData(
             GarType.APARTMENT_TYPES);
-    public static final StAXAttrMapper APARTMENT = new StAXAttrMapper(
+    public static final StAXAttrMapperData APARTMENT = new StAXAttrMapperData(
             GarType.APARTMENTS, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper OPERATION_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData OPERATION_TYPE = new StAXAttrMapperData(
             GarType.OPERATION_TYPES);
-    public static final StAXAttrMapper CAR_PLACE = new StAXAttrMapper(
+    public static final StAXAttrMapperData CAR_PLACE = new StAXAttrMapperData(
             GarType.CARPLACES, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper CHANGE_HISTORY = new StAXAttrMapper(
+    public static final StAXAttrMapperData CHANGE_HISTORY = new StAXAttrMapperData(
             GarType.CHANGE_HISTORY);
-    public static final StAXAttrMapper HOUSE_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData HOUSE_TYPE = new StAXAttrMapperData(
             GarType.HOUSE_TYPES);
-    public static final StAXAttrMapper HOUSE = new StAXAttrMapper(
+    public static final StAXAttrMapperData HOUSE = new StAXAttrMapperData(
             GarType.HOUSES, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper MUN_HIERARCHY = new StAXAttrMapper(
+    public static final StAXAttrMapperData MUN_HIERARCHY = new StAXAttrMapperData(
             GarType.MUN_HIERARCHY, BOOL_ACTIVE);
-    public static final StAXAttrMapper NORMATIVE_DOC = new StAXAttrMapper(
+    public static final StAXAttrMapperData NORMATIVE_DOC = new StAXAttrMapperData(
             GarType.NORMATIVE_DOCS);
-    public static final StAXAttrMapper NORMATIVE_DOC_KIND = new StAXAttrMapper(
+    public static final StAXAttrMapperData NORMATIVE_DOC_KIND = new StAXAttrMapperData(
             GarType.NORMATIVE_DOCS_KINDS);
-    public static final StAXAttrMapper NORMATIVE_DOC_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData NORMATIVE_DOC_TYPE = new StAXAttrMapperData(
             GarType.NORMATIVE_DOCS_TYPES);
-    public static final StAXAttrMapper OBJECT_LEVEL = new StAXAttrMapper(
+    public static final StAXAttrMapperData OBJECT_LEVEL = new StAXAttrMapperData(
             GarType.OBJECT_LEVELS);
-    public static final StAXAttrMapper PARAM_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData PARAM_TYPE = new StAXAttrMapperData(
             GarType.PARAM_TYPES);
-    public static final StAXAttrMapper ADDR_OBJ_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData ADDR_OBJ_PARAM = new StAXAttrMapperData(
             GarType.ADDR_OBJ_PARAMS);
-    public static final StAXAttrMapper HOUSES_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData HOUSES_PARAM = new StAXAttrMapperData(
             GarType.HOUSES_PARAMS);
-    public static final StAXAttrMapper APARTMENTS_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData APARTMENTS_PARAM = new StAXAttrMapperData(
             GarType.APARTMENTS_PARAMS);
-    public static final StAXAttrMapper ROOMS_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData ROOMS_PARAM = new StAXAttrMapperData(
             GarType.ROOMS_PARAMS);
-    public static final StAXAttrMapper STEADS_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData STEADS_PARAM = new StAXAttrMapperData(
             GarType.STEADS_PARAMS);
-    public static final StAXAttrMapper CARPLACES_PARAM = new StAXAttrMapper(
+    public static final StAXAttrMapperData CARPLACES_PARAM = new StAXAttrMapperData(
             GarType.CARPLACES_PARAMS);
-    public static final StAXAttrMapper REESTR_OBJECT = new StAXAttrMapper(
+    public static final StAXAttrMapperData REESTR_OBJECT = new StAXAttrMapperData(
             GarType.REESTR_OBJECTS, BOOL_ACTIVE);
-    public static final StAXAttrMapper ROOM_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData ROOM_TYPE = new StAXAttrMapperData(
             GarType.ROOM_TYPES);
-    public static final StAXAttrMapper ROOM = new StAXAttrMapper(
+    public static final StAXAttrMapperData ROOM = new StAXAttrMapperData(
             GarType.ROOMS, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper STEAD = new StAXAttrMapper(
+    public static final StAXAttrMapperData STEAD = new StAXAttrMapperData(
             GarType.STEADS, BOOL_ACTUAL_ACTIVE);
-    public static final StAXAttrMapper ADD_HOUSE_TYPE = new StAXAttrMapper(
+    public static final StAXAttrMapperData ADD_HOUSE_TYPE = new StAXAttrMapperData(
             GarType.ADDHOUSE_TYPES);
 
     public final GarType garType;
     public final BiFunction<String, String, String> valueProcessing;
 
-    private StAXAttrMapper(GarType garType,
-                           BiFunction<String, String, String> valueProcessing) {
+    private StAXAttrMapperData(GarType garType,
+                               BiFunction<String, String, String> valueProcessing) {
         this.garType = garType;
         this.valueProcessing = valueProcessing;
     }
 
-    private StAXAttrMapper(GarType garType) {
+    private StAXAttrMapperData(GarType garType) {
         this(garType, NOTHING);
     }
 

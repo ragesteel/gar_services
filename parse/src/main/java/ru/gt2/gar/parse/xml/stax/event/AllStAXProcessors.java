@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml.stax;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
@@ -34,34 +34,34 @@ public class AllStAXProcessors {
     public final XMLStreamProcessor addHouseType;
 
     public AllStAXProcessors(int batchSize) {
-        addressObject = StAXStreamProcessor.forAddressObject(batchSize);
-        addressObjectDivision = StAXStreamProcessor.forAddressObjectDivision(batchSize);
-        addressObjectType = StAXStreamProcessor.forAddressObjectType(batchSize);
-        admHierarchy = StAXStreamProcessor.forAdmHierarchy(batchSize);
-        apartmentType = StAXStreamProcessor.forApartmentType(batchSize);
-        apartment = StAXStreamProcessor.forApartment(batchSize);
-        operationType = StAXStreamProcessor.forOperationType(batchSize);
-        carPlace = StAXStreamProcessor.forCarPlace(batchSize);
-        changeHistory = StAXStreamProcessor.forChangeHistory(batchSize);
-        houseType = StAXStreamProcessor.forHouseType(batchSize);
-        house = StAXStreamProcessor.forHouse(batchSize);
-        munHierarchy = StAXStreamProcessor.forMunHierarchy(batchSize);
-        normativeDocType = StAXStreamProcessor.forNormativeDocType(batchSize);
-        normativeDocKind = StAXStreamProcessor.forNormativeDocKind(batchSize);
-        normativeDoc = StAXStreamProcessor.forNormativeDoc(batchSize);
-        objectLevel = StAXStreamProcessor.forObjectLevel(batchSize);
-        paramType = StAXStreamProcessor.forParamType(batchSize);
-        addrObjParam = StAXStreamProcessor.forAddrObjParam(batchSize);
-        housesParam = StAXStreamProcessor.forHousesParam(batchSize);
-        apartmentsParam = StAXStreamProcessor.forApartmentsParam(batchSize);
-        roomsParam = StAXStreamProcessor.forRoomsParam(batchSize);
-        steadsParam = StAXStreamProcessor.forSteadsParam(batchSize);
-        carPlacesParam = StAXStreamProcessor.forCarPlacesParam(batchSize);
-        reestrObject = StAXStreamProcessor.forReestrObject(batchSize);
-        roomType = StAXStreamProcessor.forRoomType(batchSize);
-        room = StAXStreamProcessor.forRoom(batchSize);
-        stead = StAXStreamProcessor.forStead(batchSize);
-        addHouseType = StAXStreamProcessor.forAddHouseType(batchSize);
+        addressObject = StAXEventStreamProcessor.forAddressObject(batchSize);
+        addressObjectDivision = StAXEventStreamProcessor.forAddressObjectDivision(batchSize);
+        addressObjectType = StAXEventStreamProcessor.forAddressObjectType(batchSize);
+        admHierarchy = StAXEventStreamProcessor.forAdmHierarchy(batchSize);
+        apartmentType = StAXEventStreamProcessor.forApartmentType(batchSize);
+        apartment = StAXEventStreamProcessor.forApartment(batchSize);
+        operationType = StAXEventStreamProcessor.forOperationType(batchSize);
+        carPlace = StAXEventStreamProcessor.forCarPlace(batchSize);
+        changeHistory = StAXEventStreamProcessor.forChangeHistory(batchSize);
+        houseType = StAXEventStreamProcessor.forHouseType(batchSize);
+        house = StAXEventStreamProcessor.forHouse(batchSize);
+        munHierarchy = StAXEventStreamProcessor.forMunHierarchy(batchSize);
+        normativeDocType = StAXEventStreamProcessor.forNormativeDocType(batchSize);
+        normativeDocKind = StAXEventStreamProcessor.forNormativeDocKind(batchSize);
+        normativeDoc = StAXEventStreamProcessor.forNormativeDoc(batchSize);
+        objectLevel = StAXEventStreamProcessor.forObjectLevel(batchSize);
+        paramType = StAXEventStreamProcessor.forParamType(batchSize);
+        addrObjParam = StAXEventStreamProcessor.forAddrObjParam(batchSize);
+        housesParam = StAXEventStreamProcessor.forHousesParam(batchSize);
+        apartmentsParam = StAXEventStreamProcessor.forApartmentsParam(batchSize);
+        roomsParam = StAXEventStreamProcessor.forRoomsParam(batchSize);
+        steadsParam = StAXEventStreamProcessor.forSteadsParam(batchSize);
+        carPlacesParam = StAXEventStreamProcessor.forCarPlacesParam(batchSize);
+        reestrObject = StAXEventStreamProcessor.forReestrObject(batchSize);
+        roomType = StAXEventStreamProcessor.forRoomType(batchSize);
+        room = StAXEventStreamProcessor.forRoom(batchSize);
+        stead = StAXEventStreamProcessor.forStead(batchSize);
+        addHouseType = StAXEventStreamProcessor.forAddHouseType(batchSize);
     }
 
     public XMLStreamProcessor getProcessor(GarType garType) {

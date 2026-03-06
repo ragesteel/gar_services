@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml.stax;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

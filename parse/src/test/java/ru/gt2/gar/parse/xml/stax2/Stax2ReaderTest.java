@@ -4,11 +4,14 @@ import com.ctc.wstx.sr.TypedStreamReader;
 import com.ctc.wstx.stax.WstxInputFactory;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.evt.XMLEvent2;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.builder.Input;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.NormativeDocType;
+import ru.gt2.gar.domain.RoomType;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Stax2ReaderTest {
     @Test
-    public void testReadWithStax() throws Exception {
+    public void testReadWithStax2() throws Exception {
         XMLInputFactory2 xmlInputFactory = new WstxInputFactory();
         Source source = Input.fromString("""
                 <NDOCTYPES>
@@ -25,49 +28,78 @@ public class Stax2ReaderTest {
                 </NDOCTYPES>
                 """).build();
         TypedStreamReader xsr = (TypedStreamReader) xmlInputFactory.createXMLStreamReader(source);
-        System.out.println(xsr.getClass());
         NormativeDocType normativeDocType = null;
 
         GarType garType = GarType.NORMATIVE_DOCS_TYPES;
         boolean expectOuter = true;
-        LocalDateValueDecoder ldvd = new LocalDateValueDecoder();
+        TypedAttrReader tar = new TypedAttrReader(xsr);
         while (xsr.hasNext()) {
-            switch (xsr.next()) {
+            int eventCode;
+            switch (eventCode = xsr.next()) {
                 case XMLEvent2.START_ELEMENT: {
                     String elementName = xsr.getName().getLocalPart();
                     if (expectOuter) {
-                        if (elementName.equals("NDOCTYPES")) {
+                        if (elementName.equals(garType.outerTagName)) {
+                            System.out.println("Got outer tag");
                             expectOuter = false;
                             continue;
                         } else {
-                            throw new IllegalArgumentException();
+                            throw new IllegalArgumentException("Unexpected outer tag: " + elementName);
                         }
                     } else {
-                        if (!elementName.equals("NDOCTYPE")) {
-                            throw new IllegalArgumentException();
+                        if (!elementName.equals(garType.elementName)) {
+                            System.out.println("Got inner tag");
+                            throw new IllegalArgumentException("Unexpected tag: " + elementName);
                         }
                     }
-                    int id = xsr.getAttributeAsInt(xsr.getAttributeIndex(null, "ID"));
-                    String name = xsr.getAttributeValue(null, "NAME");
-                    // Да есть такое, но кажется проще вручную распарсить, хотя в том случае может и меньше проблем с памятью.
-                    // xsr.getAttributeAs(xsr.getAttributeIndex(null, "STARTDATE"));
-                    LocalDate startDate = ldvd.parse(xsr, "STARTDATE");
-                    LocalDate endDate = ldvd.parse(xsr, "ENDDATE");
-                    normativeDocType = new NormativeDocType(id, name, startDate, endDate);
+                    normativeDocType = createNormativeDocType(tar);
+                    break;
                 }
                 case XMLEvent2.END_ELEMENT: {
                     String elementName = xsr.getName().getLocalPart();
-                    if (elementName.equals("NDOCTYPES")) {
-                        System.out.println("Finished");
+                    if (elementName.equals(garType.outerTagName)) {
+                        System.out.println("Outer tag is finished");
                     }
+                    break;
+                }
+                case XMLEvent2.END_DOCUMENT: {
+                    System.out.println("Document is finished");
+                    break;
+                }
+                case XMLEvent2.CHARACTERS: {
+                    // Nothing
+                    break;
+                }
+                default: {
+                    System.out.println("Got event:" + eventCode);
                 }
             }
         }
         assertEquals(new NormativeDocType(0, "Не указан",
                 LocalDate.of(1900, Month.JANUARY, 1),
                 LocalDate.of(2016, Month.MARCH, 31)), normativeDocType);
-
-//        xsr.getAttributeIndex(/)
     }
 
+    @NonNull
+    private static NormativeDocType createNormativeDocType(TypedAttrReader tar)
+            throws XMLStreamException {
+        int id = tar.getInt("ID");
+        String name = tar.getString("NAME");
+        LocalDate startDate = tar.getLocalDate("STARTDATE");
+        LocalDate endDate = tar.getLocalDate("ENDDATE");
+        return new NormativeDocType(id, name, startDate, endDate);
+    }
+
+    @NonNull
+    private static RoomType createRoomType(TypedAttrReader tar) throws XMLStreamException {
+        int id = tar.getInt("ID");
+        String name = tar.getString("NAME");
+        String shortName = tar.getNullableString("SHORTNAME");
+        String desc = tar.getNullableString("DESC");
+        LocalDate updateDate = tar.getLocalDate("UPDATEDATE");
+        LocalDate startDate = tar.getLocalDate("STARTDATE");
+        LocalDate endDate = tar.getLocalDate("ENDDATE");
+        boolean isActive = tar.getBoolean("ISACTIVE");
+        return new RoomType(id, name, shortName, desc, updateDate, startDate, endDate, isActive);
+    }
 }
