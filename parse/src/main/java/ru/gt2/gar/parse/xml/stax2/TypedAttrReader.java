@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.xml.stream.XMLStreamException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /// Вспомогательный класс для чтения типизированных атрибутов
 /// Не является потокобезопасным, нужно создавать новый экземпляр для каждого XML-потока
@@ -15,6 +16,14 @@ public class TypedAttrReader {
 
     public int getInt(String name) throws XMLStreamException {
         int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        return typedStreamReader.getAttributeAsInt(attributeIndex);
+    }
+
+    public Integer getNullableInt(String name) throws XMLStreamException {
+        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        if (attributeIndex < 0) {
+            return null;
+        }
         return typedStreamReader.getAttributeAsInt(attributeIndex);
     }
 
@@ -37,10 +46,37 @@ public class TypedAttrReader {
         return localDateTimeDecoder.value;
     }
 
+    public LocalDate getNullableLocalDate(String name) throws XMLStreamException {
+        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        if (attributeIndex < 0) {
+            return null;
+        }
+        typedStreamReader.getAttributeAs(attributeIndex, localDateTimeDecoder);
+        return localDateTimeDecoder.value;
+    }
+
     public boolean getBoolean(String name) throws XMLStreamException {
         int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
         return typedStreamReader.getAttributeAsBoolean(attributeIndex);
     }
 
-    // getIntAsBoolean
+    public long getLong(String name) throws XMLStreamException {
+        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        return typedStreamReader.getAttributeAsLong(attributeIndex);
+    }
+
+    public Long getNullableLong(String name) throws XMLStreamException {
+        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        if (attributeIndex < 0) {
+            return null;
+        }
+        return typedStreamReader.getAttributeAsLong(attributeIndex);
+    }
+
+    public UUID getUUID(String name) throws XMLStreamException {
+        // TODO Прямое преобразование из CharSequence для скорости
+        return UUID.fromString(getString(name));
+    }
+
+    // TODO getIntAsBoolean
 }
