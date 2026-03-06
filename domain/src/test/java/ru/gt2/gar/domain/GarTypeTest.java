@@ -64,8 +64,8 @@ public class GarTypeTest {
             GarType garType = expectedTagName.garType;
             assertTrue(allGarTypes.remove(garType), () -> "Multiple instances for garType " + garType);
 
-            assertEquals(expectedTagName.outer, garType.outerTagName);
-            assertEquals(expectedTagName.inner, garType.elementName);
+            assertEquals(expectedTagName.outer.toUpperCase(), garType.outerTagName);
+            assertEquals(expectedTagName.inner.toUpperCase(), garType.elementName);
         }
         assertTrue(allGarTypes.isEmpty(), () -> "Not definition for types: " + allGarTypes);
     }
