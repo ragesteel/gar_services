@@ -16,6 +16,8 @@ public class InsertGenerator implements TableVisitor {
 
     private String tableName = "";
     private String idColumnName = "";
+    private String idColumnType = "";
+
     private int columnCount = 0;
 
     public InsertData generate() {
@@ -24,14 +26,14 @@ public class InsertGenerator implements TableVisitor {
         }
         schema.visitTable(garType, this);
 
-        return new InsertData(selectBuilder.toString(), insertBuilder.toString());
+        return new InsertData(selectBuilder.toString(), idColumnType, insertBuilder.toString());
     }
 
     @Override
     public void onStartTable(String tableName, String tableComment) {
         this.tableName = tableName;
         insertBuilder.append("INSERT INTO ").append(tableName).append(" (");
-        insertBuilder.append("SELECT ");
+        selectBuilder.append("SELECT ");
     }
 
     @Override
@@ -45,6 +47,7 @@ public class InsertGenerator implements TableVisitor {
 
         if (primaryKey) {
             idColumnName = columnName;
+            idColumnType = type;
         }
         columnCount++;
     }
@@ -53,7 +56,7 @@ public class InsertGenerator implements TableVisitor {
     public void onEndTable() {
         selectBuilder.append(" FROM ").append(tableName)
                 .append(" WHERE ").append('"').append(idColumnName).append('"')
-                .append(" IN (?)");
+                .append(" = ANY(?)");
 
         insertBuilder.append(") VALUES (");
         for (int i = 0; i < columnCount; i++) {
