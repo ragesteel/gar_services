@@ -8,6 +8,7 @@ import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
+import ru.gt2.gar.domain.IntAsBoolean;
 
 import javax.lang.model.element.Modifier;
 import javax.xml.stream.XMLStreamException;
@@ -81,7 +82,7 @@ public class StAX2RecordMapper {
                         case "long", "Long" -> "Long";
                         case "String" -> "String";
                         case "LocalDate" -> "LocalDate";
-                        case "boolean" -> "Boolean";
+                        case "boolean" -> rc.isAnnotationPresent(IntAsBoolean.class) ? "IntAsBoolean" : "Boolean";
                         case "UUID" -> "UUID";
                         default -> throw new UnsupportedOperationException("Unsupported type: " + type);
                     };

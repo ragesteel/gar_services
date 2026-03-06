@@ -78,5 +78,12 @@ public class TypedAttrReader {
         return UUID.fromString(getString(name));
     }
 
-    // TODO getIntAsBoolean
+    public boolean getIntAsBoolean(String name) throws XMLStreamException {
+        // TODO Написать свой конвертор, который будет просто искать '0' и '1', вместа полновесного разбора числа
+        return switch (getInt(name)) {
+            case 0 -> false;
+            case 1 -> true;
+            default -> throw new IllegalArgumentException("Invalid value for Boolean");
+        };
+    }
 }
