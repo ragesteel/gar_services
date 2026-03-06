@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.rest;
+package ru.gt2.gar.fias.client.rest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
