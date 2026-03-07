@@ -13,6 +13,7 @@ import java.util.UUID;
 public class TypedAttrReader {
     private final TypedStreamReader typedStreamReader;
     private final LocalDateValueDecoder localDateTimeDecoder = new LocalDateValueDecoder();
+    private final IntAsBooleanDecoder intAsBooleanDecoder = new IntAsBooleanDecoder();
 
     public int getInt(String name) throws XMLStreamException {
         int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
@@ -79,11 +80,8 @@ public class TypedAttrReader {
     }
 
     public boolean getIntAsBoolean(String name) throws XMLStreamException {
-        // TODO Написать свой конвертор, который будет просто искать '0' и '1', вместа полновесного разбора числа
-        return switch (getInt(name)) {
-            case 0 -> false;
-            case 1 -> true;
-            default -> throw new IllegalArgumentException("Invalid value for Boolean");
-        };
+        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        typedStreamReader.getAttributeAs(attributeIndex, intAsBooleanDecoder);
+        return intAsBooleanDecoder.value;
     }
 }
