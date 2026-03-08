@@ -13,6 +13,9 @@
 
     <properties>
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+        <stax2-api.version>4.2.2</stax2-api.version>
+        <woodstox.version>7.1.1</woodstox.version>
+        <aalto-xml.version>1.3.1</aalto-xml.version>
     </properties>
 
     <dependencies>
@@ -32,19 +35,14 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
-            <version>4.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
-            <version>7.1.1</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml</groupId>
             <artifactId>aalto-xml</artifactId>
-            <version>1.3.1</version>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Отсюда используется только ObjectFactory для мэппинга Map<String, String> на record -->
@@ -56,7 +54,6 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-
 
         <!-- Вспомогательные (утилитарные) библиотеки -->
         <dependency>
