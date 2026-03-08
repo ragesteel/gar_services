@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gt2.gar.db.GarDataWriter;
 import ru.gt2.gar.db.jrm.AddressObjectTypeJm;
-import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.domain.AddressObjectType;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
@@ -22,7 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class GarDataPrepStatWriter implements GarDataWriter {
-    private final DatabaseSchema schema;
     private final DataSource dataSource;
     private final AddressObjectTypeJm addressObjectTypeJm = new AddressObjectTypeJm();
 
@@ -40,15 +38,14 @@ public class GarDataPrepStatWriter implements GarDataWriter {
     }
 
     private void writeAddressObjectTypes(List<AddressObjectType> entities) {
-        // TODO сделать кэширование insertData в ConcurrentHashMap.
-        InsertData insertData = new InsertGenerator(GarType.ADDR_OBJ_TYPES, schema).generate();
+        GeneratedSQL generatedSQL = SQLQueries.get(GarType.ADDR_OBJ_TYPES);
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement selectStatement = connection.prepareStatement(insertData.selectIdIn());
-             PreparedStatement insertStatement = connection.prepareStatement(insertData.insertSQL())) {
+             PreparedStatement selectStatement = connection.prepareStatement(generatedSQL.selectIdIn());
+             PreparedStatement insertStatement = connection.prepareStatement(generatedSQL.insertSQL())) {
 
             // Получаем список существующих записей
             Map<Integer, AddressObjectType> existingEntities = new HashMap<>();
-            selectStatement.setArray(1, connection.createArrayOf(insertData.idColumnType(),
+            selectStatement.setArray(1, connection.createArrayOf(generatedSQL.idColumnType(),
                     entities.stream().map(addressObjectTypeJm.primaryKey()).toArray()));
             try (ResultSet resultSet = selectStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -56,7 +53,6 @@ public class GarDataPrepStatWriter implements GarDataWriter {
                     existingEntities.put(addressObjectTypeJm.primaryKey().apply(existingEntity), existingEntity);
                 }
             }
-
 
             // Сравниваем с тем, что есть в базе данных
             // TODO — если ничего в базе не нашли — сразу переходим к вставке в таблицы

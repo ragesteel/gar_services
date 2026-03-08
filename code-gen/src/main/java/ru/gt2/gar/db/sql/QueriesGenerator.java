@@ -1,32 +1,28 @@
 package ru.gt2.gar.db.sql;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.schema.TableVisitor;
 import ru.gt2.gar.domain.GarType;
 
-@RequiredArgsConstructor
-public class InsertGenerator implements TableVisitor {
-    private final GarType garType;
-
-    private final DatabaseSchema schema;
-
+public class QueriesGenerator implements TableVisitor {
     private final StringBuilder selectBuilder = new StringBuilder();
     private final StringBuilder insertBuilder = new StringBuilder();
 
     private String tableName = "";
     private String idColumnName = "";
+
+    @Getter
     private String idColumnType = "";
+    @Getter
+    private String select = "";
+    @Getter
+    private String insert = "";
 
     private int columnCount = 0;
 
-    public InsertData generate() {
-        if (!selectBuilder.isEmpty()) {
-            throw new IllegalStateException("Already generated");
-        }
+    public QueriesGenerator(GarType garType, DatabaseSchema schema) {
         schema.visitTable(garType, this);
-
-        return new InsertData(selectBuilder.toString(), idColumnType, insertBuilder.toString());
     }
 
     @Override
@@ -39,11 +35,11 @@ public class InsertGenerator implements TableVisitor {
     @Override
     public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         if (columnCount > 0) {
-            selectBuilder.append(", ");
             insertBuilder.append(", ");
+            selectBuilder.append(", ");
         }
-        selectBuilder.append('"').append(columnName).append('"');
         insertBuilder.append('"').append(columnName).append('"');
+        selectBuilder.append('"').append(columnName).append('"');
 
         if (primaryKey) {
             idColumnName = columnName;
@@ -54,10 +50,6 @@ public class InsertGenerator implements TableVisitor {
 
     @Override
     public void onEndTable() {
-        selectBuilder.append(" FROM ").append(tableName)
-                .append(" WHERE ").append('"').append(idColumnName).append('"')
-                .append(" = ANY(?)");
-
         insertBuilder.append(") VALUES (");
         for (int i = 0; i < columnCount; i++) {
             if (i > 0) {
@@ -65,6 +57,13 @@ public class InsertGenerator implements TableVisitor {
             }
             insertBuilder.append('?');
         }
-        insertBuilder.append(");");
+        insertBuilder.append(")");
+
+        selectBuilder.append(" FROM ").append(tableName)
+                .append(" WHERE ").append('"').append(idColumnName).append('"')
+                .append(" = ANY(?)");
+
+        select = selectBuilder.toString();
+        insert = insertBuilder.toString();
     }
 }
