@@ -1,7 +1,7 @@
 package ru.gt2.gar.parse.xml.stax2;
 
-import com.ctc.wstx.sr.TypedStreamReader;
 import lombok.RequiredArgsConstructor;
+import org.codehaus.stax2.XMLStreamReader2;
 
 import javax.xml.stream.XMLStreamException;
 import java.time.LocalDate;
@@ -11,77 +11,77 @@ import java.util.UUID;
 /// Не является потокобезопасным, нужно создавать новый экземпляр для каждого XML-потока
 @RequiredArgsConstructor
 public class TypedAttrReader {
-    private final TypedStreamReader typedStreamReader;
+    private final XMLStreamReader2 xmlStreamReader2;
     private final LocalDateValueDecoder localDateTimeDecoder = new LocalDateValueDecoder();
     private final IntAsBooleanDecoder intAsBooleanDecoder = new IntAsBooleanDecoder();
 
     public int getInt(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        return typedStreamReader.getAttributeAsInt(attributeIndex);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        return xmlStreamReader2.getAttributeAsInt(attributeIndex);
     }
 
     public Integer getNullableInt(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
         if (attributeIndex < 0) {
             return null;
         }
-        return typedStreamReader.getAttributeAsInt(attributeIndex);
+        return xmlStreamReader2.getAttributeAsInt(attributeIndex);
     }
 
     public String getString(String name) {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        return typedStreamReader.getAttributeValue(attributeIndex);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        return xmlStreamReader2.getAttributeValue(attributeIndex);
     }
 
     public String getNullableString(String name) {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
         if (attributeIndex < 0) {
             return null;
         }
-        return typedStreamReader.getAttributeValue(attributeIndex);
+        return xmlStreamReader2.getAttributeValue(attributeIndex);
     }
 
     public LocalDate getLocalDate(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        typedStreamReader.getAttributeAs(attributeIndex, localDateTimeDecoder);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        xmlStreamReader2.getAttributeAs(attributeIndex, localDateTimeDecoder);
         return localDateTimeDecoder.value;
     }
 
     public LocalDate getNullableLocalDate(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
         if (attributeIndex < 0) {
             return null;
         }
-        typedStreamReader.getAttributeAs(attributeIndex, localDateTimeDecoder);
+        xmlStreamReader2.getAttributeAs(attributeIndex, localDateTimeDecoder);
         return localDateTimeDecoder.value;
     }
 
     public boolean getBoolean(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        return typedStreamReader.getAttributeAsBoolean(attributeIndex);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        return xmlStreamReader2.getAttributeAsBoolean(attributeIndex);
     }
 
     public long getLong(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        return typedStreamReader.getAttributeAsLong(attributeIndex);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        return xmlStreamReader2.getAttributeAsLong(attributeIndex);
     }
 
     public Long getNullableLong(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
         if (attributeIndex < 0) {
             return null;
         }
-        return typedStreamReader.getAttributeAsLong(attributeIndex);
+        return xmlStreamReader2.getAttributeAsLong(attributeIndex);
     }
 
-    public UUID getUUID(String name) throws XMLStreamException {
+    public UUID getUUID(String name) {
         // TODO Прямое преобразование из CharSequence для скорости
         return UUID.fromString(getString(name));
     }
 
     public boolean getIntAsBoolean(String name) throws XMLStreamException {
-        int attributeIndex = typedStreamReader.getAttributeIndex(null, name);
-        typedStreamReader.getAttributeAs(attributeIndex, intAsBooleanDecoder);
+        int attributeIndex = xmlStreamReader2.getAttributeIndex(null, name);
+        xmlStreamReader2.getAttributeAs(attributeIndex, intAsBooleanDecoder);
         return intAsBooleanDecoder.value;
     }
 }
