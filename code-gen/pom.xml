@@ -21,6 +21,9 @@
             <groupId>com.palantir.javapoet</groupId>
             <artifactId>javapoet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
-
 </project>

@@ -1,5 +1,6 @@
 package ru.gt2.gar.db.schema;
 
+import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.domain.GarType;
 
 import java.util.Arrays;

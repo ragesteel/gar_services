@@ -1,4 +1,4 @@
-package ru.gt2.gar.db.schema;
+package ru.gt2.gar.db;
 
 public interface NamingStrategy {
     LowerUnderscoreNamingStrategy LOWER_UNDERSCORE = new LowerUnderscoreNamingStrategy();

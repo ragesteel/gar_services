@@ -2,7 +2,7 @@ package ru.gt2.gar.db.schema;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.LengthLimit;
@@ -12,7 +12,6 @@ import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Component
 @RequiredArgsConstructor
 public class DatabaseSchema {
     private final NamingStrategy namingStrategy;

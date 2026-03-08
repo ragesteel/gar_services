@@ -1,4 +1,4 @@
-package ru.gt2.gar.db.ps;
+package ru.gt2.gar.db.sql;
 
 import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.db.schema.DatabaseSchema;

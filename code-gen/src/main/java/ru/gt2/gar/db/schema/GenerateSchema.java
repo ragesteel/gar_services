@@ -1,6 +1,7 @@
 package ru.gt2.gar.db.schema;
 
 import lombok.RequiredArgsConstructor;
+import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.SchemaLink;
 
