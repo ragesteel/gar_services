@@ -16,7 +16,7 @@ public record ReestrObject(
         long changeId,
 
         @SchemaComment("Признак действующего объекта")
-        boolean isActive,
+        @IntAsBoolean boolean isActive,
 
         @SchemaComment("Уровень объекта") // ObjectLevel?
         int levelId,

@@ -58,18 +58,18 @@ public enum GarType {
 
     GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;
-        this.elementName = recordClass.getSimpleName();
-        outerTagName = elementName + 's';
+        this.elementName = recordClass.getSimpleName().toUpperCase();
+        outerTagName = elementName + 'S';
     }
 
     GarType(Class<? extends GarRecord> recordClass, String elementName) {
-        this(recordClass, elementName + 's', elementName);
+        this(recordClass, elementName.toUpperCase() + 'S', elementName.toUpperCase());
     }
 
     GarType(Class<? extends GarRecord> recordClass, String outerTagName, String elementName) {
         this.recordClass = recordClass;
-        this.outerTagName = outerTagName;
-        this.elementName = elementName;
+        this.outerTagName = outerTagName.toUpperCase();
+        this.elementName = elementName.toUpperCase();
     }
 
     public static Optional<GarType> findGarType(Class<? extends GarRecord> recordClass) {

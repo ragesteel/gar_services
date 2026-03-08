@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.gt2.gar.domain.GarType;
-import ru.gt2.gar.parse.xml.AllXMLProcessors;
+import ru.gt2.gar.parse.xml.XMLProcessors;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarEntry;
 import ru.gt2.gar.parse.zip.GarZipFile;
@@ -20,12 +20,12 @@ import java.time.temporal.ChronoUnit;
 @SpringBootApplication
 @Slf4j
 public class LoadDataApp implements CommandLineRunner {
-    private final AllXMLProcessors xmlProcessors;
+    private final XMLProcessors xmlProcessors;
     private final File zipFile;
     private final GarDataWriter garDataWriter;
     private final int entitySizeLimit;
 
-    public LoadDataApp(AllXMLProcessors xmlProcessors,
+    public LoadDataApp(XMLProcessors xmlProcessors,
                        @Value("${gar.zip.full}") File zipFile, GarDataWriter garDataWriter,
                        @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit) {
 
@@ -62,7 +62,7 @@ public class LoadDataApp implements CommandLineRunner {
             return;
         }
 
-        XMLStreamProcessor processor = xmlProcessors.getProcessor(garType);
+        XMLStreamProcessor processor = xmlProcessors.get(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
                     entitySizeLimit);

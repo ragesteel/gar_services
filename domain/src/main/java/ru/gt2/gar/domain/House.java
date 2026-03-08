@@ -64,8 +64,8 @@ public record House(
         LocalDate endDate,
 
         @SchemaComment("Статус актуальности адресного объекта ФИАС")
-        boolean isActual,
+        @IntAsBoolean boolean isActual,
 
         @SchemaComment("Статус активности")
-        boolean isActive) implements GarRecord {
+        @IntAsBoolean boolean isActive) implements GarRecord {
 }

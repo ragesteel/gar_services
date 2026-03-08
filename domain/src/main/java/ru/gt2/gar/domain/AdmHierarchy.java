@@ -59,7 +59,7 @@ public record AdmHierarchy(
         LocalDate endDate,
 
         @SchemaComment("Признак действующего адресного объекта")
-        boolean isActive,
+        @IntAsBoolean boolean isActive,
 
         @SchemaComment("Материализованный путь к объекту (полная иерархия)")
         @LengthLimit(250) // В схемах нет, но в реальности не больше 69 символов

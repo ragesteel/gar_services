@@ -1,8 +1,10 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import org.junit.jupiter.api.Test;
 import ru.gt2.gar.domain.AddressObject;
 import ru.gt2.gar.domain.GarRecord;
+import ru.gt2.gar.domain.GarType;
+import ru.gt2.gar.parse.xml.ListConsumer;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ import static java.time.Month.AUGUST;
 import static java.time.Month.JUNE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XMLAttrReaderTest {
+public class StAXEventReaderIteratorTest implements ListConsumer {
     @Test
     public void testAddrObj() throws Exception {
         InputStream inputStream = new ByteArrayInputStream("""
@@ -28,13 +30,18 @@ public class XMLAttrReaderTest {
         ENDDATE="2079-06-06" ISACTUAL="1" ISACTIVE="1" />
 </ADDRESSOBJECTS>
                 """.getBytes(UTF_8));
-        try (var xmlAttrReader = new XMLAttrReader(inputStream, XMLAttrMapper.ADDRESS_OBJECT, AttrConverter.jackson(AddressObject.class), 10, 0)) {
-            List<GarRecord> next = xmlAttrReader.next();
-            assertEquals(new AddressObject(52185551L, 174296886L,
-                    UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,
-                    "Садрыя Мингазова", "ул.", "8", 10, 0L, 0L,
-                    LocalDate.of(2025, AUGUST, 28), LocalDate.of(2025, AUGUST, 28),
-                    LocalDate.of(2079, JUNE, 6), true, true), next.getFirst());
-        }
+
+        StAXEventStreamProcessor.createProcessors(10)
+                .get(GarType.ADDR_OBJ)
+                .process(inputStream, this, 10);
+    }
+
+    @Override
+    public void accept(List<GarRecord> garRecords) {
+        assertEquals(new AddressObject(52185551L, 174296886L,
+                UUID.fromString("ef3d094e-f34a-4484-b1ee-7531de095339"), 688238606L,
+                "Садрыя Мингазова", "ул.", "8", 10, 0L, 0L,
+                LocalDate.of(2025, AUGUST, 28), LocalDate.of(2025, AUGUST, 28),
+                LocalDate.of(2079, JUNE, 6), true, true), garRecords.getFirst());
     }
 }

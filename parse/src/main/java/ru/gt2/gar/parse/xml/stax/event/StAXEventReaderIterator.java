@@ -1,8 +1,9 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
 import ru.gt2.gar.domain.GarRecord;
+import ru.gt2.gar.parse.xml.AbstractRecordListIterator;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -10,12 +11,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.Closeable;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -29,33 +27,26 @@ import static java.util.Objects.requireNonNull;
  *      это ведь штука, которая просто по-сути реализует метод map в терминах map/reduce.
  */
 @Slf4j
-public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
+public class StAXEventReaderIterator extends AbstractRecordListIterator {
 
     private final XMLEventReader eventReader;
-    private final String rootName;
-    private final String elementName;
     private final BiFunction<String, String, String> valueProcessing;
-    private final int batchSize;
-    private final AttrConverter<? extends GarRecord> attrConverter;
+    private final JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter;
     private boolean expectOuter = true;
 
-    public XMLAttrReader(InputStream inputStream, XMLAttrMapper mapper,
-            AttrConverter<? extends GarRecord> attrConverter, int batchSize, int entitySizeLimit)
+    public StAXEventReaderIterator(InputStream inputStream, StAXAttrMapperData mapper,
+                                   JacksonAttrConverter<? extends GarRecord> jacksonAttrConverter, int batchSize, int entitySizeLimit)
                 throws XMLStreamException {
+        super(mapper.garType, batchSize);
         requireNonNull(mapper, "mapper must not be null");
-        rootName = mapper.garType.outerTagName;
-        elementName = mapper.garType.elementName;
         valueProcessing = mapper.valueProcessing;
 
-        this.attrConverter = requireNonNull(attrConverter, "converter must not be null");
-
-        if (batchSize <= 0) {
-            throw new IllegalArgumentException("batchSize must be > 0");
-        }
-        this.batchSize = batchSize;
+        this.jacksonAttrConverter = requireNonNull(jacksonAttrConverter, "converter must not be null");
 
         requireNonNull(inputStream, "inputStream must not be null");
-        XMLInputFactory factory = XMLInputFactory.newInstance(); // Не ясно, нужно-ли постоянно новую создавать?…
+        // Не ясно, нужно-ли постоянно новую создавать?…
+        XMLInputFactory factory = XMLInputFactory.newDefaultFactory();
+
         if (entitySizeLimit >= 0) {
             // Да, соответствующие константы есть в JdkConstants, но этот класс не экспортируется!
             factory.setProperty("jdk.xml.maxGeneralEntitySizeLimit", entitySizeLimit);
@@ -72,41 +63,24 @@ public class XMLAttrReader implements Iterator<List<GarRecord>>, Closeable {
         return eventReader.hasNext();
     }
 
-    /**
-     * Читает следующую "пачку" объектов, используя атрибуты элемента как поля.
-     */
     @Override
-    public List<GarRecord> next() {
-        try {
-            List<GarRecord> result = new ArrayList<>(batchSize);
-            while (eventReader.hasNext() && (result.size() < batchSize)) {
-                XMLEvent event = eventReader.nextEvent();
-                if (!event.isStartElement()) {
-                    continue;
-                }
-                StartElement startElement = event.asStartElement();
-                String startElementName = startElement.getName().getLocalPart();
-                if (expectOuter && (startElementName.equalsIgnoreCase(rootName))) {
-                    expectOuter = false;
-                    continue;
-                } else if (!startElementName.equalsIgnoreCase(elementName)) {
-                    log.warn("Unexpected element: {}", startElement);
-                    continue;
-                }
-                result.add(createValue(startElement));
-            }
-            return result;
-        } catch (XMLStreamException e) {
-            log.error("Error while reading XML: {}", e.getMessage(), e);
-            // В зависимости от требований, можно либо бросить Unchecked-исключение, либо вернуть то, что накопилось
-            throw new RuntimeException("Failed to read next batch from XML", e);
+    protected Optional<GarRecord> createValue() throws XMLStreamException {
+        XMLEvent event = eventReader.nextEvent();
+        if (!event.isStartElement()) {
+            return Optional.empty();
         }
-    }
-
-    private GarRecord createValue(StartElement startElement) {
+        StartElement startElement = event.asStartElement();
+        String startElementName = startElement.getName().getLocalPart();
+        if (expectOuter && (startElementName.equalsIgnoreCase(rootName))) {
+            expectOuter = false;
+            return Optional.empty();
+        } else if (!startElementName.equalsIgnoreCase(elementName)) {
+            log.warn("Unexpected element: {}", startElement);
+            return Optional.empty();
+        }
         Map<String, String> attributes = Streams.stream(startElement.getAttributes())
-                .collect(Collectors.toMap(XMLAttrReader::getAttrName, this::getAttrValue));
-        return attrConverter.apply(attributes);
+                .collect(Collectors.toMap(StAXEventReaderIterator::getAttrName, this::getAttrValue));
+        return Optional.of(jacksonAttrConverter.apply(attributes));
     }
 
     private static String getAttrName(Attribute a) {

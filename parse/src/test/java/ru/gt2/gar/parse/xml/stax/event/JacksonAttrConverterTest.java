@@ -1,4 +1,4 @@
-package ru.gt2.gar.parse.xml;
+package ru.gt2.gar.parse.xml.stax.event;
 
 import org.junit.jupiter.api.Test;
 import ru.gt2.gar.domain.GarRecord;
@@ -7,12 +7,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AttrConverterTest {
+public class JacksonAttrConverterTest {
 
     @Test
     void testJackson() {
         record RecordUnderTest(boolean isSomething) implements GarRecord { }
-        AttrConverter<RecordUnderTest> jackson = AttrConverter.jackson(RecordUnderTest.class);
+        JacksonAttrConverter<RecordUnderTest> jackson = JacksonAttrConverter.jackson(RecordUnderTest.class);
         RecordUnderTest trueField = new RecordUnderTest(true);
         RecordUnderTest falseField = new RecordUnderTest(false);
 

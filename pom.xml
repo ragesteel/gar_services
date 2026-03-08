@@ -20,11 +20,13 @@
         <module>parse</module>
         <module>db</module>
         <module>fias-client</module>
+        <module>code-gen</module>
     </modules>
 
     <properties>
         <java.version>25</java.version>
         <guava.version>33.4.8-jre</guava.version>
+        <javapoet.version>0.12.0</javapoet.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
@@ -51,6 +53,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.palantir.javapoet</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${javapoet.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
