@@ -24,7 +24,6 @@ public class StAXAttrMapperData {
     static {
         FOR_TYPE = Stream.of(
                 new StAXAttrMapperData(GarType.ADDR_OBJ, BOOL_ACTUAL_ACTIVE),
-                new StAXAttrMapperData(GarType.ADDR_OBJ, BOOL_ACTUAL_ACTIVE),
                 new StAXAttrMapperData(GarType.ADDR_OBJ_DIVISION),
                 new StAXAttrMapperData(GarType.ADDR_OBJ_TYPES),
                 new StAXAttrMapperData(GarType.ADM_HIERARCHY, BOOL_ACTIVE),
