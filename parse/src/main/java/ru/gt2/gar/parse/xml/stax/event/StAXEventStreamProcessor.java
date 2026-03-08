@@ -135,21 +135,17 @@ public class StAXEventStreamProcessor implements XMLStreamProcessor {
         jacksonAttrConverter = JacksonAttrConverter.jackson(mapper.garType.recordClass);
     }
 
-    /*
-    public static XMLStreamProcessor createFor(GarType garType, int batchSize) {
-        return new XMLStreamProcessor(XMLAttrMapper.forGarType(garType), batchSize);
-    }*/
-
     public GarType getGarType() {
         return mapper.garType;
     }
 
+    // TODO Выделить в AbstractXMLStreamProcessor
     @Override
     public void process(InputStream inputStream, ListConsumer dataConsumer, int entitySizeLimit) throws Exception {
         requireNonNull(inputStream);
         requireNonNull(dataConsumer);
         dataConsumer.before();
-        try (StAXEventReader reader = new StAXEventReader(inputStream, mapper, jacksonAttrConverter, batchSize, entitySizeLimit)) {
+        try (StAXEventReaderIterator reader = new StAXEventReaderIterator(inputStream, mapper, jacksonAttrConverter, batchSize, entitySizeLimit)) {
             while(reader.hasNext()) {
                 dataConsumer.accept(reader.next());
             }

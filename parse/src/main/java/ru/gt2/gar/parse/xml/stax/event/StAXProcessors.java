@@ -10,10 +10,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AllStAXProcessors implements XMLProcessors {
+public class StAXProcessors implements XMLProcessors {
     private final Map<GarType, XMLStreamProcessor> processors;
 
-    public AllStAXProcessors(int batchSize) {
+    public StAXProcessors(int batchSize) {
         processors = Stream.of(
                         StAXEventStreamProcessor.forAddressObject(batchSize),
                         StAXEventStreamProcessor.forAddressObjectDivision(batchSize),

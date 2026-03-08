@@ -5,9 +5,9 @@ import ru.gt2.gar.domain.GarType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AllStAXProcessorsTest {
+public class StAXProcessorsTest {
     @Test
     public void allGarTypes() {
-        assertEquals(GarType.values().length, new AllStAXProcessors(1).size());
+        assertEquals(GarType.values().length, new StAXProcessors(1).size());
     }
 }

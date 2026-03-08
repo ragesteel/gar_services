@@ -4,8 +4,10 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
+import org.jspecify.annotations.NonNull;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.IntAsBoolean;
@@ -17,11 +19,22 @@ import java.lang.reflect.RecordComponent;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.palantir.javapoet.MethodSpec.constructorBuilder;
+
 public class StAX2RecordMapper {
     // Использовать ссылки на классы, вместо текстовых строчек
+    private static final ClassName TARGET_CLASS = ClassName.get("ru.gt2.gar.parse.xml.stax2", "GeneratedRecordCreators");
     private static final ClassName TYPED_ATTR_READER = ClassName.get("ru.gt2.gar.parse.xml.stax2", "TypedAttrReader");
     private static final ClassName XML_STREAM_EXCEPTION = ClassName.get(XMLStreamException.class);
-    private static final ClassName NON_NULL = ClassName.get("org.jspecify.annotations", "NonNull");
+    private static final ClassName NON_NULL = ClassName.get(NonNull.class);
+    private static final ClassName GAR_TYPE = ClassName.get(GarType.class);
+    private static final ClassName XML_STREAM_PROCESSOR = ClassName.get("ru.gt2.gar.parse.xml", "XMLStreamProcessor");
+    private static final ClassName STAX2_STREAM_READER_PROCESSOR = ClassName.get("ru.gt2.gar.parse.xml.stax2", "StAX2StreamReaderProcessor");
+    private static final ClassName FUNCTION = ClassName.get("java.util.function", "Function");
+    private static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
+    private static final ClassName COLLECTORS = ClassName.get("java.util.stream", "Collectors");
+    private static final TypeName MAP_GAR_PROCESSOR = ParameterizedTypeName.get(
+            ClassName.get("java.util", "Map"), GAR_TYPE, STAX2_STREAM_READER_PROCESSOR);
 
     static void main() throws IOException {
         new StAX2RecordMapper().generateMapper();
@@ -30,31 +43,59 @@ public class StAX2RecordMapper {
     // Хотел бы я тут использовать существующиую мета-информацию, по которой строится структура таблиц,
     // но по сути там тоже проход по компонентам record'а и чтение тех-же аннотаций
     public void generateMapper() throws IOException {
-
         // Генерируем класс-обёртку
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder("GeneratedRecordCreators")
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(TARGET_CLASS)
                 .addModifiers(Modifier.PUBLIC);
 
+        // Приватный конструктор — utility class
+        classBuilder.addMethod(constructorBuilder()
+                .addModifiers(Modifier.PRIVATE)
+                .build());
+
         Set<Class<? extends GarRecord>> createdClasses = new HashSet<>();
+        MethodSpec.Builder processorsMethod = MethodSpec.methodBuilder("createProcessors")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(MAP_GAR_PROCESSOR)
+                .addParameter(int.class, "batchSize")
+                .addCode(CodeBlock.builder()
+                        .add("return $T.of(\n", STREAM)
+                        .build());
+
+        boolean first = true;
         for (GarType value : GarType.values()) {
-            // один класс может быть сразу для нескольких типов - использовать только один!
             Class<? extends GarRecord> recordClass = value.recordClass;
+            String methodName = "create" + recordClass.getSimpleName();
+
+            processorsMethod
+                    .addCode(first ? "        " : ",\n        ")
+                    .addCode("new $T($T.$L, batchSize, $T::$L)",
+                            STAX2_STREAM_READER_PROCESSOR,
+                            GAR_TYPE,
+                            value.name(),
+                            TARGET_CLASS,
+                            methodName);
+
             if (!createdClasses.add(recordClass)) {
                 continue;
             }
-            classBuilder.addMethod(generateMapper(recordClass));
+
+            classBuilder.addMethod(generateMapper(methodName, recordClass));
+            first = false;
         }
 
-        JavaFile javaFile = JavaFile.builder("ru.gt2.gar.parse.xml.stax2.mapper", classBuilder.build())
-                .addFileComment("Сгенерировано автоматически. Не редактировать.")
+        processorsMethod.addCode(")\n    .collect($T.toMap($T::getGarType, $T.identity()));", COLLECTORS, XML_STREAM_PROCESSOR, FUNCTION);
+
+        classBuilder.addMethod(processorsMethod.build());
+
+        JavaFile javaFile = JavaFile.builder(TARGET_CLASS.packageName(), classBuilder.build())
+                .addFileComment("Сгенерировано автоматически, с помощью $T", getClass())
                 .build();
 
         // Вывод в stdout (можно перенаправить в файл)
         javaFile.writeTo(System.out);
     }
 
-    private MethodSpec generateMapper(Class<? extends GarRecord> recordClass) {
-        String methodName = "create" + recordClass.getSimpleName();
+    private MethodSpec generateMapper(String methodName, Class<? extends GarRecord> recordClass) {
 
         // Получаем компоненты record
         RecordComponent[] components = recordClass.getRecordComponents();

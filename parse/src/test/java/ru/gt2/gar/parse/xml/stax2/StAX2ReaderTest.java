@@ -18,7 +18,7 @@ import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Stax2ReaderTest {
+public class StAX2ReaderTest {
     @Test
     public void testReadWithStax2() throws Exception {
         XMLInputFactory2 xmlInputFactory = new WstxInputFactory();
