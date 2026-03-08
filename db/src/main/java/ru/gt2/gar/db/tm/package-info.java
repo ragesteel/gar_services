@@ -1,3 +1,3 @@
-/// JDBC Record Mapper, альтернатива jdbcClient'у из мира Spring Framework,
+/// Table Mapping, запросы + альтернатива jdbcClient'у из мира Spring Framework,
 /// которая должна быть быстрей из кодогенерации, вместо использования рефлексии.
-package ru.gt2.gar.db.jrm;
+package ru.gt2.gar.db.tm;

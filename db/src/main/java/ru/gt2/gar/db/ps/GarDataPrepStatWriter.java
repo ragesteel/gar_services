@@ -3,7 +3,7 @@ package ru.gt2.gar.db.ps;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.gt2.gar.db.GarDataWriter;
-import ru.gt2.gar.db.jrm.AddressObjectTypeJm;
+import ru.gt2.gar.db.tm.AddressObjectTypeTM;
 import ru.gt2.gar.domain.AddressObjectType;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Component
 public class GarDataPrepStatWriter implements GarDataWriter {
     private final DataSource dataSource;
-    private final AddressObjectTypeJm addressObjectTypeJm = new AddressObjectTypeJm();
+    private final AddressObjectTypeTM addressObjectTypeTM = new AddressObjectTypeTM();
 
     // TODO Сразу передавать Map<? extends Number, ? extends GarRecord>, чтобы не строить этот массив внутри
     @Override
@@ -38,19 +38,18 @@ public class GarDataPrepStatWriter implements GarDataWriter {
     }
 
     private void writeAddressObjectTypes(List<AddressObjectType> entities) {
-        GeneratedSQL generatedSQL = SQLQueries.get(GarType.ADDR_OBJ_TYPES);
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement selectStatement = connection.prepareStatement(generatedSQL.selectIdIn());
-             PreparedStatement insertStatement = connection.prepareStatement(generatedSQL.insertSQL())) {
+             PreparedStatement selectStatement = connection.prepareStatement(addressObjectTypeTM.getSelectSQL());
+             PreparedStatement insertStatement = connection.prepareStatement(addressObjectTypeTM.getInsertSQL())) {
 
             // Получаем список существующих записей
             Map<Integer, AddressObjectType> existingEntities = new HashMap<>();
-            selectStatement.setArray(1, connection.createArrayOf(generatedSQL.idColumnType(),
-                    entities.stream().map(addressObjectTypeJm.primaryKey()).toArray()));
+            selectStatement.setArray(1, connection.createArrayOf(addressObjectTypeTM.getIdColumnType(),
+                    entities.stream().map(addressObjectTypeTM.getPrimaryKey()).toArray()));
             try (ResultSet resultSet = selectStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    AddressObjectType existingEntity = addressObjectTypeJm.read(resultSet);
-                    existingEntities.put(addressObjectTypeJm.primaryKey().apply(existingEntity), existingEntity);
+                    AddressObjectType existingEntity = addressObjectTypeTM.read(resultSet);
+                    existingEntities.put(addressObjectTypeTM.getPrimaryKey().apply(existingEntity), existingEntity);
                 }
             }
 
@@ -59,7 +58,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
             boolean updateNeeded = false;
             List<AddressObjectType> entitiesToInsert = new ArrayList<>();
             for (AddressObjectType entity : entities) {
-                Integer primaryKey = addressObjectTypeJm.primaryKey().apply(entity);
+                Integer primaryKey = addressObjectTypeTM.getPrimaryKey().apply(entity);
                 AddressObjectType existingEntity = existingEntities.get(primaryKey);
                 if (null == existingEntity) {
                     entitiesToInsert.add(entity);
@@ -75,7 +74,7 @@ public class GarDataPrepStatWriter implements GarDataWriter {
             if (!entitiesToInsert.isEmpty()) {
                 // Сохраняем новые записи
                 for (AddressObjectType entity : entitiesToInsert) {
-                    addressObjectTypeJm.write(entity, insertStatement);
+                    addressObjectTypeTM.write(entity, insertStatement);
                     insertStatement.addBatch();
                 }
 
