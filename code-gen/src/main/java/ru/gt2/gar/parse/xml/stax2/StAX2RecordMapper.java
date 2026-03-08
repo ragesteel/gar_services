@@ -7,6 +7,7 @@ import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
+import jakarta.annotation.Nullable;
 import org.jspecify.annotations.NonNull;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
@@ -18,6 +19,9 @@ import java.io.IOException;
 import java.lang.reflect.RecordComponent;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.palantir.javapoet.MethodSpec.constructorBuilder;
 
@@ -30,9 +34,11 @@ public class StAX2RecordMapper {
     private static final ClassName GAR_TYPE = ClassName.get(GarType.class);
     private static final ClassName XML_STREAM_PROCESSOR = ClassName.get("ru.gt2.gar.parse.xml", "XMLStreamProcessor");
     private static final ClassName STAX2_STREAM_READER_PROCESSOR = ClassName.get("ru.gt2.gar.parse.xml.stax2", "StAX2StreamReaderProcessor");
-    private static final ClassName FUNCTION = ClassName.get("java.util.function", "Function");
-    private static final ClassName STREAM = ClassName.get("java.util.stream", "Stream");
-    private static final ClassName COLLECTORS = ClassName.get("java.util.stream", "Collectors");
+    private static final ClassName FUNCTION = ClassName.get(Function.class);
+    private static final ClassName STREAM = ClassName.get(Stream.class);
+    private static final ClassName COLLECTORS = ClassName.get(Collectors.class);
+    private static final ClassName XML_INPUT_STREAM2 = ClassName.get("org.codehaus.stax2", "XMLInputFactory2");
+
     private static final TypeName MAP_GAR_PROCESSOR = ParameterizedTypeName.get(
             ClassName.get("java.util", "Map"), GAR_TYPE, STAX2_STREAM_READER_PROCESSOR);
 
@@ -56,6 +62,7 @@ public class StAX2RecordMapper {
         MethodSpec.Builder processorsMethod = MethodSpec.methodBuilder("createProcessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(MAP_GAR_PROCESSOR)
+                .addParameter(XML_INPUT_STREAM2, "xmlInputStream2")
                 .addParameter(int.class, "batchSize")
                 .addCode(CodeBlock.builder()
                         .add("return $T.of(\n", STREAM)
@@ -68,7 +75,7 @@ public class StAX2RecordMapper {
 
             processorsMethod
                     .addCode(first ? "        " : ",\n        ")
-                    .addCode("new $T($T.$L, batchSize, $T::$L)",
+                    .addCode("new $T($T.$L, xmlInputStream2, batchSize, $T::$L)",
                             STAX2_STREAM_READER_PROCESSOR,
                             GAR_TYPE,
                             value.name(),
@@ -115,7 +122,7 @@ public class StAX2RecordMapper {
             String attrName = rc.getName().toUpperCase(); // По умолчанию: ID → "ID"
             Class<?> type = rc.getType();
 
-            boolean nullable = rc.isAnnotationPresent(jakarta.annotation.Nullable.class);
+            boolean nullable = rc.isAnnotationPresent(Nullable.class);
             String readCode = "get"
                     + (nullable ? "Nullable" : "")
                     + switch (type.getSimpleName()) {

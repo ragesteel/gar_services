@@ -9,6 +9,6 @@ public class StAX2ProcessorsTest {
 
     @Test
     public void allGarTypes() {
-        assertEquals(GarType.values().length, new StAX2Processors(1).size());
+        assertEquals(GarType.values().length, new StAX2Processors(1, null).size());
     }
 }

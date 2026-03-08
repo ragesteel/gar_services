@@ -1,6 +1,5 @@
 package ru.gt2.gar.parse.xml.stax2;
 
-import com.ctc.wstx.stax.WstxInputFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
@@ -23,12 +22,10 @@ public class StAX2StreamReaderIterator extends AbstractRecordListIterator {
 
     private boolean expectOuter = true;
 
-    public StAX2StreamReaderIterator(GarType garType, int batchSize, InputStream inputStream,
-                                     GarRecordCreator<?> mapper) throws XMLStreamException {
+    public StAX2StreamReaderIterator(GarType garType, XMLInputFactory2 xmlInputFactory, int batchSize,
+                                     InputStream inputStream, GarRecordCreator<?> mapper) throws XMLStreamException {
         super(garType, batchSize);
         this.mapper = requireNonNull(mapper);
-
-        XMLInputFactory2 xmlInputFactory = new WstxInputFactory();
 
         xsr = (XMLStreamReader2) xmlInputFactory.createXMLStreamReader(inputStream);
         tar = new TypedAttrReader(xsr);
