@@ -1,4 +1,5 @@
-// Сгенерировано автоматически, с помощью StAX2RecordMapper
+// АВТОМАТИЧЕСКИ СГЕНЕРИРОВАННЫЙ ФАЙЛ
+// Вам следует изменить класс гененратора (StAX2RecordMapper) вместо ручного редактирования!
 package ru.gt2.gar.parse.xml.stax2;
 
 import org.codehaus.stax2.XMLInputFactory2;
@@ -28,18 +29,24 @@ import ru.gt2.gar.domain.RoomType;
 import ru.gt2.gar.domain.Stead;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 
+import javax.annotation.processing.Generated;
 import javax.xml.stream.XMLStreamException;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Generated(
+        value = "ru.gt2.gar.parse.xml.stax2.StAX2RecordMapper",
+        date = "2026-03-09T17:46:51.1188048+03:00"
+)
 public class GeneratedRecordCreators {
     private GeneratedRecordCreators() {
     }
 
     @NonNull
-    private static AddressObject createAddressObject(TypedAttrReader tar) throws XMLStreamException {
+    private static AddressObject createAddressObject(TypedAttrReader tar) throws
+            XMLStreamException {
         return new AddressObject(
                 tar.getLong("ID"),
                 tar.getLong("OBJECTID"),
@@ -106,7 +113,8 @@ public class GeneratedRecordCreators {
     }
 
     @NonNull
-    private static ApartmentType createApartmentType(TypedAttrReader tar) throws XMLStreamException {
+    private static ApartmentType createApartmentType(TypedAttrReader tar) throws
+            XMLStreamException {
         return new ApartmentType(
                 tar.getInt("ID"),
                 tar.getString("NAME"),
@@ -156,7 +164,8 @@ public class GeneratedRecordCreators {
     }
 
     @NonNull
-    private static ChangeHistory createChangeHistory(TypedAttrReader tar) throws XMLStreamException {
+    private static ChangeHistory createChangeHistory(TypedAttrReader tar) throws
+            XMLStreamException {
         return new ChangeHistory(
                 tar.getLong("CHANGEID"),
                 tar.getLong("OBJECTID"),
@@ -267,7 +276,8 @@ public class GeneratedRecordCreators {
     }
 
     @NonNull
-    private static OperationType createOperationType(TypedAttrReader tar) throws XMLStreamException {
+    private static OperationType createOperationType(TypedAttrReader tar) throws
+            XMLStreamException {
         return new OperationType(
                 tar.getInt("ID"),
                 tar.getString("NAME"),

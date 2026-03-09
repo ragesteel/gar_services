@@ -12,6 +12,7 @@ import org.jspecify.annotations.NonNull;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.IntAsBoolean;
+import ru.gt2.gar.gen.GenHelper;
 
 import javax.lang.model.element.Modifier;
 import javax.xml.stream.XMLStreamException;
@@ -94,9 +95,7 @@ public class StAX2RecordMapper {
 
         classBuilder.addMethod(processorsMethod.build());
 
-        JavaFile javaFile = JavaFile.builder(TARGET_CLASS.packageName(), classBuilder.build())
-                .addFileComment("Сгенерировано автоматически, с помощью $T", getClass())
-                .build();
+        JavaFile javaFile = GenHelper.createJavaFile(getClass(), TARGET_CLASS.packageName(), classBuilder);
 
         // Вывод в stdout (можно перенаправить в файл)
         javaFile.writeTo(System.out);
