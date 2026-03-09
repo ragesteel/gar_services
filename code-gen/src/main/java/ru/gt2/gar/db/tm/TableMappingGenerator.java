@@ -7,7 +7,6 @@ import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
-import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
 import com.palantir.javapoet.WildcardTypeName;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,6 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static java.util.stream.Collectors.joining;
 
 @RequiredArgsConstructor
 public class TableMappingGenerator {
@@ -81,7 +78,7 @@ public class TableMappingGenerator {
                 CodeBlock.of(simpleName + "::id"));
 
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
-                .superclass(ParameterizedTypeName.get(ABSTRACT_TABLE_MAPPING, domainClass, TypeName.INT))
+                .superclass(ParameterizedTypeName.get(ABSTRACT_TABLE_MAPPING, domainClass, ClassName.get(Integer.class)))
                 .addModifiers(Modifier.PUBLIC)
                 .addJavadoc("Сгенерировано автоматически. Не редактировать.\n")
                 .addMethod(MethodSpec.constructorBuilder()
@@ -90,9 +87,9 @@ public class TableMappingGenerator {
                         .build());
 
         // write(source, ps)
-        MethodSpec writeMethod = generateWriteMethod(garType, domainClass, table);
+        MethodSpec writeMethod = generateWriteMethod(garType, domainClass, schema);
         // read(rs)
-        MethodSpec readMethod = generateReadMethod(garType, domainClass, table);
+        MethodSpec readMethod = generateReadMethod(garType, domainClass, schema);
 
         return classBuilder
                 .addMethod(writeMethod)
@@ -100,82 +97,21 @@ public class TableMappingGenerator {
                 .build();
     }
 
-    // TODO #9 Выделить генерацию методов записи и чтения в отдельные классы
-    // которые implements TableVisitor для создания кода
-    private MethodSpec generateWriteMethod(GarType garType, ClassName domainClass, DatabaseSchema.Table table) {
-        return MethodSpec.methodBuilder("write")
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class)
-                .addParameter(domainClass, "source")
-                .addParameter(PREPARED_STATEMENT, "ps")
-                .addException(SQL_EXCEPTION)
-                .addCode(generateWriteBody(table))
-                .build();
+    private MethodSpec generateWriteMethod(GarType garType, ClassName domainClass, DatabaseSchema schema) {
+        WriteMethodGenerator writerGen = new WriteMethodGenerator(garType.recordClass.getSimpleName());
+        schema.visitTable(garType, writerGen); // предполагается, что Table implements Acceptable<TableVisitor>
+        return writerGen.generate();
     }
 
-    private CodeBlock generateWriteBody(DatabaseSchema.Table table) {
-        CodeBlock.Builder block = CodeBlock.builder();
-        int index = 1;
-        for (DatabaseSchema.Column col : table.columns) {
-            String getter = "source." + col.propertyName + "()";
-            if (col.type.equals("DATE")) {
-                block.add("ps.setObject($L, $L, $T.$L);\n", index++, getter, JDBC_TYPE, "DATE");
-            } else if (col.type.equals("BOOLEAN")) {
-                block.add("ps.setBoolean($L, $L);\n", index++, getter);
-            } else if (col.type.equals("INTEGER")) {
-                block.add("ps.setInt($L, $L);\n", index++, getter);
-            } else {
-                block.add("ps.setString($L, $L);\n", index++, getter);
-            }
-        }
-        return block.build();
-    }
-
-    private MethodSpec generateReadMethod(GarType garType, ClassName domainClass, DatabaseSchema.Table table) {
-        MethodSpec.Builder method = MethodSpec.methodBuilder("read")
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
-                .returns(domainClass)
-                .addParameter(RESULT_SET, "rs")
-                .addException(SQL_EXCEPTION);
-
-        CodeBlock.Builder block = CodeBlock.builder();
-        block.add("$T id = rs.getInt(1);\n", int.class);
-
-        int index = 2;
-        for (DatabaseSchema.Column col : table.columns.subList(1, table.columns.size())) {
-            String typeName;
-            CodeBlock value;
-            if (col.type.equals("DATE")) {
-                typeName = "LocalDate";
-                value = CodeBlock.of("rs.getObject($L, $T.class)", index++, LOCAL_DATE);
-            } else if (col.type.equals("BOOLEAN")) {
-                typeName = "boolean";
-                value = CodeBlock.of("rs.getBoolean($L)", index++);
-            } else if (col.type.equals("INTEGER")) {
-                typeName = "int";
-                value = CodeBlock.of("rs.getInt($L)", index++);
-            } else {
-                typeName = "String";
-                value = CodeBlock.of("rs.getString($L)", index++);
-            }
-            block.add("$T $L = $L;\n", ClassName.get("java.lang", typeName), col.propertyName, value);
-        }
-
-        // Вызов конструктора record
-        String args = table.columns.stream()
-                .map(c -> c.propertyName)
-                .collect(joining(", "));
-        block.add("return new $T($L);\n", domainClass, args);
-
-        method.addCode(block.build());
-        return method.build();
+    private MethodSpec generateReadMethod(GarType garType, ClassName domainClass, DatabaseSchema schema) {
+        ReadMethodGenerator readerGen = new ReadMethodGenerator(garType.recordClass.getSimpleName());
+        schema.visitTable(garType, readerGen);
+        return readerGen.generate();
     }
 
     private TypeSpec generateMappingsClass() {
         ClassName garType = ClassName.get(GarType.class);
-        ClassName tableMapping = ParameterizedTypeName.get(TABLE_MAPPING,
+        ParameterizedTypeName tableMapping = ParameterizedTypeName.get(TABLE_MAPPING,
                 WildcardTypeName.supertypeOf(Object.class),
                 WildcardTypeName.supertypeOf(Object.class));
 
@@ -183,7 +119,7 @@ public class TableMappingGenerator {
                 .add("$T.<$T, $T>builder()\n", ImmutableMap.class, garType, tableMapping);
 
         for (GarType gt : GarType.values()) {
-            String tmClassName = gt.getDomainClass().getSimpleName() + "TM";
+            String tmClassName = gt.recordClass.getSimpleName() + "TM";
             mapInit.add("    .put($T.$L, new $T())\n",
                     garType, gt.name(),
                     ClassName.get("ru.gt2.gar.db.tm", tmClassName));
