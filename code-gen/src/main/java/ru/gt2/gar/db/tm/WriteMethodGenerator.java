@@ -5,6 +5,7 @@ import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
 import ru.gt2.gar.db.schema.TableVisitor;
 
+import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,15 +34,20 @@ public class WriteMethodGenerator implements TableVisitor {
         if (type.startsWith("VARCHAR(")) {
             type = "VARCHAR";
         }
+        List<Object> args = List.of(parameterIndex++, getter, JDBCType.class);
+        if (!"DATE".equals(type)) {
+            args = args.subList(0, 2);
+        }
+
         CodeBlock statement = CodeBlock.of("ps.set" + switch (type) {
             case "BIGINT" -> "Long($L, $L";
-            case "DATE" -> "Object($L, $L, JDBCType.DATE";
+            case "DATE" -> "Object($L, $L, $T.DATE";
             case "BOOLEAN" -> "Boolean($L, $L";
             case "INT" -> "Int($L, $L";
             case "VARCHAR" -> "String($L, $L";
             case "UUID" -> "Object($L, $L";
             default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
-        } + ");\n", parameterIndex++, getter);
+        } + ");\n", args.toArray());
         setterStatements.add(statement);
     }
 

@@ -34,26 +34,30 @@ public class ReadMethodGenerator implements TableVisitor {
         String propertyName = toPropertyName(columnName);
         propertyNames.add(propertyName);
 
-        String typeName;
-        CodeBlock value;
-        switch (type) {
-            case "DATE":
-                typeName = "LocalDate";
-                value = CodeBlock.of("rs.getObject($L, LocalDate.class)", columnIndex++);
-                break;
-            case "BOOLEAN":
-                typeName = "boolean";
-                value = CodeBlock.of("rs.getBoolean($L)", columnIndex++);
-                break;
-            case "INTEGER":
-                typeName = "int";
-                value = CodeBlock.of("rs.getInt($L)", columnIndex++);
-                break;
-            default:
-                typeName = "String";
-                value = CodeBlock.of("rs.getString($L)", columnIndex++);
-                break;
+        if (type.startsWith("VARCHAR(")) {
+            type = "VARCHAR";
         }
+
+        // TODO #9 Смотреть ещё и на nullable!
+        String typeName = switch (type) {
+            case "BIGINT" -> "long";
+            case "DATE" -> "LocalDate";
+            case "BOOLEAN" -> "boolean";
+            case "INT" -> "int";
+            case "VARCHAR" -> "String";
+            case "UUID" -> "UUID";
+            default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
+        };
+
+        CodeBlock value = CodeBlock.of("rs.get" + switch (type) {
+            case "BIGINT" -> "Long($L";
+            case "DATE" -> "Object($L, LocalDate.class";
+            case "BOOLEAN" -> "Boolean($L";
+            case "INT" -> "Int($L";
+            case "VARCHAR" -> "String($L";
+            case "UUID" -> "Object($L";
+            default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
+        } + ")", columnIndex++);
         variables.add(new VariableDecl(typeName, propertyName, value));
     }
 
