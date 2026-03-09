@@ -31,9 +31,6 @@ public class WriteMethodGenerator implements TableVisitor {
     @Override
     public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         String getter = "source." + toPropertyName(columnName) + "()";
-        if (type.startsWith("VARCHAR(")) {
-            type = "VARCHAR";
-        }
         List<Object> args = List.of(parameterIndex++, getter, JDBCType.class);
         if (!"DATE".equals(type)) {
             args = args.subList(0, 2);
@@ -44,7 +41,7 @@ public class WriteMethodGenerator implements TableVisitor {
             case "DATE" -> "Object($L, $L, $T.DATE";
             case "BOOLEAN" -> "Boolean($L, $L";
             case "INT" -> "Int($L, $L";
-            case "VARCHAR" -> "String($L, $L";
+            case String s when s.startsWith("VARCHAR(") -> "String($L, $L";
             case "UUID" -> "Object($L, $L";
             default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
         } + ");\n", args.toArray());

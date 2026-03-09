@@ -44,7 +44,7 @@ public class ReadMethodGenerator implements TableVisitor {
             case "DATE" -> "LocalDate";
             case "BOOLEAN" -> "boolean";
             case "INT" -> "int";
-            case "VARCHAR" -> "String";
+            case String s when s.startsWith("VARCHAR(") -> "String";
             case "UUID" -> "UUID";
             default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
         };
@@ -54,7 +54,7 @@ public class ReadMethodGenerator implements TableVisitor {
             case "DATE" -> "Object($L, LocalDate.class";
             case "BOOLEAN" -> "Boolean($L";
             case "INT" -> "Int($L";
-            case "VARCHAR" -> "String($L";
+            case String s when s.startsWith("VARCHAR(") -> "String($L";
             case "UUID" -> "Object($L";
             default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
         } + ")", columnIndex++);
