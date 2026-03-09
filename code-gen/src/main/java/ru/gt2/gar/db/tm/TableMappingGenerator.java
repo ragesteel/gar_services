@@ -4,12 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
-import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeSpec;
 import com.palantir.javapoet.WildcardTypeName;
-import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.sql.QueriesGenerator;
@@ -18,20 +16,14 @@ import ru.gt2.gar.gen.GenHelper;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-@RequiredArgsConstructor
 public class TableMappingGenerator {
     private static final String TARGET_PACKAGE = "ru.gt2.gar.db.tm";
     private static final ClassName ABSTRACT_TABLE_MAPPING = ClassName.get(TARGET_PACKAGE, "AbstractTableMapping");
     private static final ClassName TABLE_MAPPING = ClassName.get(TARGET_PACKAGE, "TableMapping");
 
-    private final Path outputDir;
-
     static void main() throws IOException {
-        Path output = Paths.get("gar-db", "src", "main", "java");
-        new TableMappingGenerator(output).generate();
+        new TableMappingGenerator().generate();
     }
 
     public void generate() throws IOException {
@@ -39,13 +31,11 @@ public class TableMappingGenerator {
 
         for (GarType garType : GarType.values()) {
             TypeSpec.Builder tmClass = generateTableMappingClass(garType, schema);
-            JavaFile javaFile = GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, tmClass);
-            javaFile.writeTo(outputDir);
+            GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, tmClass, "db");
         }
 
         // Генерируем TableMappings (фабрику)
-        JavaFile mappingsFile = GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, generateMappingsClass());
-        mappingsFile.writeTo(outputDir);
+        GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, generateMappingsClass(), "db");
     }
 
     private TypeSpec.Builder generateTableMappingClass(GarType garType, DatabaseSchema schema) {

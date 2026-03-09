@@ -5,6 +5,8 @@ import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.TypeSpec;
 
 import javax.annotation.processing.Generated;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,7 +18,8 @@ public class GenHelper {
                 .formatted(generator.getSimpleName());
     }
 
-    public static JavaFile createJavaFile(Class<?> generatorClass, String packageName, TypeSpec.Builder javaClassBuilder) {
+    public static void createJavaFile(Class<?> generatorClass, String packageName, TypeSpec.Builder javaClassBuilder,
+                                      String moduleName) throws IOException {
         String dateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         TypeSpec javaClass = javaClassBuilder.addAnnotation(
                         AnnotationSpec.builder(Generated.class)
@@ -24,9 +27,11 @@ public class GenHelper {
                                 .addMember("date", "$S", dateTime)
                                 .build())
                 .build();
-        return JavaFile.builder(packageName, javaClass)
+        JavaFile javaFile = JavaFile.builder(packageName, javaClass)
                 .indent("    ")
                 .addFileComment(createFileComment(generatorClass))
                 .build();
+
+        javaFile.writeTo(Paths.get(moduleName, "src", "main", "java"));
     }
 }

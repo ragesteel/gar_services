@@ -34,10 +34,6 @@ public class ReadMethodGenerator implements TableVisitor {
         String propertyName = toPropertyName(columnName);
         propertyNames.add(propertyName);
 
-        if (type.startsWith("VARCHAR(")) {
-            type = "VARCHAR";
-        }
-
         // TODO #9 Смотреть ещё и на nullable!
         String typeName = switch (type) {
             case "BIGINT" -> "long";

@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Function;
 
-/// TODO Реализации этого класса должны гененироваться code-gen + общий класс TableMappings
 public interface TableMapping<T extends GarRecord, K extends Number> {
     String getIdColumnType();
 

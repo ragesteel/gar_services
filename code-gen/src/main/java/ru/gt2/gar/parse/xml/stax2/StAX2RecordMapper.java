@@ -2,7 +2,6 @@ package ru.gt2.gar.parse.xml.stax2;
 
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
-import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
@@ -95,10 +94,7 @@ public class StAX2RecordMapper {
 
         classBuilder.addMethod(processorsMethod.build());
 
-        JavaFile javaFile = GenHelper.createJavaFile(getClass(), TARGET_CLASS.packageName(), classBuilder);
-
-        // Вывод в stdout (можно перенаправить в файл)
-        javaFile.writeTo(System.out);
+        GenHelper.createJavaFile(getClass(), TARGET_CLASS.packageName(), classBuilder, "parse");
     }
 
     private MethodSpec generateMapper(String methodName, Class<? extends GarRecord> recordClass) {

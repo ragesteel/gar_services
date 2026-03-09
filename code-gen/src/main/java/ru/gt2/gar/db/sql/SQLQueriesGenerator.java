@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
-import com.palantir.javapoet.JavaFile;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeSpec;
@@ -71,10 +70,7 @@ public class SQLQueriesGenerator {
 
         classBuilder.addMethod(getMethod);
 
-        // Генерируем файл
-        JavaFile javaFile = GenHelper.createJavaFile(getClass(), "ru.gt2.gar.db.ps", classBuilder);
-
-        javaFile.writeTo(System.out); // или в нужную директорию
+        GenHelper.createJavaFile(getClass(), "ru.gt2.gar.db.ps", classBuilder, "db");
     }
 
     // Экранируем кавычки и переводы строк для вставки в строковый литерал
