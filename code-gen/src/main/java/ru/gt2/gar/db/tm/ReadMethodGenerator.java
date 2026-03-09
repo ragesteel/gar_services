@@ -73,9 +73,9 @@ public class ReadMethodGenerator implements TableVisitor {
         // Объявление переменных: используем $T только для ссылочных типов, иначе $L
         for (VariableDecl var : variables) {
             if (isPrimitive(var.type)) {
-                body.add("final $L $L = $L;\n", var.type, var.name, var.value);
+                body.add("$L $L = $L;\n", var.type, var.name, var.value);
             } else {
-                body.add("final $T $L = $L;\n", ClassName.bestGuess(var.type), var.name, var.value);
+                body.add("$T $L = $L;\n", ClassName.bestGuess(var.type), var.name, var.value);
             }
         }
 

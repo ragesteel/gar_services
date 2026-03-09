@@ -82,7 +82,7 @@ public class TableMappingGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addJavadoc("Сгенерировано автоматически. Не редактировать.\n")
                 .addMethod(MethodSpec.constructorBuilder()
-                        .addStatement("super($N)", "superCall")
+                        .addModifiers(Modifier.PUBLIC)
                         .addCode(superCall)
                         .build());
 

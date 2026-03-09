@@ -30,21 +30,18 @@ public class WriteMethodGenerator implements TableVisitor {
     @Override
     public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         String getter = "source." + toPropertyName(columnName) + "()";
-        CodeBlock statement;
-        switch (type) {
-            case "DATE":
-                statement = CodeBlock.of("ps.setObject($L, $L, JDBCType.DATE);\n", parameterIndex++, getter);
-                break;
-            case "BOOLEAN":
-                statement = CodeBlock.of("ps.setBoolean($L, $L);\n", parameterIndex++, getter);
-                break;
-            case "INTEGER":
-                statement = CodeBlock.of("ps.setInt($L, $L);\n", parameterIndex++, getter);
-                break;
-            default:
-                statement = CodeBlock.of("ps.setString($L, $L);\n", parameterIndex++, getter);
-                break;
+        if (type.startsWith("VARCHAR(")) {
+            type = "VARCHAR";
         }
+        CodeBlock statement = CodeBlock.of("ps.set" + switch (type) {
+            case "BIGINT" -> "Long($L, $L";
+            case "DATE" -> "Object($L, $L, JDBCType.DATE";
+            case "BOOLEAN" -> "Boolean($L, $L";
+            case "INT" -> "Int($L, $L";
+            case "VARCHAR" -> "String($L, $L";
+            case "UUID" -> "Object($L, $L";
+            default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
+        } + ");\n", parameterIndex++, getter);
         setterStatements.add(statement);
     }
 
