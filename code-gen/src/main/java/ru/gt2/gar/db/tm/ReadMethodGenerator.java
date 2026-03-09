@@ -70,9 +70,13 @@ public class ReadMethodGenerator implements TableVisitor {
 
         CodeBlock.Builder body = CodeBlock.builder();
 
-        // Объявление переменных
+        // Объявление переменных: используем $T только для ссылочных типов, иначе $L
         for (VariableDecl var : variables) {
-            body.add("final $T $L = $L;\n", ClassName.get("java.lang", var.type), var.name, var.value);
+            if (isPrimitive(var.type)) {
+                body.add("final $L $L = $L;\n", var.type, var.name, var.value);
+            } else {
+                body.add("final $T $L = $L;\n", ClassName.bestGuess(var.type), var.name, var.value);
+            }
         }
 
         // Вызов конструктора record
@@ -81,6 +85,13 @@ public class ReadMethodGenerator implements TableVisitor {
 
         method.addCode(body.build());
         return method.build();
+    }
+
+    private boolean isPrimitive(String type) {
+        return switch (type) {
+            case "boolean", "int", "long", "short", "byte", "char", "float", "double" -> true;
+            default -> false;
+        };
     }
 
     private String toPropertyName(String columnName) {
