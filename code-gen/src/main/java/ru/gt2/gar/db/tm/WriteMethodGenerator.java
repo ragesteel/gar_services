@@ -22,12 +22,6 @@ public class WriteMethodGenerator implements MethodGenerator {
     }
 
     @Override
-    public void onStartTable(String tableName, String tableComment) {
-        parameterIndex = 1;
-        setterStatements.clear();
-    }
-
-    @Override
     public void onColumn(String columnName, String columnComment, String type, boolean primaryKey, boolean nullable) {
         String getter = "source." + toPropertyName(columnName) + "()";
         List<Object> args = List.of(parameterIndex++, getter, JDBCType.class);
@@ -46,9 +40,6 @@ public class WriteMethodGenerator implements MethodGenerator {
         } + ");\n", args.toArray());
         setterStatements.add(statement);
     }
-
-    @Override
-    public void onEndTable() {}
 
     @Override
     public MethodSpec generate() {

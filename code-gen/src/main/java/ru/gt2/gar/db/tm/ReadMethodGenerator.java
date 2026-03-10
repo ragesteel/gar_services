@@ -16,16 +16,10 @@ public class ReadMethodGenerator implements MethodGenerator {
     private int columnIndex = 1;
     private final List<String> propertyNames = new ArrayList<>();
     private final List<VariableDecl> variables = new ArrayList<>();
+    CodeBlock.Builder body = CodeBlock.builder();
 
     public ReadMethodGenerator(String domainClassName) {
         this.domainClassName = domainClassName;
-    }
-
-    @Override
-    public void onStartTable(String tableName, String tableComment) {
-        columnIndex = 1;
-        propertyNames.clear();
-        variables.clear();
     }
 
     @Override
@@ -57,9 +51,6 @@ public class ReadMethodGenerator implements MethodGenerator {
     }
 
     @Override
-    public void onEndTable() {}
-
-    @Override
     public MethodSpec generate() {
         MethodSpec.Builder method = MethodSpec.methodBuilder("read")
                 .addAnnotation(Override.class)
@@ -68,7 +59,6 @@ public class ReadMethodGenerator implements MethodGenerator {
                 .addParameter(ClassName.get(ResultSet.class), "rs")
                 .addException(ClassName.get(SQLException.class));
 
-        CodeBlock.Builder body = CodeBlock.builder();
 
         // Объявление переменных: используем $T только для ссылочных типов, иначе $L
         for (VariableDecl var : variables) {

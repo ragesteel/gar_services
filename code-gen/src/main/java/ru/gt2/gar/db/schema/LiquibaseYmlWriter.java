@@ -60,11 +60,6 @@ public class LiquibaseYmlWriter implements TableVisitor {
         print(12, "columns:");
     }
 
-    @Override
-    public void onEndTable() {
-        // nothing
-    }
-
     // https://docs.liquibase.com/reference-guide/change-types/column
     @Override
     public void onColumn(String name, String comment, String type, boolean primaryKey, boolean nullable) {
