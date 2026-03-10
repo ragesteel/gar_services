@@ -15,7 +15,6 @@ public class ReadMethodGenerator implements MethodGenerator {
     private final String domainClassName;
     private int columnIndex = 1;
     private final List<String> propertyNames = new ArrayList<>();
-    private final List<VariableDecl> variables = new ArrayList<>();
     CodeBlock.Builder body = CodeBlock.builder();
 
     public ReadMethodGenerator(String domainClassName) {
@@ -47,7 +46,13 @@ public class ReadMethodGenerator implements MethodGenerator {
             case "UUID" -> "Object($L";
             default -> throw new IllegalArgumentException("Unsupported SQL date type: " + type);
         } + ")", columnIndex++);
-        variables.add(new VariableDecl(typeName, propertyName, value));
+
+        // Объявление переменных: используем $T только для ссылочных типов, иначе $L
+        if (isPrimitive(typeName)) {
+            body.add("$L $L = $L;\n", typeName, propertyName, value);
+        } else {
+            body.add("$T $L = $L;\n", ClassName.bestGuess(typeName), propertyName, value);
+        }
     }
 
     @Override
@@ -60,14 +65,6 @@ public class ReadMethodGenerator implements MethodGenerator {
                 .addException(ClassName.get(SQLException.class));
 
 
-        // Объявление переменных: используем $T только для ссылочных типов, иначе $L
-        for (VariableDecl var : variables) {
-            if (isPrimitive(var.type)) {
-                body.add("$L $L = $L;\n", var.type, var.name, var.value);
-            } else {
-                body.add("$T $L = $L;\n", ClassName.bestGuess(var.type), var.name, var.value);
-            }
-        }
 
         // Вызов конструктора record
         String args = String.join(", ", propertyNames);
@@ -84,6 +81,7 @@ public class ReadMethodGenerator implements MethodGenerator {
         };
     }
 
+    // TODO Использовать нечто уже существующее
     private String toPropertyName(String columnName) {
         StringBuilder sb = new StringBuilder();
         boolean nextUpper = false;
@@ -98,17 +96,5 @@ public class ReadMethodGenerator implements MethodGenerator {
             }
         }
         return sb.toString();
-    }
-
-    private static class VariableDecl {
-        final String type;
-        final String name;
-        final CodeBlock value;
-
-        VariableDecl(String type, String name, CodeBlock value) {
-            this.type = type;
-            this.name = name;
-            this.value = value;
-        }
     }
 }
