@@ -30,6 +30,7 @@ public class GenHelper {
         JavaFile javaFile = JavaFile.builder(packageName, javaClass)
                 .indent("    ")
                 .addFileComment(createFileComment(generatorClass))
+                .skipJavaLangImports(true)
                 .build();
 
         javaFile.writeTo(Paths.get(moduleName, "src", "main", "java"));

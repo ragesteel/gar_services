@@ -66,7 +66,7 @@ public class TableMappingGenerator {
         return classBuilder
                 .addMethod(generateMethod(garType, simpleName, schema, WriteMethodGenerator::new))
 //                .addMethod(generateMethod(garType, simpleName, schema, ReadMethodGenerator::new));
-                .addMethod(generateMethod(garType.recordClass, ReadMethodRCGenerator::new));
+                .addMethod(generateMethod(garType.recordClass, ReadMethodGenerator::new));
     }
 
     private MethodSpec generateMethod(GarType garType, String simpleName, DatabaseSchema schema,
