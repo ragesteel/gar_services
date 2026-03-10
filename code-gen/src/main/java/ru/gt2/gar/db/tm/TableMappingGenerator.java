@@ -64,16 +64,8 @@ public class TableMappingGenerator {
                         .build());
 
         return classBuilder
-                .addMethod(generateMethod(garType, simpleName, schema, WriteMethodGenerator::new))
-//                .addMethod(generateMethod(garType, simpleName, schema, ReadMethodGenerator::new));
+                .addMethod(generateMethod(garType.recordClass, WriteMethodGenerator::new))
                 .addMethod(generateMethod(garType.recordClass, ReadMethodGenerator::new));
-    }
-
-    private MethodSpec generateMethod(GarType garType, String simpleName, DatabaseSchema schema,
-                                      Function<String, MethodGenerator> generatorSupplier) {
-        MethodGenerator generator = generatorSupplier.apply(simpleName);
-        schema.visitTable(garType, generator);
-        return generator.generate();
     }
 
     private MethodSpec generateMethod(Class<? extends GarRecord>  recordClass, Function<ClassName, RecordMethodGenerator> generatorSupplier) {

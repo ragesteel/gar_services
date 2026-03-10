@@ -8,11 +8,11 @@ import java.sql.SQLException;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-public class AbstractJdbcMethodGenerator {
+public abstract class AbstractJdbcMethodGenerator implements RecordMethodGenerator {
     protected final MethodSpec.Builder builder;
 
     public AbstractJdbcMethodGenerator(String methodName) {
-        this.builder = MethodSpec.methodBuilder("read")
+        this.builder = MethodSpec.methodBuilder(methodName)
                 .addAnnotation(Override.class)
                 .addModifiers(PUBLIC)
                 .addException(SQLException.class);
@@ -48,5 +48,10 @@ public class AbstractJdbcMethodGenerator {
             return "String";
         }
         return "Object";
+    }
+
+    @Override
+    public MethodSpec generate() {
+        return builder.build();
     }
 }

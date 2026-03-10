@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReadMethodGenerator extends AbstractJdbcMethodGenerator implements RecordMethodGenerator {
+public class ReadMethodGenerator extends AbstractJdbcMethodGenerator {
     private final ClassName recordClassName;
     private final List<String> paramNames = new ArrayList<>();
 
@@ -42,6 +42,6 @@ public class ReadMethodGenerator extends AbstractJdbcMethodGenerator implements 
     public MethodSpec generate() {
         String args = String.join(", ", paramNames);
         builder.addStatement("return new $T($L)", recordClassName, args);
-        return builder.build();
+        return super.generate();
     }
 }
