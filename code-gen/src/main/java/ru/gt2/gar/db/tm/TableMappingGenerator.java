@@ -11,11 +11,13 @@ import com.palantir.javapoet.WildcardTypeName;
 import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.sql.QueriesGenerator;
+import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.gen.GenHelper;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
+import java.lang.reflect.RecordComponent;
 import java.util.function.Function;
 
 public class TableMappingGenerator {
@@ -63,13 +65,22 @@ public class TableMappingGenerator {
 
         return classBuilder
                 .addMethod(generateMethod(garType, simpleName, schema, WriteMethodGenerator::new))
-                .addMethod(generateMethod(garType, simpleName, schema, ReadMethodGenerator::new));
+//                .addMethod(generateMethod(garType, simpleName, schema, ReadMethodGenerator::new));
+                .addMethod(generateMethod(garType.recordClass, ReadMethodRCGenerator::new));
     }
 
     private MethodSpec generateMethod(GarType garType, String simpleName, DatabaseSchema schema,
                                       Function<String, MethodGenerator> generatorSupplier) {
         MethodGenerator generator = generatorSupplier.apply(simpleName);
         schema.visitTable(garType, generator);
+        return generator.generate();
+    }
+
+    private MethodSpec generateMethod(Class<? extends GarRecord>  recordClass, Function<ClassName, RecordMethodGenerator> generatorSupplier) {
+        RecordMethodGenerator generator = generatorSupplier.apply(ClassName.get(recordClass));
+        for (RecordComponent recordComponent : recordClass.getRecordComponents()) {
+            generator.onRecordComponent(recordComponent);
+        }
         return generator.generate();
     }
 
