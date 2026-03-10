@@ -3,7 +3,6 @@ package ru.gt2.gar.db.tm;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
-import ru.gt2.gar.db.schema.TableVisitor;
 
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
@@ -13,7 +12,7 @@ import java.util.List;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-public class WriteMethodGenerator implements TableVisitor {
+public class WriteMethodGenerator implements MethodGenerator {
     private final String domainClassName;
     private int parameterIndex = 1;
     private final List<CodeBlock> setterStatements = new ArrayList<>();
@@ -51,6 +50,7 @@ public class WriteMethodGenerator implements TableVisitor {
     @Override
     public void onEndTable() {}
 
+    @Override
     public MethodSpec generate() {
         MethodSpec.Builder method = MethodSpec.methodBuilder("write")
                 .addAnnotation(Override.class)

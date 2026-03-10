@@ -3,7 +3,6 @@ package ru.gt2.gar.db.tm;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
-import ru.gt2.gar.db.schema.TableVisitor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +11,7 @@ import java.util.List;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-public class ReadMethodGenerator implements TableVisitor {
+public class ReadMethodGenerator implements MethodGenerator {
     private final String domainClassName;
     private int columnIndex = 1;
     private final List<String> propertyNames = new ArrayList<>();
@@ -60,6 +59,7 @@ public class ReadMethodGenerator implements TableVisitor {
     @Override
     public void onEndTable() {}
 
+    @Override
     public MethodSpec generate() {
         MethodSpec.Builder method = MethodSpec.methodBuilder("read")
                 .addAnnotation(Override.class)

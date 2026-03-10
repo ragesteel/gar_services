@@ -16,6 +16,7 @@ import ru.gt2.gar.gen.GenHelper;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
+import java.util.function.Function;
 
 public class TableMappingGenerator {
     private static final String TARGET_PACKAGE = "ru.gt2.gar.db.tm";
@@ -45,45 +46,31 @@ public class TableMappingGenerator {
 
         QueriesGenerator queryGen = new QueriesGenerator(garType, schema);
 
-        // SELECT
-        String selectQuery = queryGen.getSelect();
-
-        // INSERT
-        String insertQuery = queryGen.getInsert();
-
-        // Super constructor call
-        CodeBlock superCall = CodeBlock.of("super($S, $L, $L,\n    $L)",
+        CodeBlock superCall = CodeBlock.of("super($S, $L, $L,\n    $L);",
                 "INT",
-                multiline(selectQuery),
-                multiline(insertQuery),
-                CodeBlock.of(simpleName + "::id"));
+                multiline(queryGen.getSelect()),
+                multiline(queryGen.getInsert()),
+                CodeBlock.of(simpleName + "::id")); // TODO заменить на имя первичного ключа
 
+        ClassName primaryKeyType = ClassName.get(Integer.class); // TODO заменить на класс первичного ключа
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
-                .superclass(ParameterizedTypeName.get(ABSTRACT_TABLE_MAPPING, domainClass, ClassName.get(Integer.class)))
+                .superclass(ParameterizedTypeName.get(ABSTRACT_TABLE_MAPPING, domainClass, primaryKeyType))
                 .addModifiers(Modifier.PUBLIC)
                 .addMethod(MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
                         .addCode(superCall)
                         .build());
 
-        MethodSpec writeMethod = generateWriteMethod(garType, schema);
-        MethodSpec readMethod = generateReadMethod(garType, schema);
-
         return classBuilder
-                .addMethod(writeMethod)
-                .addMethod(readMethod);
+                .addMethod(generateMethod(garType, simpleName, schema, WriteMethodGenerator::new))
+                .addMethod(generateMethod(garType, simpleName, schema, ReadMethodGenerator::new));
     }
 
-    private MethodSpec generateWriteMethod(GarType garType, DatabaseSchema schema) {
-        WriteMethodGenerator writerGen = new WriteMethodGenerator(garType.recordClass.getSimpleName());
-        schema.visitTable(garType, writerGen); // предполагается, что Table implements Acceptable<TableVisitor>
-        return writerGen.generate();
-    }
-
-    private MethodSpec generateReadMethod(GarType garType, DatabaseSchema schema) {
-        ReadMethodGenerator readerGen = new ReadMethodGenerator(garType.recordClass.getSimpleName());
-        schema.visitTable(garType, readerGen);
-        return readerGen.generate();
+    private MethodSpec generateMethod(GarType garType, String simpleName, DatabaseSchema schema,
+                                      Function<String, MethodGenerator> generatorSupplier) {
+        MethodGenerator generator = generatorSupplier.apply(simpleName);
+        schema.visitTable(garType, generator);
+        return generator.generate();
     }
 
     private TypeSpec.Builder generateMappingsClass() {
@@ -128,5 +115,4 @@ public class TableMappingGenerator {
     private CodeBlock multiline(String sql) {
         return CodeBlock.of("\"\"\"\n    $L\"\"\"", sql);
     }
-
 }
