@@ -64,8 +64,6 @@ public class ReadMethodGenerator implements MethodGenerator {
                 .addParameter(ClassName.get(ResultSet.class), "rs")
                 .addException(ClassName.get(SQLException.class));
 
-
-
         // Вызов конструктора record
         String args = String.join(", ", propertyNames);
         body.add("return new $T($L);\n", ClassName.get("", domainClassName), args);
