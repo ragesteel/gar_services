@@ -31,12 +31,22 @@ public class GarDataPrepStatWriter implements GarDataWriter {
             return;
         }
 
-        switch (garType) {
-            case ADDR_OBJ_TYPES -> writeAddressObjectTypes((List<AddressObjectType>) entities);
-            default -> throw new IllegalStateException("Unexpected value: " + garType);
+//        switch (garType) {
+//            case ADDR_OBJ_TYPES -> writeAddressObjectTypes((List<AddressObjectType>) entities);
+//            default -> throw new IllegalStateException("Unexpected value: " + garType);
+//        }
+        writeRecords(garType, (List<GarRecord>) entities);
+    }
+
+    private void writeRecords(GarType garType, List<GarRecord> entities) {
+        try (Connection connection = dataSource.getConnection()) {
+            new GarDataJDBCWriter(garType, connection).write(entities);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to write entities", e);
         }
     }
 
+    // TODO Удалить неиспользованный метод
     private void writeAddressObjectTypes(List<AddressObjectType> entities) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement selectStatement = connection.prepareStatement(addressObjectTypeTM.getSelectSQL());

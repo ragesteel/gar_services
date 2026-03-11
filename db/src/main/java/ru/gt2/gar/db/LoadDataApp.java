@@ -41,7 +41,8 @@ public class LoadDataApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // TODO Сначала сделать загрузку для одной таблицы, из корневых справочников
+        // TODO Вынести методы параллельной обработки в отдельные классы, чтобы тут тоже можно было их применить
+        // TODO Вынести обработку архива, чтобы можно было не только архив, но и просто каталог с файлами обрабатывать
         try (GarZipFile garZipFile = new GarZipFile(zipFile)) {
             garZipFile.getVersion().ifPresentOrElse(
                     v -> log.info("Gar file date: {} ({} day(s) ago), version: {}",
@@ -51,6 +52,7 @@ public class LoadDataApp implements CommandLineRunner {
             garZipFile.streamEntries().forEach(garEntry -> processGarEntry(garEntry, garZipFile));
         }
             // TODO Потом — всех корневых справочников
+        // TODO потом одного региона - 87, чукотского автономного округа, как одного из регионов с наименьшим количеством данных
         // TODO И наконец — всех данных по регионам
         // TODO Сохранение данных вынести в отдельный класс с интерфейсом
         //  и реализациями на BatchPreparedStatement, UNNEST и COPY

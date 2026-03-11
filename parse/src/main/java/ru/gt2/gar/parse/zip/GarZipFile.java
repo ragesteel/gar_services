@@ -28,6 +28,9 @@ import static ru.gt2.gar.parse.zip.GarVersion.DATE_FORMATTER;
 /**
  * Чтение данных из архива.
  */
+// TODO Сделать так, чтобы можно было не только читать из архива, но и просто из каталога.
+// TODO Видимо следует назвать как-то вроде GarZipData и преместить в domain-проект, хотя может и нет, раз для обработки всё равно нужен разбор XML, так что пусть тут полежит.
+// Видимо стоит сделать interface GarData и две реализации GarDataZip и GarDataFiles
 @Slf4j
 public class GarZipFile implements Closeable {
     private static final String VERSION = "version.txt";
