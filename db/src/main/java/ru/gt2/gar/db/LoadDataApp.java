@@ -59,8 +59,8 @@ public class LoadDataApp implements CommandLineRunner {
     }
 
     private void processGarEntry(GarEntry garEntry, GarZipFile garZipFile) {
-        GarType garType = GarType.ADDR_OBJ_TYPES;
-        if (!garType.name().equals(garEntry.name())) {
+        GarType garType = GarType.valueOf(garEntry.name());
+        if (!GarType.ROOT_REFS.contains(garType)) {
             return;
         }
 
@@ -68,6 +68,7 @@ public class LoadDataApp implements CommandLineRunner {
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
                     entitySizeLimit);
+            log.info("Processed: {}", garEntry);
         } catch (Exception e) {
             throw new RuntimeException("Unable to process " + garEntry, e);
         }

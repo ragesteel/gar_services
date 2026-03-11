@@ -16,20 +16,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+/// Писатель в базу пачек данных
 @RequiredArgsConstructor
 public class GarDataJDBCWriter {
     private final GarType garType;
     private final Connection connection;
-//    private final PreparedStatement selectStatement;
-//    private final PreparedStatement insertStatement;
 
-    public void write(List<GarRecord> entities) throws SQLException {
-        TableMapping<GarRecord, Number> tableMapping = TableMappings.get(garType);
+    public void write(List<? extends GarRecord> entities) throws SQLException {
+        TableMapping<GarRecord, ? extends Number> tableMapping = TableMappings.get(garType);
         try (PreparedStatement selectStatement = connection.prepareStatement(tableMapping.getSelectSQL());
              PreparedStatement insertStatement = connection.prepareStatement(tableMapping.getInsertSQL())) {
 
             // Получаем список существующих записей
-            Function<GarRecord, Number> primaryKey = tableMapping.getPrimaryKey();
+            Function<GarRecord, ? extends Number> primaryKey = tableMapping.getPrimaryKey();
             Map<Number, GarRecord> existingEntities = new HashMap<>();
             selectStatement.setArray(1, connection.createArrayOf(tableMapping.getIdColumnType(),
                     entities.stream()

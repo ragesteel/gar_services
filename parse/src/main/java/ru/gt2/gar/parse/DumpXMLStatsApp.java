@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -158,38 +159,9 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     }
 
     private void simpleProcess(GarZipFile garZipFile) {
-        List.of(
-                // Сначала разбираем файлы из корневого каталога — справочники по сути;
-                GarType.APARTMENT_TYPES,
-                GarType.ADDR_OBJ_TYPES,
-                GarType.OPERATION_TYPES,
-                GarType.HOUSE_TYPES,
-                GarType.NORMATIVE_DOCS_KINDS,
-                GarType.NORMATIVE_DOCS_TYPES,
-                GarType.OBJECT_LEVELS,
-                GarType.PARAM_TYPES,
-                GarType.HOUSE_TYPES,
-
-                // Потом идём уже по регионам
-                GarType.ADDR_OBJ,
-                GarType.ADDR_OBJ_DIVISION,
-                GarType.ADM_HIERARCHY,
-                GarType.APARTMENTS,
-                GarType.CARPLACES,
-                GarType.CHANGE_HISTORY,
-                GarType.HOUSES,
-                GarType.MUN_HIERARCHY,
-                GarType.NORMATIVE_DOCS,
-                GarType.ADDR_OBJ_PARAMS,
-                GarType.HOUSES_PARAMS,
-                GarType.APARTMENTS_PARAMS,
-                GarType.ROOMS_PARAMS,
-                GarType.STEADS_PARAMS,
-                GarType.CARPLACES_PARAMS,
-                GarType.REESTR_OBJECTS,
-                GarType.ROOMS,
-                GarType.STEADS
-        ).forEach(gt -> process(garZipFile, xmlProcessors.get(gt)));
+        List<GarType> rootFirst = new ArrayList<>(GarType.ROOT_REFS);
+        rootFirst.addAll(GarType.REGIONAL_DATA);
+        rootFirst.forEach(gt -> process(garZipFile, xmlProcessors.get(gt)));
     }
 
     private void process(GarZipFile garZipFile, XMLStreamProcessor processor) {

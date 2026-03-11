@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.OptionalInt;
 import java.util.Set;
 
@@ -68,5 +69,12 @@ public class GarTypeTest {
             assertEquals(expectedTagName.inner.toUpperCase(), garType.elementName);
         }
         assertTrue(allGarTypes.isEmpty(), () -> "Not definition for types: " + allGarTypes);
+    }
+    @Test
+    public void testSets() {
+        HashSet<GarType> allSets = new HashSet<>();
+        allSets.addAll(GarType.ROOT_REFS);
+        allSets.addAll(GarType.REGIONAL_DATA);
+        assertEquals(GarType.values().length, allSets.size());
     }
 }

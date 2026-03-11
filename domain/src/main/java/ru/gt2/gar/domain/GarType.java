@@ -1,6 +1,7 @@
 package ru.gt2.gar.domain;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.RecordComponent;
@@ -55,6 +56,40 @@ public enum GarType {
     public final String outerTagName;
 
     public final String elementName;
+    
+    /// Корневые справочники
+    public static final ImmutableSet<GarType> ROOT_REFS = ImmutableSet.of(
+            GarType.ADDHOUSE_TYPES,
+            GarType.ADDR_OBJ_TYPES,
+            GarType.APARTMENT_TYPES,
+            GarType.HOUSE_TYPES,
+            GarType.NORMATIVE_DOCS_KINDS,
+            GarType.NORMATIVE_DOCS_TYPES,
+            GarType.OBJECT_LEVELS,
+            GarType.OPERATION_TYPES,
+            GarType.PARAM_TYPES,
+            GarType.ROOM_TYPES);
+
+    /// Региональные данные
+    public static final ImmutableSet<GarType> REGIONAL_DATA = ImmutableSet.of(
+            GarType.ADDR_OBJ,
+            GarType.ADDR_OBJ_DIVISION,
+            GarType.ADM_HIERARCHY,
+            GarType.APARTMENTS,
+            GarType.CARPLACES,
+            GarType.CHANGE_HISTORY,
+            GarType.HOUSES,
+            GarType.MUN_HIERARCHY,
+            GarType.NORMATIVE_DOCS,
+            GarType.ADDR_OBJ_PARAMS,
+            GarType.HOUSES_PARAMS,
+            GarType.APARTMENTS_PARAMS,
+            GarType.ROOMS_PARAMS,
+            GarType.STEADS_PARAMS,
+            GarType.CARPLACES_PARAMS,
+            GarType.REESTR_OBJECTS,
+            GarType.ROOMS,
+            GarType.STEADS);
 
     GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;
