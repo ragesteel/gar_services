@@ -1,8 +1,6 @@
 package ru.gt2.gar.gen;
 
-import com.palantir.javapoet.AnnotationSpec;
-import com.palantir.javapoet.JavaFile;
-import com.palantir.javapoet.TypeSpec;
+import com.palantir.javapoet.*;
 
 import javax.annotation.processing.Generated;
 import java.io.IOException;
@@ -34,5 +32,20 @@ public class GenHelper {
                 .build();
 
         javaFile.writeTo(Paths.get(moduleName, "src", "main", "java"));
+    }
+
+    public static TypeName getJavaTypeName(Class<?> type) {
+        if (!type.isPrimitive()) {
+            return ClassName.get(type);
+        }
+        if (type == int.class) {
+            return TypeName.INT;
+        } else if (type == long.class) {
+            return TypeName.LONG;
+        } else if (type == boolean.class) {
+            return TypeName.BOOLEAN;
+        }
+        throw new IllegalArgumentException(
+                "Processing for primitive type is not yet implemented" + type);
     }
 }

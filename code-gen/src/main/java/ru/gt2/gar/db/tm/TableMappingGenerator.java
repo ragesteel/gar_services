@@ -1,13 +1,8 @@
 package ru.gt2.gar.db.tm;
 
 import com.google.common.collect.ImmutableMap;
-import com.palantir.javapoet.ClassName;
-import com.palantir.javapoet.CodeBlock;
-import com.palantir.javapoet.FieldSpec;
-import com.palantir.javapoet.MethodSpec;
-import com.palantir.javapoet.ParameterizedTypeName;
-import com.palantir.javapoet.TypeSpec;
-import com.palantir.javapoet.WildcardTypeName;
+import com.google.common.primitives.Primitives;
+import com.palantir.javapoet.*;
 import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.db.sql.QueriesGenerator;
@@ -48,13 +43,16 @@ public class TableMappingGenerator {
 
         QueriesGenerator queryGen = new QueriesGenerator(garType, schema);
 
+        RecordComponent firstRecordComponent = garType.recordClass.getRecordComponents()[0];
+
         CodeBlock superCall = CodeBlock.of("super($S, $L, $L,\n    $L);",
-                "INT",
+                getIdColumnType(queryGen),
                 multiline(queryGen.getSelect()),
                 multiline(queryGen.getInsert()),
-                CodeBlock.of(simpleName + "::id")); // TODO заменить на имя первичного ключа
+                CodeBlock.of(simpleName + "::$L", firstRecordComponent.getName()));
 
-        ClassName primaryKeyType = ClassName.get(Integer.class); // TODO заменить на класс первичного ключа
+
+        ClassName primaryKeyType = ClassName.get(Primitives.wrap(firstRecordComponent.getType()));
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
                 .superclass(ParameterizedTypeName.get(ABSTRACT_TABLE_MAPPING, domainClass, primaryKeyType))
                 .addModifiers(Modifier.PUBLIC)
@@ -68,19 +66,19 @@ public class TableMappingGenerator {
                 .addMethod(generateMethod(garType.recordClass, ReadMethodGenerator::new));
     }
 
+    private static String getIdColumnType(QueriesGenerator queryGen) {
+        return queryGen.getIdColumnType();
+    }
+
     private MethodSpec generateMethod(Class<? extends GarRecord>  recordClass, Function<ClassName, RecordMethodGenerator> generatorSupplier) {
-        RecordMethodGenerator generator = generatorSupplier.apply(ClassName.get(recordClass));
-        for (RecordComponent recordComponent : recordClass.getRecordComponents()) {
-            generator.onRecordComponent(recordComponent);
-        }
-        return generator.generate();
+        return generatorSupplier.apply(ClassName.get(recordClass))
+                .generate(recordClass);
     }
 
     private TypeSpec.Builder generateMappingsClass() {
         ClassName garType = ClassName.get(GarType.class);
         ParameterizedTypeName tableMapping = ParameterizedTypeName.get(TABLE_MAPPING,
-                WildcardTypeName.supertypeOf(Object.class),
-                WildcardTypeName.supertypeOf(Object.class));
+                ClassName.get(GarRecord.class), ClassName.get(Number.class));
 
         CodeBlock.Builder mapInit = CodeBlock.builder()
                 .add("$T.<$T, $T>builder()\n", ImmutableMap.class, garType, tableMapping);

@@ -1,16 +1,12 @@
 package ru.gt2.gar.db.tm;
 
 import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.TypeName;
 
-import java.lang.reflect.RecordComponent;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
-    private Integer parameterIndex = 1;
-
     public WriteMethodGenerator(ClassName domainClassName) {
         super("write");
         builder.returns(void.class)
@@ -19,18 +15,17 @@ public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
     }
 
     @Override
-    public void onRecordComponent(RecordComponent rc) {
-        String paramName = rc.getName();
-        Class<?> type = rc.getType();
-        String setterCall;
-        List<Object> args = new ArrayList<>(List.of(parameterIndex++, "source." + paramName + "()"));
-        if (type == java.time.LocalDate.class) {
-            args.add(JDBCType.class);
-            setterCall = "Object($L, $L, $T.DATE)";
+    public void onRecordComponent(String name, Class<?> type, TypeName typeName, String typeSuffix, Integer index) {
+        // Да, тут можно избавить от дублирования части строк, но тогда сильно пострадает читаемость
+        if (typeSuffix.isEmpty()) {
+            String jdbcType = getJdbcType(type);
+            if (jdbcType.isEmpty()) {
+                builder.addStatement("ps.setObject($L, source.$L())", index, name);
+            } else {
+                builder.addStatement("ps.setObject($L, source.$L(), $T.$L)", index, name, JDBCType.class, jdbcType);
+            }
         } else {
-            setterCall = getJdbcTypeSuffix(type) + "($L, $L)";
+            builder.addStatement("ps.set$L($L, source.$L())", typeSuffix, index, name);
         }
-
-        builder.addStatement("ps.set" + setterCall, args.toArray());
     }
 }

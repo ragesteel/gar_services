@@ -1,10 +1,12 @@
 package ru.gt2.gar.db.tm;
 
-import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.MethodSpec;
-import com.palantir.javapoet.TypeName;
+import ru.gt2.gar.domain.GarRecord;
+import ru.gt2.gar.gen.GenHelper;
 
+import java.lang.reflect.RecordComponent;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -18,40 +20,41 @@ public abstract class AbstractJdbcMethodGenerator implements RecordMethodGenerat
                 .addException(SQLException.class);
     }
 
-    public static TypeName getJavaTypeName(Class<?> type) {
-        if (!type.isPrimitive()) {
-            return ClassName.get(type);
-        }
-        if (type == int.class) {
-            return TypeName.INT;
-        } else if (type == long.class) {
-            return TypeName.LONG;
-        } else if (type == boolean.class) {
-            return TypeName.BOOLEAN;
-        }
-        throw new IllegalArgumentException(
-                "Processing for primitive type is not yet implemented" + type);
-    }
-
     public static String getJdbcTypeSuffix(Class<?> type) {
-        if (type == int.class || type == Integer.class) {
+        if (int.class.equals(type)) {
             return "Int";
-        } else if (type == long.class || type == Long.class) {
+        } else if (long.class.equals(type)) {
             return "Long";
-        } else if (type == double.class || type == Double.class) {
-            return "Double";
-        } else if (type == float.class || type == Float.class) {
-            return "Float";
-        } else if (type == boolean.class || type == Boolean.class) {
+        } else if (boolean.class.equals(type)) {
             return "Boolean";
-        } else if (type == String.class) {
+        } else if (String.class.equals(type)) {
             return "String";
         }
-        return "Object";
+        return "";
+    }
+
+    public static String getJdbcType(Class<?> type) {
+        if (LocalDate.class.equals(type)) {
+            return "DATE";
+        } else if (Long.class.equals(type)) {
+            return "BIGINT";
+        } else if (Integer.class.equals(type)) {
+            return "INTEGER";
+        }
+        return "";
     }
 
     @Override
-    public MethodSpec generate() {
+    public MethodSpec generate(Class<? extends GarRecord> recordClass) {
+        int index = 1;
+        for (RecordComponent recordComponent : recordClass.getRecordComponents()) {
+            Class<?> type = recordComponent.getType();
+            onRecordComponent(recordComponent.getName(), type, GenHelper.getJavaTypeName(type), getJdbcTypeSuffix(type), index++);
+        }
+        return generate();
+    }
+
+    protected MethodSpec generate() {
         return builder.build();
     }
 }
