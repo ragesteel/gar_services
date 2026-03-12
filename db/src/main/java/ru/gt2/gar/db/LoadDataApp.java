@@ -51,8 +51,6 @@ public class LoadDataApp implements CommandLineRunner {
 
             garZipFile.streamEntries().forEach(garEntry -> processGarEntry(garEntry, garZipFile));
         }
-            // TODO Потом — всех корневых справочников
-        // TODO потом одного региона - 87, чукотского автономного округа, как одного из регионов с наименьшим количеством данных
         // TODO И наконец — всех данных по регионам
         // TODO Сохранение данных вынести в отдельный класс с интерфейсом
         //  и реализациями на BatchPreparedStatement, UNNEST и COPY
@@ -60,10 +58,13 @@ public class LoadDataApp implements CommandLineRunner {
 
     private void processGarEntry(GarEntry garEntry, GarZipFile garZipFile) {
         GarType garType = GarType.valueOf(garEntry.name());
-        if (!GarType.ROOT_REFS.contains(garType)) {
+        if (!(GarType.ROOT_REFS.contains(garType) || garEntry.dir().stream().anyMatch(s -> s.equals("87")))) {
             return;
         }
-
+        // TODO Вернуть обработку PARAMS, сейчас там проблема из-за колонки с именем value
+//        if (GarType.ADDR_OBJ_PARAMS.equals(garType) | GarType.STEADS_PARAMS.equals(garType) | GarType.HOUSES_PARAMS.equals(garType) | GarType.APARTMENTS_PARAMS.equals(garType) | GarType.ROOMS_PARAMS.equals(garType)) {
+//            return;
+//        }
         XMLStreamProcessor processor = xmlProcessors.get(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),

@@ -17,7 +17,7 @@ public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
     }
 
     @Override
-    public void onRecordComponent(String name, Class<?> type, TypeName typeName, String typeSuffix, Integer index) {
+    public void onRecordComponent(String name, Class<?> type, TypeName typeName, String typeSuffix, Integer index, boolean nullable) {
         // Да, тут можно избавить от дублирования части строк, но тогда сильно пострадает читаемость
         if (typeSuffix.isEmpty()) {
             String jdbcType = getJdbcType(type);
@@ -28,9 +28,27 @@ public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
             }
         } else {
             if (LocalDate.class.equals(type)) {
-                builder.addStatement("ps.set$L($L, $T.valueOf(source.$L()))", typeSuffix, index, Date.class, name);
+                if (nullable) {
+                    /*
+                    builder.addStatement("""
+                        $T $L = source.$L();
+                        if ($L == null) {
+                            ps.setNull($L, $T.DATE);
+                        } else {
+                            ps.setDate($L, $T.valueOf($L));
+                        }""", type, name, name, name, index, Types.class, index, Date.class, name);
+                    */
+                    builder.addStatement("""
+                        $T $L = source.$L(); ps.setDate($L, ($L == null) ? null : $T.valueOf($L))""",
+                            type, name, name, index, name, Date.class, name);
+                    // Ещё можно так сделать, но не факт что оно получается более читаемо:
+                    // ps.setDate(11, Optional.ofNullable(source.accDate()).map(Date::valueOf).orElse(null));
+                } else {
+                    builder.addStatement("ps.setDate($L, $T.valueOf(source.$L()))", index, Date.class, name);
+                }
             } else {
                 builder.addStatement("ps.set$L($L, source.$L())", typeSuffix, index, name);
+
             }
         }
     }

@@ -54,7 +54,7 @@ public class QueriesGenerator implements TableVisitor {
         if (quoteColumnNames) {
             builder.append('"');
         }
-        builder.append(columnName);
+        builder.append(columnName.toUpperCase());
         if (quoteColumnNames) {
             builder.append('"');
         }

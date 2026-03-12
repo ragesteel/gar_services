@@ -32,7 +32,7 @@ public class DatabaseSchema {
     }
 
     public boolean quoteColumnNames() {
-        return false;
+        return true;
     }
 
     private String getType(RecordComponent rc) {

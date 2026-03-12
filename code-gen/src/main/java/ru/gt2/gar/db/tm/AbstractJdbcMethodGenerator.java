@@ -1,6 +1,7 @@
 package ru.gt2.gar.db.tm;
 
 import com.palantir.javapoet.MethodSpec;
+import jakarta.annotation.Nullable;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.gen.GenHelper;
 
@@ -51,7 +52,9 @@ public abstract class AbstractJdbcMethodGenerator implements RecordMethodGenerat
         int index = 1;
         for (RecordComponent recordComponent : recordClass.getRecordComponents()) {
             Class<?> type = recordComponent.getType();
-            onRecordComponent(recordComponent.getName(), type, GenHelper.getJavaTypeName(type), getJdbcTypeSuffix(type), index++);
+            onRecordComponent(recordComponent.getName(),
+                    type, GenHelper.getJavaTypeName(type), getJdbcTypeSuffix(type), index++,
+                    recordComponent.isAnnotationPresent(Nullable.class));
         }
         return generate();
     }
