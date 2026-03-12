@@ -29,6 +29,8 @@ public abstract class AbstractJdbcMethodGenerator implements RecordMethodGenerat
             return "Boolean";
         } else if (String.class.equals(type)) {
             return "String";
+        } else if (LocalDate.class.equals(type)) {
+            return "Date";
         }
         return "";
     }

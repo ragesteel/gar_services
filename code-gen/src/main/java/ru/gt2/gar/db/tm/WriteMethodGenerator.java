@@ -3,8 +3,10 @@ package ru.gt2.gar.db.tm;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.TypeName;
 
+import java.sql.Date;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
 
 public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
     public WriteMethodGenerator(ClassName domainClassName) {
@@ -25,7 +27,11 @@ public class WriteMethodGenerator extends AbstractJdbcMethodGenerator {
                 builder.addStatement("ps.setObject($L, source.$L(), $T.$L)", index, name, JDBCType.class, jdbcType);
             }
         } else {
-            builder.addStatement("ps.set$L($L, source.$L())", typeSuffix, index, name);
+            if (LocalDate.class.equals(type)) {
+                builder.addStatement("ps.set$L($L, $T.valueOf(source.$L()))", typeSuffix, index, Date.class, name);
+            } else {
+                builder.addStatement("ps.set$L($L, source.$L())", typeSuffix, index, name);
+            }
         }
     }
 }
