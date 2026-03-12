@@ -24,13 +24,14 @@ public class GarDataJDBCWriter {
 
     public void write(List<? extends GarRecord> entities) throws SQLException {
         TableMapping<GarRecord, ? extends Number> tableMapping = TableMappings.get(garType);
-        try (PreparedStatement selectStatement = connection.prepareStatement(tableMapping.getSelectSQL());
-             PreparedStatement insertStatement = connection.prepareStatement(tableMapping.getInsertSQL())) {
+        GeneratedSQL generatedSQL = SQLQueries.get(garType);
+        try (PreparedStatement selectStatement = connection.prepareStatement(generatedSQL.selectIdIn());
+             PreparedStatement insertStatement = connection.prepareStatement(generatedSQL.insertSQL())) {
 
             // Получаем список существующих записей
             Function<GarRecord, ? extends Number> primaryKey = tableMapping.getPrimaryKey();
             Map<Number, GarRecord> existingEntities = new HashMap<>();
-            selectStatement.setArray(1, connection.createArrayOf(tableMapping.getIdColumnType(),
+            selectStatement.setArray(1, connection.createArrayOf(generatedSQL.idColumnType(),
                     entities.stream()
                             .map(primaryKey)
                             .toArray()));

@@ -20,6 +20,8 @@ import ru.gt2.gar.gen.GenHelper;
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.RecordComponent;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 public class TableMappingGenerator {
@@ -34,7 +36,11 @@ public class TableMappingGenerator {
     public void generate() throws IOException {
         DatabaseSchema schema = new DatabaseSchema(NamingStrategy.LOWER_UNDERSCORE);
 
+        Set<Class<? extends GarRecord>> generated = new HashSet<>();
         for (GarType garType : GarType.values()) {
+            if (!generated.add(garType.recordClass)) {
+                continue;
+            }
             TypeSpec.Builder tmClass = generateTableMappingClass(garType, schema);
             GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, tmClass, "db");
         }
@@ -48,7 +54,6 @@ public class TableMappingGenerator {
         ClassName domainClass = ClassName.get(garType.recordClass);
 
         QueriesGenerator queryGen = new QueriesGenerator(garType, schema);
-
         RecordComponent firstRecordComponent = garType.recordClass.getRecordComponents()[0];
 
         CodeBlock superCall = CodeBlock.of("super($S, $L, $L,\n    $L);",

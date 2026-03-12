@@ -8,6 +8,7 @@ import ru.gt2.gar.domain.GarType;
 public class QueriesGenerator implements TableVisitor {
     private final StringBuilder selectBuilder = new StringBuilder();
     private final StringBuilder insertBuilder = new StringBuilder();
+    private final boolean quoteColumnNames;
 
     private String tableName = "";
     private String idColumnName = "";
@@ -22,6 +23,7 @@ public class QueriesGenerator implements TableVisitor {
     private int columnCount = 0;
 
     public QueriesGenerator(GarType garType, DatabaseSchema schema) {
+        quoteColumnNames = schema.quoteColumnNames();
         schema.visitTable(garType, this);
     }
 
@@ -38,14 +40,24 @@ public class QueriesGenerator implements TableVisitor {
             insertBuilder.append(", ");
             selectBuilder.append(", ");
         }
-        insertBuilder.append('"').append(columnName).append('"');
-        selectBuilder.append('"').append(columnName).append('"');
+        appendColumnName(insertBuilder, columnName);
+        appendColumnName(selectBuilder, columnName);
 
         if (primaryKey) {
             idColumnName = columnName;
             idColumnType = type;
         }
         columnCount++;
+    }
+
+    private void appendColumnName(StringBuilder builder, String columnName) {
+        if (quoteColumnNames) {
+            builder.append('"');
+        }
+        builder.append(columnName);
+        if (quoteColumnNames) {
+            builder.append('"');
+        }
     }
 
     @Override
@@ -60,8 +72,9 @@ public class QueriesGenerator implements TableVisitor {
         insertBuilder.append(")");
 
         selectBuilder.append(" FROM ").append(tableName)
-                .append(" WHERE ").append('"').append(idColumnName).append('"')
-                .append(" = ANY(?)");
+                .append(" WHERE ");
+        appendColumnName(selectBuilder, idColumnName);
+        selectBuilder.append(" = ANY(?)");
 
         select = selectBuilder.toString();
         insert = insertBuilder.toString();

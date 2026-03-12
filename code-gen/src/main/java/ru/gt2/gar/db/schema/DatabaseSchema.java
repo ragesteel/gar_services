@@ -31,6 +31,10 @@ public class DatabaseSchema {
         tableVisitor.onEndTable();
     }
 
+    public boolean quoteColumnNames() {
+        return false;
+    }
+
     private String getType(RecordComponent rc) {
         Class<?> type = rc.getType();
         if (long.class.equals(type) || Long.class.equals(type)) {
