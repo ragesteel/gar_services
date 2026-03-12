@@ -1,22 +1,22 @@
+// АВТОМАТИЧЕСКИ СГЕНЕРИРОВАННЫЙ ФАЙЛ
+// Вам следует изменить класс гененратора (TableMappingGenerator) вместо ручного редактирования!
 package ru.gt2.gar.db.tm;
-
-import ru.gt2.gar.domain.AddressObjectType;
 
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import javax.annotation.processing.Generated;
+import ru.gt2.gar.domain.AddressObjectType;
 
-/// Пример того, как я хочу видеть реализацию класса
-/// Везде используем порядковые номера
-/// Да, тут из-за использования LocalDate нужен JDBC 4.2+
+@Generated(
+        value = "ru.gt2.gar.db.tm.TableMappingGenerator",
+        date = "2026-03-12T07:30:24.1448902+03:00"
+)
 public class AddressObjectTypeTM extends AbstractTableMapping<AddressObjectType, Integer> {
     public AddressObjectTypeTM() {
-        super("INT", """
-            SELECT "id", "level", "short_name", "name", "desc", "update_date", "start_date", "end_date", "is_active" FROM addr_obj_types WHERE "id" = ANY(?)""", """
-            INSERT INTO addr_obj_types ("id", "level", "short_name", "name", "desc", "update_date", "start_date", "end_date", "is_active") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            AddressObjectType::id);
+        super(AddressObjectType::id);
     }
 
     @Override

@@ -12,7 +12,6 @@ import com.palantir.javapoet.TypeVariableName;
 import com.palantir.javapoet.WildcardTypeName;
 import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.db.schema.DatabaseSchema;
-import ru.gt2.gar.db.sql.QueriesGenerator;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.gen.GenHelper;
@@ -41,27 +40,21 @@ public class TableMappingGenerator {
             if (!generated.add(garType.recordClass)) {
                 continue;
             }
-            TypeSpec.Builder tmClass = generateTableMappingClass(garType, schema);
+            TypeSpec.Builder tmClass = generateTableMappingClass(garType);
             GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, tmClass, "db");
         }
 
         GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, generateMappingsClass(), "db");
     }
 
-    private TypeSpec.Builder generateTableMappingClass(GarType garType, DatabaseSchema schema) {
+    private TypeSpec.Builder generateTableMappingClass(GarType garType) {
         String simpleName = garType.recordClass.getSimpleName();
         String className = simpleName + "TM";
         ClassName domainClass = ClassName.get(garType.recordClass);
 
-        QueriesGenerator queryGen = new QueriesGenerator(garType, schema);
         RecordComponent firstRecordComponent = garType.recordClass.getRecordComponents()[0];
 
-        CodeBlock superCall = CodeBlock.of("super($S, $L, $L,\n    $L);",
-                getIdColumnType(queryGen),
-                multiline(queryGen.getSelect()),
-                multiline(queryGen.getInsert()),
-                CodeBlock.of(simpleName + "::$L", firstRecordComponent.getName()));
-
+        CodeBlock superCall = CodeBlock.of("super($T::$L);", domainClass, firstRecordComponent.getName());
 
         ClassName primaryKeyType = ClassName.get(Primitives.wrap(firstRecordComponent.getType()));
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
@@ -75,10 +68,6 @@ public class TableMappingGenerator {
         return classBuilder
                 .addMethod(generateMethod(garType.recordClass, WriteMethodGenerator::new))
                 .addMethod(generateMethod(garType.recordClass, ReadMethodGenerator::new));
-    }
-
-    private static String getIdColumnType(QueriesGenerator queryGen) {
-        return queryGen.getIdColumnType();
     }
 
     private MethodSpec generateMethod(Class<? extends GarRecord>  recordClass, Function<ClassName, RecordMethodGenerator> generatorSupplier) {
@@ -129,9 +118,5 @@ public class TableMappingGenerator {
                 .addJavadoc("Фабрика TableMapping. Сгенерировано автоматически.\n")
                 .addField(mapField)
                 .addMethod(getMethod);
-    }
-
-    private CodeBlock multiline(String sql) {
-        return CodeBlock.of("\"\"\"\n    $L\"\"\"", sql);
     }
 }

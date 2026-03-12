@@ -8,15 +8,6 @@ import java.sql.SQLException;
 import java.util.function.Function;
 
 public interface TableMapping<T extends GarRecord, K extends Number> {
-    @Deprecated
-    String getIdColumnType();
-
-    @Deprecated
-    String getSelectSQL();
-
-    @Deprecated
-    String getInsertSQL();
-
     /// Вызов ps.set…(#, source.(get)) для установки значений
     void write(T source, PreparedStatement ps) throws SQLException;
 
