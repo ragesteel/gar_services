@@ -1,17 +1,18 @@
 package ru.gt2.gar.parse.consumer;
 
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class BoolFieldStat extends AbstractFieldStat {
     private int falseCount = 0;
     private int trueCount = 0;
 
     public BoolFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "bool");
     }
 
     private BoolFieldStat(String name, int falseCount, int trueCount) {
-        super(name);
+        super(name, "bool");
         this.falseCount = falseCount;
         this.trueCount = trueCount;
     }
@@ -26,8 +27,9 @@ public class BoolFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public String toString() {
-        return String.format("%s, bool, false: %d, true: %d", name, falseCount, trueCount);
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        formatter.format(", false: %,d, true: %,d", falseCount, trueCount);
     }
 
     @Override

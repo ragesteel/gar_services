@@ -4,21 +4,16 @@ import java.lang.reflect.RecordComponent;
 
 public class UuidFieldStat extends AbstractFieldStat {
     public UuidFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "uuid");
     }
 
     private UuidFieldStat(String name) {
-        super(name);
+        super(name, "uuid");
     }
 
     @Override
     public void acceptValue(Object value) {
         // nothing
-    }
-
-    @Override
-    public String toString() {
-        return name + ", uuid";
     }
 
     @Override

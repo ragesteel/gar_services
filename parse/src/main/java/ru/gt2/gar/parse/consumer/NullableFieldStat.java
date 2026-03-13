@@ -2,6 +2,8 @@ package ru.gt2.gar.parse.consumer;
 
 import ru.gt2.gar.domain.GarRecord;
 
+import java.util.Formatter;
+
 public class NullableFieldStat implements FieldStat {
     private final AbstractFieldStat fieldStat;
 
@@ -32,12 +34,13 @@ public class NullableFieldStat implements FieldStat {
     }
 
     @Override
-    public String toString() {
-        String result = fieldStat.toString();
+    public void format(Formatter formatter) {
+        fieldStat.format(formatter);
         if (0 == nullCount) {
-            return result + ", no nulls";
+            formatter.format(", no null values");
+        } else {
+            formatter.format(", %,d null value(s)", nullCount);
         }
-        return result + ", nulls = " + nullCount;
     }
 
     @Override

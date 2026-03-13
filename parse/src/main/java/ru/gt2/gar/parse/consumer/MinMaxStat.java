@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.util.Formatter;
+
 /**
  * Подсчёт и преобразование в строку минимального и максимального значения.
  *
@@ -34,17 +36,16 @@ public class MinMaxStat<T extends Comparable<T>> {
         }
     }
 
-    public StringBuilder addTo(StringBuilder sb, String eqPrefix, String rangePrefix) {
+    public void format(Formatter formatter, String equalsFormat, String rangeFormat) {
         if (!hasMinMax) {
-            return sb;
+            return;
         }
 
         if (min.compareTo(max) == 0) {
-            sb.append(eqPrefix).append(min);
+            formatter.format(equalsFormat, min);
         } else {
-            sb.append(rangePrefix).append(min).append(" … ").append(max);
+            formatter.format(rangeFormat, min, max);
         }
-        return sb;
     }
 
     public MinMaxStat<T> sum(MinMaxStat<T> other) {

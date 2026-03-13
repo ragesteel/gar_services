@@ -1,18 +1,19 @@
 package ru.gt2.gar.parse.consumer;
 
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class StringFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Integer> minMaxLen;
     private int emptyCount = 0;
 
     public StringFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "string");
         minMaxLen = new MinMaxStat<>();
     }
 
     private StringFieldStat(String name, MinMaxStat<Integer> minMaxLen, int emptyCount) {
-        super(name);
+        super(name, "string");
         this.minMaxLen = minMaxLen;
         this.emptyCount = emptyCount;
     }
@@ -28,14 +29,14 @@ public class StringFieldStat extends AbstractFieldStat {
         }
     }
 
+
     @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", string");
-        minMaxLen.addTo(resultBuilder, ", length=", ", length ");
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        minMaxLen.format(formatter, ", length = %,d", ", length %,d … %,d");
         if (emptyCount > 0) {
-            resultBuilder.append(", empty=").append(emptyCount);
+            formatter.format(", empty=%,d", emptyCount);
         }
-        return resultBuilder.toString();
     }
 
     @Override

@@ -1,17 +1,18 @@
 package ru.gt2.gar.parse.consumer;
 
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class LongFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Long> minMax;
 
     public LongFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "long");
         minMax = new MinMaxStat<>();
     }
 
     private LongFieldStat(String name, MinMaxStat<Long> minMax) {
-        super(name);
+        super(name, "long");
         this.minMax = minMax;
     }
 
@@ -21,9 +22,9 @@ public class LongFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", long");
-        return minMax.addTo(resultBuilder, " = ", ", ").toString();
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        minMax.format(formatter, " = %,d", ", %,d … %,d");
     }
 
     @Override

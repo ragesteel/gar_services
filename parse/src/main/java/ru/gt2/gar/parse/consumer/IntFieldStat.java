@@ -3,18 +3,19 @@ package ru.gt2.gar.parse.consumer;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class IntFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Integer> minMax;
 
     public IntFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "int");
         minMax = new MinMaxStat<>();
     }
 
     @VisibleForTesting
     protected IntFieldStat(String name, MinMaxStat<Integer> minMax) {
-        super(name);
+        super(name, "int");
         this.minMax = minMax;
     }
 
@@ -24,9 +25,9 @@ public class IntFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", int");
-        return minMax.addTo(resultBuilder, " = ", ", ").toString();
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        minMax.format(formatter, " = %,d", ", %,d … %,d");
     }
 
     @Override

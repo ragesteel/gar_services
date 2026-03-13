@@ -6,6 +6,7 @@ import ru.gt2.gar.domain.GarRecord;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public abstract class AbstractFieldStat implements FieldStat {
     @Getter
@@ -13,14 +14,18 @@ public abstract class AbstractFieldStat implements FieldStat {
 
     protected final Method accessor;
 
-    protected AbstractFieldStat(RecordComponent recordComponent) {
+    private final String typeName;
+
+    protected AbstractFieldStat(RecordComponent recordComponent, String typeName) {
         name = recordComponent.getName();
         accessor = recordComponent.getAccessor();
+        this.typeName = typeName;
     }
 
-    protected AbstractFieldStat(String name) {
+    protected AbstractFieldStat(String name, String typeName) {
         this.name = name;
         accessor = null;
+        this.typeName = typeName;
     }
 
     @Override
@@ -40,5 +45,10 @@ public abstract class AbstractFieldStat implements FieldStat {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Unable to get value of entity", e);
         }
+    }
+
+    @Override
+    public void format(Formatter formatter) {
+        formatter.format("%s: %s", name, typeName);
     }
 }

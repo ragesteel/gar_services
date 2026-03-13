@@ -3,17 +3,19 @@ package ru.gt2.gar.parse.consumer;
 import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
+import java.util.Formatter;
 
+// TODO попробовать сделать RangedFieldStat<T extends Comparable<T>> в качестве базы для Date, Int и Long
 public class DateFieldStat extends AbstractFieldStat {
     private final MinMaxStat<ChronoLocalDate> minMax;
 
     public DateFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        super(recordComponent, "date");
         minMax = new MinMaxStat<>();
     }
 
     private DateFieldStat(String name, MinMaxStat<ChronoLocalDate> minMax) {
-        super(name);
+        super(name, "date");
         this.minMax = minMax;
     }
 
@@ -23,9 +25,9 @@ public class DateFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", date");
-        return minMax.addTo(resultBuilder, " = ", ", ").toString();
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        minMax.format(formatter, " = %s", ", %s … %s");
     }
 
     @Override
