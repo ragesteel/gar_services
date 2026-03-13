@@ -1,7 +1,6 @@
 package ru.gt2.gar.db.schema;
 
 import jakarta.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
 import ru.gt2.gar.db.NamingStrategy;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
@@ -12,23 +11,37 @@ import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 public class DatabaseSchema {
     private final NamingStrategy namingStrategy;
 
+    public DatabaseSchema(NamingStrategy namingStrategy) {
+        this.namingStrategy = new ReplaceReservedWordsDecorator(namingStrategy);
+    }
+
     /// Обход таблицы и её колонок
-    public void visitTable(GarType garType, TableVisitor tableVisitor) {
+    public void createTable(GarType garType, TableVisitor tableVisitor) {
         Class<? extends GarRecord> recordClass = garType.recordClass;
-        tableVisitor.onStartTable(namingStrategy.getTableName(garType.name()), recordClass.getAnnotation(SchemaComment.class).value());
+        tableVisitor.onStartTable(getTableName(garType), recordClass.getAnnotation(SchemaComment.class).value());
         boolean primaryKey = true;
         for (RecordComponent rc : recordClass.getRecordComponents()) {
-            tableVisitor.onColumn(namingStrategy.getColumnName(rc.getName()), rc.getAnnotation(SchemaComment.class).value(), getType(rc),
+            tableVisitor.onColumn(getColumnName(rc), rc.getAnnotation(SchemaComment.class).value(), getType(rc),
                     primaryKey, rc.isAnnotationPresent(Nullable.class));
             primaryKey = false;
             // TODO добавить внешние ключи, но только после проверки на то,
             //  что они будут работать для текущего набора данных
         }
         tableVisitor.onEndTable();
+    }
+
+    public void renameColumn(GarType garType, TableVisitor tableVisitor) {
+        for (RecordComponent rc : garType.recordClass.getRecordComponents()) {
+            String name = rc.getName();
+            String replacement = ReplaceReservedWordsDecorator.REPLACEMENTS.get(name);
+            if (null == replacement) {
+                continue;
+            }
+            tableVisitor.onRenameColumn(getTableName(garType), name, replacement);
+        }
     }
 
     public boolean quoteColumnNames() {
@@ -52,5 +65,13 @@ public class DatabaseSchema {
         } else {
             throw new RuntimeException("Support for type " + type + " is not implemented!");
         }
+    }
+
+    private String getTableName(GarType garType) {
+        return namingStrategy.getTableName(garType.name());
+    }
+
+    private String getColumnName(RecordComponent rc) {
+        return namingStrategy.getColumnName(rc.getName());
     }
 }

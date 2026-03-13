@@ -7,7 +7,6 @@ import ru.gt2.gar.gen.GenHelper;
 
 import java.lang.reflect.RecordComponent;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -30,19 +29,6 @@ public abstract class AbstractJdbcMethodGenerator implements RecordMethodGenerat
             return "Boolean";
         } else if (String.class.equals(type)) {
             return "String";
-        } else if (LocalDate.class.equals(type)) {
-            return "Date";
-        }
-        return "";
-    }
-
-    public static String getJdbcType(Class<?> type) {
-        if (LocalDate.class.equals(type)) {
-            return "DATE";
-        } else if (Long.class.equals(type)) {
-            return "BIGINT";
-        } else if (Integer.class.equals(type)) {
-            return "INTEGER";
         }
         return "";
     }

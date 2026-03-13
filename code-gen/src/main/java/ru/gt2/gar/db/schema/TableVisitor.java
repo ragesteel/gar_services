@@ -8,4 +8,7 @@ public interface TableVisitor {
 
     default void onEndTable() {
     }
+
+    default void onRenameColumn(String tableName, String oldColumnName, String newColumnName) {
+    }
 }

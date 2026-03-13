@@ -4,9 +4,7 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.TypeName;
 
-import java.sql.Date;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,16 +25,7 @@ public class ReadMethodGenerator extends AbstractJdbcMethodGenerator {
         if (typeSuffix.isEmpty()) {
             builder.addStatement("$T $L = rs.getObject($L, $T.class)", typeName, name, index, typeName);
         } else {
-            if (LocalDate.class.equals(type)) {
-                if (nullable) {
-                    builder.addStatement("$T $LD = rs.getDate($L); $T $L = ($LD == null) ? null : $LD.toLocalDate()",
-                            Date.class, name, index, typeName, name, name, name);
-                } else {
-                    builder.addStatement("$T $L = rs.getDate($L).toLocalDate()", typeName, name, index);
-                }
-            } else {
-                builder.addStatement("$T $L = rs.get$L($L)", typeName, name, typeSuffix, index);
-            }
+            builder.addStatement("$T $L = rs.get$L($L)", typeName, name, typeSuffix, index);
         }
     }
 

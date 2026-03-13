@@ -1,0 +1,61 @@
+# AUTO GENERATED FILE
+# You should change source classes (GenerateRenameColumns(LiquibaseYmlWriter)) instead of manual editing!
+# Copy to src/main/resources/db/changelog/db.changelog-generated.yml
+# And add dependency on org.liquibase:liquibase-core to your build file
+databaseChangeLog:
+  - changeSet:
+      id: 2026-03-13_18-25
+      author: GenerateRenameColumns(LiquibaseYmlWriter)
+      changes:
+        - renameColumn:
+            tableName: addr_obj_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: apartment_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: house_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: operation_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: param_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: room_types
+            oldColumnName: desc
+            newColumnName: description
+        - renameColumn:
+            tableName: addr_obj_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: houses_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: apartments_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: rooms_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: steads_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: carplaces_params
+            oldColumnName: value
+            newColumnName: param_value
+        - renameColumn:
+            tableName: addhouse_types
+            oldColumnName: desc
+            newColumnName: description

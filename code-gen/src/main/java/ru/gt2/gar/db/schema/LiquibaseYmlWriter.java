@@ -73,4 +73,13 @@ public class LiquibaseYmlWriter implements TableVisitor {
         }
         print(20, "nullable: " + nullable);
     }
+
+    // https://docs.liquibase.com/reference-guide/change-types/renamecolumn
+    @Override
+    public void onRenameColumn(String tableName, String oldColumnName, String newColumnName) {
+        print(8, "- renameColumn:");
+        print(12, "tableName: " + tableName);
+        print(12, "oldColumnName: " + oldColumnName);
+        print(12, "newColumnName: " + newColumnName);
+    }
 }

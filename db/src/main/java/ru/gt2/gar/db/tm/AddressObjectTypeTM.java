@@ -2,17 +2,17 @@
 // Вам следует изменить класс гененратора (TableMappingGenerator) вместо ручного редактирования!
 package ru.gt2.gar.db.tm;
 
-import java.sql.JDBCType;
+import ru.gt2.gar.domain.AddressObjectType;
+
+import javax.annotation.processing.Generated;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import javax.annotation.processing.Generated;
-import ru.gt2.gar.domain.AddressObjectType;
 
 @Generated(
         value = "ru.gt2.gar.db.tm.TableMappingGenerator",
-        date = "2026-03-12T07:30:24.1448902+03:00"
+        date = "2026-03-13T18:35:21.0499425+03:00"
 )
 public class AddressObjectTypeTM extends AbstractTableMapping<AddressObjectType, Integer> {
     public AddressObjectTypeTM() {
@@ -26,9 +26,9 @@ public class AddressObjectTypeTM extends AbstractTableMapping<AddressObjectType,
         ps.setString(3, source.shortName());
         ps.setString(4, source.name());
         ps.setString(5, source.desc());
-        ps.setObject(6, source.updateDate(), JDBCType.DATE);
-        ps.setObject(7, source.startDate(), JDBCType.DATE);
-        ps.setObject(8, source.endDate(), JDBCType.DATE);
+        ps.setObject(6, source.updateDate());
+        ps.setObject(7, source.startDate());
+        ps.setObject(8, source.endDate());
         ps.setBoolean(9, source.isActive());
     }
 

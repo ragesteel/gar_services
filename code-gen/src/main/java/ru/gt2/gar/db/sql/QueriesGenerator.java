@@ -8,7 +8,6 @@ import ru.gt2.gar.domain.GarType;
 public class QueriesGenerator implements TableVisitor {
     private final StringBuilder selectBuilder = new StringBuilder();
     private final StringBuilder insertBuilder = new StringBuilder();
-    private final boolean quoteColumnNames;
 
     private String tableName = "";
     private String idColumnName = "";
@@ -23,8 +22,7 @@ public class QueriesGenerator implements TableVisitor {
     private int columnCount = 0;
 
     public QueriesGenerator(GarType garType, DatabaseSchema schema) {
-        quoteColumnNames = schema.quoteColumnNames();
-        schema.visitTable(garType, this);
+        schema.createTable(garType, this);
     }
 
     @Override
@@ -51,13 +49,7 @@ public class QueriesGenerator implements TableVisitor {
     }
 
     private void appendColumnName(StringBuilder builder, String columnName) {
-        if (quoteColumnNames) {
-            builder.append('"');
-        }
-        builder.append(columnName.toUpperCase());
-        if (quoteColumnNames) {
-            builder.append('"');
-        }
+        builder.append(columnName);
     }
 
     @Override

@@ -61,10 +61,6 @@ public class LoadDataApp implements CommandLineRunner {
         if (!(GarType.ROOT_REFS.contains(garType) || garEntry.dir().stream().anyMatch(s -> s.equals("87")))) {
             return;
         }
-        // TODO Вернуть обработку PARAMS, сейчас там проблема из-за колонки с именем value
-//        if (GarType.ADDR_OBJ_PARAMS.equals(garType) | GarType.STEADS_PARAMS.equals(garType) | GarType.HOUSES_PARAMS.equals(garType) | GarType.APARTMENTS_PARAMS.equals(garType) | GarType.ROOMS_PARAMS.equals(garType)) {
-//            return;
-//        }
         XMLStreamProcessor processor = xmlProcessors.get(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
