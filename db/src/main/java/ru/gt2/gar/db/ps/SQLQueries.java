@@ -7,12 +7,9 @@ import ru.gt2.gar.domain.GarType;
 
 import javax.annotation.processing.Generated;
 
-/**
- * Сгенерировано автоматически. Не редактировать.
- */
 @Generated(
         value = "ru.gt2.gar.db.sql.SQLQueriesGenerator",
-        date = "2026-03-13T18:35:13.3268091+03:00"
+        date = "2026-03-13T18:47:19.4894534+03:00"
 )
 public class SQLQueries {
     private static final ImmutableMap<GarType, GeneratedSQL> MAP = ImmutableMap.<GarType, GeneratedSQL>builder()

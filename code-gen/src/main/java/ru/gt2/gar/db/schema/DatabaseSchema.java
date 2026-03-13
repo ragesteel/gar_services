@@ -44,10 +44,6 @@ public class DatabaseSchema {
         }
     }
 
-    public boolean quoteColumnNames() {
-        return true;
-    }
-
     private String getType(RecordComponent rc) {
         Class<?> type = rc.getType();
         if (long.class.equals(type) || Long.class.equals(type)) {

@@ -16,8 +16,9 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 
 public class SQLQueriesGenerator {
-    private static final ClassName TARGET_CLASS = ClassName.get("ru.gt2.gar.db.ps", "SQLQueries");
-    private static final ClassName GENERATED_SQL = ClassName.get("ru.gt2.gar.db.ps", "GeneratedSQL");
+    private static final String TARGET_PACKAGE_NAME = "ru.gt2.gar.db.ps";
+    private static final ClassName TARGET_CLASS = ClassName.get(TARGET_PACKAGE_NAME, "SQLQueries");
+    private static final ClassName GENERATED_SQL = ClassName.get(TARGET_PACKAGE_NAME, "GeneratedSQL");
     private static final ClassName GAR_TYPE = ClassName.get(GarType.class);
 
     static void main() throws IOException {
@@ -26,8 +27,7 @@ public class SQLQueriesGenerator {
 
     public void generate() throws IOException {
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(TARGET_CLASS)
-                .addModifiers(Modifier.PUBLIC)
-                .addJavadoc("Сгенерировано автоматически. Не редактировать.");
+                .addModifiers(Modifier.PUBLIC);
 
         // Начинаем строить инициализатор поля MAP
         CodeBlock.Builder mapInit = CodeBlock.builder()
@@ -70,7 +70,7 @@ public class SQLQueriesGenerator {
 
         classBuilder.addMethod(getMethod);
 
-        GenHelper.createJavaFile(getClass(), "ru.gt2.gar.db.ps", classBuilder, "db");
+        GenHelper.createJavaFile(getClass(), TARGET_PACKAGE_NAME, classBuilder, "db");
     }
 
     // Экранируем кавычки и переводы строк для вставки в строковый литерал

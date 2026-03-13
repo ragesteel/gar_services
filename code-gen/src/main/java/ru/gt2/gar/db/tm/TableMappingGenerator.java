@@ -10,8 +10,6 @@ import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeSpec;
 import com.palantir.javapoet.TypeVariableName;
 import com.palantir.javapoet.WildcardTypeName;
-import ru.gt2.gar.db.NamingStrategy;
-import ru.gt2.gar.db.schema.DatabaseSchema;
 import ru.gt2.gar.domain.GarRecord;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.gen.GenHelper;
@@ -33,8 +31,6 @@ public class TableMappingGenerator {
     }
 
     public void generate() throws IOException {
-        DatabaseSchema schema = new DatabaseSchema(NamingStrategy.LOWER_UNDERSCORE);
-
         Set<Class<? extends GarRecord>> generated = new HashSet<>();
         for (GarType garType : GarType.values()) {
             if (!generated.add(garType.recordClass)) {
