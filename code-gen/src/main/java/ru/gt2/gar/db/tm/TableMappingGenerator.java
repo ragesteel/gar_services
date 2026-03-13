@@ -17,8 +17,6 @@ import ru.gt2.gar.gen.GenHelper;
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.RecordComponent;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 
 public class TableMappingGenerator {
@@ -31,24 +29,20 @@ public class TableMappingGenerator {
     }
 
     public void generate() throws IOException {
-        Set<Class<? extends GarRecord>> generated = new HashSet<>();
-        for (GarType garType : GarType.values()) {
-            if (!generated.add(garType.recordClass)) {
-                continue;
-            }
-            TypeSpec.Builder tmClass = generateTableMappingClass(garType);
+        for (Class<? extends GarRecord> recordClass : GarType.RECORD_CLASSES) {
+            TypeSpec.Builder tmClass = generateTableMappingClass(recordClass);
             GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, tmClass, "db");
         }
 
         GenHelper.createJavaFile(getClass(), TARGET_PACKAGE, generateMappingsClass(), "db");
     }
 
-    private TypeSpec.Builder generateTableMappingClass(GarType garType) {
-        String simpleName = garType.recordClass.getSimpleName();
+    private TypeSpec.Builder generateTableMappingClass(Class<? extends GarRecord> recordClass) {
+        String simpleName = recordClass.getSimpleName();
         String className = simpleName + "TM";
-        ClassName domainClass = ClassName.get(garType.recordClass);
+        ClassName domainClass = ClassName.get(recordClass);
 
-        RecordComponent firstRecordComponent = garType.recordClass.getRecordComponents()[0];
+        RecordComponent firstRecordComponent = recordClass.getRecordComponents()[0];
 
         CodeBlock superCall = CodeBlock.of("super($T::$L);", domainClass, firstRecordComponent.getName());
 
@@ -62,8 +56,8 @@ public class TableMappingGenerator {
                         .build());
 
         return classBuilder
-                .addMethod(generateMethod(garType.recordClass, WriteMethodGenerator::new))
-                .addMethod(generateMethod(garType.recordClass, ReadMethodGenerator::new));
+                .addMethod(generateMethod(recordClass, WriteMethodGenerator::new))
+                .addMethod(generateMethod(recordClass, ReadMethodGenerator::new));
     }
 
     private MethodSpec generateMethod(Class<? extends GarRecord>  recordClass, Function<ClassName, RecordMethodGenerator> generatorSupplier) {
@@ -111,7 +105,6 @@ public class TableMappingGenerator {
 
         return TypeSpec.classBuilder("TableMappings")
                 .addModifiers(Modifier.PUBLIC)
-                .addJavadoc("Фабрика TableMapping. Сгенерировано автоматически.\n")
                 .addField(mapField)
                 .addMethod(getMethod);
     }

@@ -8,9 +8,6 @@ import ru.gt2.gar.domain.GarType;
 
 import javax.annotation.processing.Generated;
 
-/**
- * Фабрика TableMapping. Сгенерировано автоматически.
- */
 @Generated(
         value = "ru.gt2.gar.db.tm.TableMappingGenerator",
         date = "2026-03-13T18:35:21.146943+03:00"

@@ -56,7 +56,7 @@ public enum GarType {
     public final String outerTagName;
 
     public final String elementName;
-    
+
     /// Корневые справочники
     public static final ImmutableSet<GarType> ROOT_REFS = ImmutableSet.of(
             GarType.ADDHOUSE_TYPES,
@@ -90,6 +90,15 @@ public enum GarType {
             GarType.REESTR_OBJECTS,
             GarType.ROOMS,
             GarType.STEADS);
+
+    public static final ImmutableSet<Class<? extends GarRecord>> RECORD_CLASSES = ImmutableSet.of(
+            AddressObjectType.class, ApartmentType.class, HouseType.class,
+            NormativeDocKind.class, NormativeDocType.class,
+            ObjectLevel.class, OperationType.class, ParamType.class, RoomType.class,
+
+            AddressObject.class, AddressObjectDivision.class, AdmHierarchy.class, Apartment.class,
+            CarPlace.class, ChangeHistory.class, House.class, MunHierarchy.class, NormativeDoc.class,
+            Param.class, ReestrObject.class, Room.class, Stead.class);
 
     GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;

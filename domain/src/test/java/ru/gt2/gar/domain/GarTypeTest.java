@@ -72,9 +72,14 @@ public class GarTypeTest {
     }
     @Test
     public void testSets() {
-        HashSet<GarType> allSets = new HashSet<>();
+        Set<GarType> allSets = new HashSet<>();
         allSets.addAll(GarType.ROOT_REFS);
         allSets.addAll(GarType.REGIONAL_DATA);
         assertEquals(GarType.values().length, allSets.size());
+    }
+
+    @Test
+    public void testRecordClasses() {
+        assertEquals(GarType.getRecordClasses(), GarType.RECORD_CLASSES);
     }
 }
