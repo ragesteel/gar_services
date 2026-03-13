@@ -1,6 +1,7 @@
 package ru.gt2.gar.domain;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.RecordComponent;
@@ -14,25 +15,25 @@ import java.util.function.Consumer;
  * Все разновидности объектов для файлов, по крайней мере для которых имеется описание.
  */
 public enum GarType {
-    ADDR_OBJ(AddressObject.class),
-    ADDR_OBJ_DIVISION(AddressObjectDivision.class),
+    ADDR_OBJ(AddressObject.class, "AddressObjects", "Object"),
+    ADDR_OBJ_DIVISION(AddressObjectDivision.class, "Item"),
     ADDR_OBJ_TYPES(AddressObjectType.class),
-    ADM_HIERARCHY(AdmHierarchy.class),
+    ADM_HIERARCHY(AdmHierarchy.class, "Item"),
     APARTMENT_TYPES(ApartmentType.class),
     APARTMENTS(Apartment.class),
     CARPLACES(CarPlace.class),
-    CHANGE_HISTORY(ChangeHistory.class),
+    CHANGE_HISTORY(ChangeHistory.class, "Item"),
     HOUSE_TYPES(HouseType.class),
     HOUSES(House.class),
-    MUN_HIERARCHY(MunHierarchy.class),
-    NORMATIVE_DOCS(NormativeDoc.class),
-    NORMATIVE_DOCS_KINDS(NormativeDocKind.class),
-    NORMATIVE_DOCS_TYPES(NormativeDocType.class),
+    MUN_HIERARCHY(MunHierarchy.class, "Item"),
+    NORMATIVE_DOCS(NormativeDoc.class, "NormDoc"),
+    NORMATIVE_DOCS_KINDS(NormativeDocKind.class, "NDocKind"),
+    NORMATIVE_DOCS_TYPES(NormativeDocType.class, "NDocType"),
     OBJECT_LEVELS(ObjectLevel.class),
     OPERATION_TYPES(OperationType.class),
     // PARAM,
     PARAM_TYPES(ParamType.class),
-    REESTR_OBJECTS(ReestrObject.class),
+    REESTR_OBJECTS(ReestrObject.class, "Reestr_Objects", "Object"),
     ROOM_TYPES(RoomType.class),
     ROOMS(Room.class),
     STEADS(Stead.class),
@@ -52,8 +53,67 @@ public enum GarType {
 
     public final Class<? extends GarRecord> recordClass;
 
+    public final String outerTagName;
+
+    public final String elementName;
+
+    /// Корневые справочники
+    public static final ImmutableSet<GarType> ROOT_REFS = ImmutableSet.of(
+            GarType.ADDHOUSE_TYPES,
+            GarType.ADDR_OBJ_TYPES,
+            GarType.APARTMENT_TYPES,
+            GarType.HOUSE_TYPES,
+            GarType.NORMATIVE_DOCS_KINDS,
+            GarType.NORMATIVE_DOCS_TYPES,
+            GarType.OBJECT_LEVELS,
+            GarType.OPERATION_TYPES,
+            GarType.PARAM_TYPES,
+            GarType.ROOM_TYPES);
+
+    /// Региональные данные
+    public static final ImmutableSet<GarType> REGIONAL_DATA = ImmutableSet.of(
+            GarType.ADDR_OBJ,
+            GarType.ADDR_OBJ_DIVISION,
+            GarType.ADM_HIERARCHY,
+            GarType.APARTMENTS,
+            GarType.CARPLACES,
+            GarType.CHANGE_HISTORY,
+            GarType.HOUSES,
+            GarType.MUN_HIERARCHY,
+            GarType.NORMATIVE_DOCS,
+            GarType.ADDR_OBJ_PARAMS,
+            GarType.HOUSES_PARAMS,
+            GarType.APARTMENTS_PARAMS,
+            GarType.ROOMS_PARAMS,
+            GarType.STEADS_PARAMS,
+            GarType.CARPLACES_PARAMS,
+            GarType.REESTR_OBJECTS,
+            GarType.ROOMS,
+            GarType.STEADS);
+
+    public static final ImmutableSet<Class<? extends GarRecord>> RECORD_CLASSES = ImmutableSet.of(
+            AddressObjectType.class, ApartmentType.class, HouseType.class,
+            NormativeDocKind.class, NormativeDocType.class,
+            ObjectLevel.class, OperationType.class, ParamType.class, RoomType.class,
+
+            AddressObject.class, AddressObjectDivision.class, AdmHierarchy.class, Apartment.class,
+            CarPlace.class, ChangeHistory.class, House.class, MunHierarchy.class, NormativeDoc.class,
+            Param.class, ReestrObject.class, Room.class, Stead.class);
+
     GarType(Class<? extends GarRecord> recordClass) {
         this.recordClass = recordClass;
+        this.elementName = recordClass.getSimpleName().toUpperCase();
+        outerTagName = elementName + 'S';
+    }
+
+    GarType(Class<? extends GarRecord> recordClass, String elementName) {
+        this(recordClass, elementName.toUpperCase() + 'S', elementName.toUpperCase());
+    }
+
+    GarType(Class<? extends GarRecord> recordClass, String outerTagName, String elementName) {
+        this.recordClass = recordClass;
+        this.outerTagName = outerTagName.toUpperCase();
+        this.elementName = elementName.toUpperCase();
     }
 
     public static Optional<GarType> findGarType(Class<? extends GarRecord> recordClass) {

@@ -50,8 +50,8 @@ public record AddressObject(
         LocalDate endDate,
 
         @SchemaComment("Статус актуальности адресного объекта ФИАС")
-        boolean isActual,
+        @IntAsBoolean boolean isActual,
 
         @SchemaComment("Признак действующего адресного объекта")
-        boolean isActive) implements GarRecord {
+        @IntAsBoolean boolean isActive) implements GarRecord {
 }

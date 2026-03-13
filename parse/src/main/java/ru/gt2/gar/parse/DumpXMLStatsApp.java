@@ -12,7 +12,7 @@ import ru.gt2.gar.domain.Gar;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.parse.consumer.DurationFmt;
 import ru.gt2.gar.parse.consumer.EntityStats;
-import ru.gt2.gar.parse.xml.AllXMLProcessors;
+import ru.gt2.gar.parse.xml.XMLProcessors;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.FileStats;
 import ru.gt2.gar.parse.zip.GarEntry;
@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SpringBootApplication
 public class DumpXMLStatsApp implements CommandLineRunner {
 
-    private final AllXMLProcessors xmlProcessors;
+    private final XMLProcessors xmlProcessors;
 
     // Это будет Bean с именем applicationTaskExecutor, который создаётся Spring'ом.
     // https://docs.spring.io/spring-boot/reference/features/task-execution-and-scheduling.html
@@ -44,7 +45,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
     private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
 
-    public DumpXMLStatsApp(AllXMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
+    public DumpXMLStatsApp(XMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
                            @Value("${gar.xml.entitySizeLimit:-1}") int entitySizeLimit,
                            @Value("${gar.processing.mode:PARALLEL}") ProcessingMode processingMode) {
@@ -80,6 +81,8 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                 case PARALLEL -> processParallel(garZipFile);
             }
             dumpStats(garZipFile);
+            // TODO Добавить общую статистику по файлам, общий размер, количество записей и время обработки!
+            // Хотя нет, вот как раз время сравнивать не нужно!
             System.out.printf("Total time elapsed: %s%n", stopwatch);
         } catch (Exception e) {
             log.warn("Unable to parse gar zip file: {}", zipFile, e);
@@ -130,7 +133,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
             return;
         }
 
-        XMLStreamProcessor processor = xmlProcessors.getProcessor(garType);
+        XMLStreamProcessor processor = xmlProcessors.get(garType);
         EntityStats fileStats = new EntityStats();
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, fileStats, entitySizeLimit);
@@ -156,37 +159,9 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     }
 
     private void simpleProcess(GarZipFile garZipFile) {
-        // Сначала разбираем файлы из корневого каталога — справочники по сути;
-        process(garZipFile, xmlProcessors.apartmentType);
-        process(garZipFile, xmlProcessors.addressObjectType);
-        process(garZipFile, xmlProcessors.operationType);
-        process(garZipFile, xmlProcessors.houseType);
-        process(garZipFile, xmlProcessors.normativeDocKind);
-        process(garZipFile, xmlProcessors.normativeDocType);
-        process(garZipFile, xmlProcessors.objectLevel);
-        process(garZipFile, xmlProcessors.paramType);
-        process(garZipFile, xmlProcessors.roomType);
-        process(garZipFile, xmlProcessors.houseType);
-
-        // Потом идём уже по регионам
-        process(garZipFile, xmlProcessors.addressObject);
-        process(garZipFile, xmlProcessors.addressObjectDivision);
-        process(garZipFile, xmlProcessors.admHierarchy);
-        process(garZipFile, xmlProcessors.apartment);
-        process(garZipFile, xmlProcessors.carPlace);
-        process(garZipFile, xmlProcessors.changeHistory);
-        process(garZipFile, xmlProcessors.house);
-        process(garZipFile, xmlProcessors.munHierarchy);
-        process(garZipFile, xmlProcessors.normativeDoc);
-        process(garZipFile, xmlProcessors.addrObjParam);
-        process(garZipFile, xmlProcessors.housesParam);
-        process(garZipFile, xmlProcessors.apartmentsParam);
-        process(garZipFile, xmlProcessors.roomsParam);
-        process(garZipFile, xmlProcessors.steadsParam);
-        process(garZipFile, xmlProcessors.carPlacesParam);
-        process(garZipFile, xmlProcessors.reestrObject);
-        process(garZipFile, xmlProcessors.room);
-        process(garZipFile, xmlProcessors.stead);
+        List<GarType> rootFirst = new ArrayList<>(GarType.ROOT_REFS);
+        rootFirst.addAll(GarType.REGIONAL_DATA);
+        rootFirst.forEach(gt -> process(garZipFile, xmlProcessors.get(gt)));
     }
 
     private void process(GarZipFile garZipFile, XMLStreamProcessor processor) {
