@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.xmlunit.builder.Input;
 import ru.gt2.gar.domain.GarType;
 import ru.gt2.gar.domain.NormativeDocType;
-import ru.gt2.gar.domain.RoomType;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
@@ -88,18 +87,5 @@ public class StAX2ReaderTest {
         LocalDate startDate = tar.getLocalDate("STARTDATE");
         LocalDate endDate = tar.getLocalDate("ENDDATE");
         return new NormativeDocType(id, name, startDate, endDate);
-    }
-
-    @NonNull
-    private static RoomType createRoomType(TypedAttrReader tar) throws XMLStreamException {
-        int id = tar.getInt("ID");
-        String name = tar.getString("NAME");
-        String shortName = tar.getNullableString("SHORTNAME");
-        String desc = tar.getNullableString("DESC");
-        LocalDate updateDate = tar.getLocalDate("UPDATEDATE");
-        LocalDate startDate = tar.getLocalDate("STARTDATE");
-        LocalDate endDate = tar.getLocalDate("ENDDATE");
-        boolean isActive = tar.getBoolean("ISACTIVE");
-        return new RoomType(id, name, shortName, desc, updateDate, startDate, endDate, isActive);
     }
 }

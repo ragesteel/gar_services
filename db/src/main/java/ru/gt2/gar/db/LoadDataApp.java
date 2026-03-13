@@ -41,7 +41,8 @@ public class LoadDataApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // TODO Сначала сделать загрузку для одной таблицы, из корневых справочников
+        // TODO Вынести методы параллельной обработки в отдельные классы, чтобы тут тоже можно было их применить
+        // TODO Вынести обработку архива, чтобы можно было не только архив, но и просто каталог с файлами обрабатывать
         try (GarZipFile garZipFile = new GarZipFile(zipFile)) {
             garZipFile.getVersion().ifPresentOrElse(
                     v -> log.info("Gar file date: {} ({} day(s) ago), version: {}",
@@ -50,22 +51,21 @@ public class LoadDataApp implements CommandLineRunner {
 
             garZipFile.streamEntries().forEach(garEntry -> processGarEntry(garEntry, garZipFile));
         }
-            // TODO Потом — всех корневых справочников
         // TODO И наконец — всех данных по регионам
         // TODO Сохранение данных вынести в отдельный класс с интерфейсом
         //  и реализациями на BatchPreparedStatement, UNNEST и COPY
     }
 
     private void processGarEntry(GarEntry garEntry, GarZipFile garZipFile) {
-        GarType garType = GarType.ADDR_OBJ_TYPES;
-        if (!garType.name().equals(garEntry.name())) {
+        GarType garType = GarType.valueOf(garEntry.name());
+        if (!(GarType.ROOT_REFS.contains(garType) || garEntry.dir().stream().anyMatch(s -> s.equals("87")))) {
             return;
         }
-
         XMLStreamProcessor processor = xmlProcessors.get(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
                     entitySizeLimit);
+            log.info("Processed: {}", garEntry);
         } catch (Exception e) {
             throw new RuntimeException("Unable to process " + garEntry, e);
         }
