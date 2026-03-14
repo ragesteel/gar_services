@@ -69,11 +69,6 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                             v.date(), ChronoUnit.DAYS.between(v.date(), LocalDate.now()), v.number()),
                     () -> log.warn("Gar file does not contains version information"));
 
-            // Однако да, один только распакованный файл будет весить 361 Гб.
-            /* garZipFile.getStats().forEach((garType, fileStats) ->
-                    System.out.printf("%25s %3d %14d%n", garType.name(), fileStats.count(), fileStats.size()));
-            System.out.println();*/
-
             Stopwatch stopwatch = Stopwatch.createStarted();
             switch (processingMode) {
                 case SIMPLE -> simpleProcess(garZipFile);
@@ -100,14 +95,14 @@ public class DumpXMLStatsApp implements CommandLineRunner {
             FileStats fileStats = garZipFile.getStats().get(garType);
             EntityStats garStats = stats.get(garType);
             if (null == garStats) {
-                System.out.printf("%s file(s) count %d, file(s) size %,d, no stats%n",
+                System.out.printf("%s: file(s) count %d; file(s) size %,d; no stats%n",
                         garType.name(), fileStats.count(), fileStats.size());
                 continue;
             }
-            System.out.printf("%s, file(s) count %d, file(s) size %,d, total record(s): %,d, elapsed: %s%n",
+            System.out.printf("%s: file(s) count %d; file(s) size %,d; total record(s): %,d; elapsed: %s%n",
                     garType.name(), fileStats.count(), fileStats.size(), garStats.getCount(),
                     DurationFmt.format(garStats.getDuration()));
-            garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs));
+            dumpFieldStats(garStats);
         }
     }
 
@@ -161,10 +156,10 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     private void simpleProcess(GarZipFile garZipFile) {
         List<GarType> rootFirst = new ArrayList<>(GarType.ROOT_REFS);
         rootFirst.addAll(GarType.REGIONAL_DATA);
-        rootFirst.forEach(gt -> process(garZipFile, xmlProcessors.get(gt)));
+        rootFirst.forEach(gt -> simpleProcess(garZipFile, xmlProcessors.get(gt)));
     }
 
-    private void process(GarZipFile garZipFile, XMLStreamProcessor processor) {
+    private void simpleProcess(GarZipFile garZipFile, XMLStreamProcessor processor) {
         EntityStats garStats = new EntityStats();
 
         GarType garType = processor.getGarType();
@@ -180,9 +175,14 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                         log.warn("Unable to parse entry: {}", ge, e);
                     }
                 });
+        stats.merge(garType, garStats, EntityStats::sum);
 
         System.out.printf("total record(s): %,d, elapsed: %s%n", garStats.getCount(),
                 DurationFmt.format(garStats.getDuration()));
-        garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs));
+        dumpFieldStats(garStats);
+    }
+
+    private static void dumpFieldStats(EntityStats garStats) {
+        garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs.formatString()));
     }
 }

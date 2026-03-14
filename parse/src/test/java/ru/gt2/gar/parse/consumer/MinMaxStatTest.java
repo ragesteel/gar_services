@@ -2,6 +2,8 @@ package ru.gt2.gar.parse.consumer;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Formatter;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MinMaxStatTest {
@@ -29,8 +31,10 @@ class MinMaxStatTest {
         for (int value : values) {
             stat.update(value);
         }
+
         StringBuilder sb = new StringBuilder();
-        stat.addTo(sb, "int=", "int ");
+        Formatter formatter = new Formatter(sb);
+        stat.format(formatter, "int=%d", "int %d … %d");
         assertEquals(expected, sb.toString());
     }
 }

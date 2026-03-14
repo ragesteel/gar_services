@@ -1,17 +1,19 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class BoolFieldStat extends AbstractFieldStat {
-    private int falseCount = 0;
-    private int trueCount = 0;
+    private int falseCount;
+    private int trueCount;
 
     public BoolFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
+        this(recordComponent.getName(), recordComponent.getAccessor(), 0, 0);
     }
 
-    private BoolFieldStat(String name, int falseCount, int trueCount) {
-        super(name);
+    private BoolFieldStat(String name, Method accessor, int falseCount, int trueCount) {
+        super(name, accessor, "bool");
         this.falseCount = falseCount;
         this.trueCount = trueCount;
     }
@@ -26,8 +28,9 @@ public class BoolFieldStat extends AbstractFieldStat {
     }
 
     @Override
-    public String toString() {
-        return String.format("%s, bool, false: %d, true: %d", name, falseCount, trueCount);
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        formatter.format(", false: %,d, true: %,d", falseCount, trueCount);
     }
 
     @Override
@@ -36,6 +39,6 @@ public class BoolFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new BoolFieldStat(name, otherBool.falseCount + falseCount, otherBool.trueCount + trueCount);
+        return new BoolFieldStat(name, accessor, otherBool.falseCount + falseCount, otherBool.trueCount + trueCount);
     }
 }

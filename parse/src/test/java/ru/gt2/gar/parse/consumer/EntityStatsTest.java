@@ -27,10 +27,10 @@ class EntityStatsTest {
 
     @Test
     public void testSum() {
-        MinMaxStat<Integer> minMaxStat = new MinMaxStat();
+        MinMaxStat<Integer> minMaxStat = new MinMaxStat<>();
         minMaxStat.update(1);
         minMaxStat.update(10);
-        IntFieldStat fieldStat = new IntFieldStat("name", minMaxStat);
+        IntFieldStat fieldStat = new IntFieldStat("name", null, minMaxStat);
         EntityStats entityStats = new EntityStats(List.of(fieldStat), 1, Duration.ofSeconds(1L));
 
         EntityStats sum = EntityStats.sum(entityStats, entityStats);

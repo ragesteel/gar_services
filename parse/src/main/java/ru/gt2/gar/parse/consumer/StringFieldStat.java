@@ -1,18 +1,19 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.util.Formatter;
 
 public class StringFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Integer> minMaxLen;
-    private int emptyCount = 0;
+    private int emptyCount;
 
     public StringFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
-        minMaxLen = new MinMaxStat<>();
+        this(recordComponent.getName(), recordComponent.getAccessor(), new MinMaxStat<>(), 0);
     }
 
-    private StringFieldStat(String name, MinMaxStat<Integer> minMaxLen, int emptyCount) {
-        super(name);
+    private StringFieldStat(String name, Method accessor, MinMaxStat<Integer> minMaxLen, int emptyCount) {
+        super(name, accessor, "string");
         this.minMaxLen = minMaxLen;
         this.emptyCount = emptyCount;
     }
@@ -28,14 +29,14 @@ public class StringFieldStat extends AbstractFieldStat {
         }
     }
 
+
     @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", string");
-        minMaxLen.addTo(resultBuilder, ", length=", ", length ");
+    public void format(Formatter formatter) {
+        super.format(formatter);
+        minMaxLen.format(formatter, ", length = %,d", ", length %,d … %,d");
         if (emptyCount > 0) {
-            resultBuilder.append(", empty=").append(emptyCount);
+            formatter.format(", empty=%,d", emptyCount);
         }
-        return resultBuilder.toString();
     }
 
     @Override
@@ -44,6 +45,6 @@ public class StringFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new StringFieldStat(name, minMaxLen.sum(stringField.minMaxLen), emptyCount + stringField.emptyCount);
+        return new StringFieldStat(name, accessor, minMaxLen.sum(stringField.minMaxLen), emptyCount + stringField.emptyCount);
     }
 }

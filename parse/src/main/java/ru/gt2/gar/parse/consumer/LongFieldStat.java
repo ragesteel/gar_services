@@ -1,29 +1,17 @@
 package ru.gt2.gar.parse.consumer;
 
+import org.jspecify.annotations.Nullable;
+
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 
-public class LongFieldStat extends AbstractFieldStat {
-    private final MinMaxStat<Long> minMax;
-
+public class LongFieldStat extends RangedFieldStat<Long> {
     public LongFieldStat(RecordComponent recordComponent) {
-        super(recordComponent);
-        minMax = new MinMaxStat<>();
+        this(recordComponent.getName(), recordComponent.getAccessor(), null);
     }
 
-    private LongFieldStat(String name, MinMaxStat<Long> minMax) {
-        super(name);
-        this.minMax = minMax;
-    }
-
-    @Override
-    public void acceptValue(Object value) {
-        minMax.update((long) value);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder resultBuilder = new StringBuilder(name).append(", long");
-        return minMax.addTo(resultBuilder, " = ", ", ").toString();
+    private LongFieldStat(String name, Method accessor, @Nullable MinMaxStat<Long> minMax) {
+        super(name, accessor, minMax, "long", ",d");
     }
 
     @Override
@@ -32,6 +20,6 @@ public class LongFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new LongFieldStat(name, minMax.sum(longField.minMax));
+        return new LongFieldStat(name, accessor, sumMinMax(longField));
     }
 }
