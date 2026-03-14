@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 import java.util.Formatter;
 
-// TODO проверять возможность замены на число
 public class StringFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Integer> minMaxLen;
     private int emptyCount;
