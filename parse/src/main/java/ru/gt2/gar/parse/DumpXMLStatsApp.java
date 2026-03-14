@@ -102,7 +102,7 @@ public class DumpXMLStatsApp implements CommandLineRunner {
             System.out.printf("%s: file(s) count %d; file(s) size %,d; total record(s): %,d; elapsed: %s%n",
                     garType.name(), fileStats.count(), fileStats.size(), garStats.getCount(),
                     DurationFmt.format(garStats.getDuration()));
-            garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs.formatString()));
+            dumpFieldStats(garStats);
         }
     }
 
@@ -179,6 +179,10 @@ public class DumpXMLStatsApp implements CommandLineRunner {
 
         System.out.printf("total record(s): %,d, elapsed: %s%n", garStats.getCount(),
                 DurationFmt.format(garStats.getDuration()));
+        dumpFieldStats(garStats);
+    }
+
+    private static void dumpFieldStats(EntityStats garStats) {
         garStats.getFieldStats().forEach(fs -> System.out.println("  " + fs.formatString()));
     }
 }
