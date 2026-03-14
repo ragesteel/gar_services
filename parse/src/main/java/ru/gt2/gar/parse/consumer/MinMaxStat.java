@@ -1,8 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
-import lombok.Getter;
-
 import java.util.Formatter;
+import java.util.Optional;
 
 /**
  * Подсчёт и преобразование в строку минимального и максимального значения.
@@ -11,9 +10,7 @@ import java.util.Formatter;
  */
 public class MinMaxStat<T extends Comparable<T>> {
     private T min;
-    @Getter
     private T max;
-    @Getter
     private boolean hasMinMax = false;
 
     public MinMaxStat() {
@@ -67,5 +64,9 @@ public class MinMaxStat<T extends Comparable<T>> {
         result.hasMinMax = true;
 
         return result;
+    }
+
+    public Optional<T> getMax() {
+        return hasMinMax ? Optional.of(max) : Optional.empty();
     }
 }

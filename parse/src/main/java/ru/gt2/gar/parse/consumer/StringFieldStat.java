@@ -41,11 +41,14 @@ public class StringFieldStat extends AbstractFieldStat {
         if (emptyCount > 0) {
             formatter.format(", empty=%,d", emptyCount);
         }
-        if (minMaxLen.isHasMinMax() && (null != lengthLimit)) {
-            if (minMaxLen.getMax() > lengthLimit) {
-                formatter.format(", WARNING: max length is greater than limit (%,d)", lengthLimit);
-            }
+
+        if (null == lengthLimit) {
+            return;
         }
+        minMaxLen.getMax()
+                .filter(maxLen -> maxLen > lengthLimit)
+                .ifPresent(_ ->
+                        formatter.format(", WARNING: max length is greater than limit (%,d)", lengthLimit));
     }
 
     @Override
