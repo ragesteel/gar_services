@@ -1,5 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
+import lombok.Getter;
+
 import java.util.Formatter;
 
 /**
@@ -9,7 +11,9 @@ import java.util.Formatter;
  */
 public class MinMaxStat<T extends Comparable<T>> {
     private T min;
+    @Getter
     private T max;
+    @Getter
     private boolean hasMinMax = false;
 
     public MinMaxStat() {
