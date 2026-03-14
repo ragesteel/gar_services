@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
@@ -10,12 +11,11 @@ public class DateFieldStat extends AbstractFieldStat {
     private final MinMaxStat<ChronoLocalDate> minMax;
 
     public DateFieldStat(RecordComponent recordComponent) {
-        super(recordComponent, "date");
-        minMax = new MinMaxStat<>();
+        this(recordComponent.getName(), recordComponent.getAccessor(), new MinMaxStat<>());
     }
 
-    private DateFieldStat(String name, MinMaxStat<ChronoLocalDate> minMax) {
-        super(name, "date");
+    private DateFieldStat(String name, Method accessor, MinMaxStat<ChronoLocalDate> minMax) {
+        super(name, accessor, "date");
         this.minMax = minMax;
     }
 
@@ -36,6 +36,6 @@ public class DateFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new DateFieldStat(name, minMax.sum(dateField.minMax));
+        return new DateFieldStat(name, accessor, minMax.sum(dateField.minMax));
     }
 }

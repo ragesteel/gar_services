@@ -1,19 +1,20 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 import java.util.Formatter;
 
+// TODO проверять возможность замены на число
 public class StringFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Integer> minMaxLen;
-    private int emptyCount = 0;
+    private int emptyCount;
 
     public StringFieldStat(RecordComponent recordComponent) {
-        super(recordComponent, "string");
-        minMaxLen = new MinMaxStat<>();
+        this(recordComponent.getName(), recordComponent.getAccessor(), new MinMaxStat<>(), 0);
     }
 
-    private StringFieldStat(String name, MinMaxStat<Integer> minMaxLen, int emptyCount) {
-        super(name, "string");
+    private StringFieldStat(String name, Method accessor, MinMaxStat<Integer> minMaxLen, int emptyCount) {
+        super(name, accessor, "string");
         this.minMaxLen = minMaxLen;
         this.emptyCount = emptyCount;
     }
@@ -45,6 +46,6 @@ public class StringFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new StringFieldStat(name, minMaxLen.sum(stringField.minMaxLen), emptyCount + stringField.emptyCount);
+        return new StringFieldStat(name, accessor, minMaxLen.sum(stringField.minMaxLen), emptyCount + stringField.emptyCount);
     }
 }

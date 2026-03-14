@@ -1,5 +1,6 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 import java.util.Formatter;
 
@@ -7,12 +8,11 @@ public class LongFieldStat extends AbstractFieldStat {
     private final MinMaxStat<Long> minMax;
 
     public LongFieldStat(RecordComponent recordComponent) {
-        super(recordComponent, "long");
-        minMax = new MinMaxStat<>();
+        this(recordComponent.getName(), recordComponent.getAccessor(), new MinMaxStat<>());
     }
 
-    private LongFieldStat(String name, MinMaxStat<Long> minMax) {
-        super(name, "long");
+    private LongFieldStat(String name, Method accessor, MinMaxStat<Long> minMax) {
+        super(name, accessor, "long");
         this.minMax = minMax;
     }
 
@@ -33,6 +33,6 @@ public class LongFieldStat extends AbstractFieldStat {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new LongFieldStat(name, minMax.sum(longField.minMax));
+        return new LongFieldStat(name, accessor, minMax.sum(longField.minMax));
     }
 }

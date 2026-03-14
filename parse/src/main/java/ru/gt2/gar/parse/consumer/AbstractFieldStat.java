@@ -5,7 +5,6 @@ import ru.gt2.gar.domain.GarRecord;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.RecordComponent;
 import java.util.Formatter;
 
 public abstract class AbstractFieldStat implements FieldStat {
@@ -16,15 +15,10 @@ public abstract class AbstractFieldStat implements FieldStat {
 
     private final String typeName;
 
-    protected AbstractFieldStat(RecordComponent recordComponent, String typeName) {
-        name = recordComponent.getName();
-        accessor = recordComponent.getAccessor();
-        this.typeName = typeName;
-    }
 
-    protected AbstractFieldStat(String name, String typeName) {
+    protected AbstractFieldStat(String name, Method accessor, String typeName) {
         this.name = name;
-        accessor = null;
+        this.accessor = accessor;
         this.typeName = typeName;
     }
 

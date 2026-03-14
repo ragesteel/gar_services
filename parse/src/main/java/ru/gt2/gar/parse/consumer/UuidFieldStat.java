@@ -1,14 +1,15 @@
 package ru.gt2.gar.parse.consumer;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
 
 public class UuidFieldStat extends AbstractFieldStat {
     public UuidFieldStat(RecordComponent recordComponent) {
-        super(recordComponent, "uuid");
+        this(recordComponent.getName(), recordComponent.getAccessor());
     }
 
-    private UuidFieldStat(String name) {
-        super(name, "uuid");
+    private UuidFieldStat(String name, Method accessor) {
+        super(name, accessor, "uuid");
     }
 
     @Override
@@ -18,10 +19,10 @@ public class UuidFieldStat extends AbstractFieldStat {
 
     @Override
     public FieldStat sum(FieldStat other) {
-        if (!(other instanceof UuidFieldStat uuidField)) {
+        if (!(other instanceof UuidFieldStat)) {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
 
-        return new UuidFieldStat(name);
+        return new UuidFieldStat(name, accessor);
     }
 }
