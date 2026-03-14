@@ -1,33 +1,19 @@
 package ru.gt2.gar.parse.consumer;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
-import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
-import java.util.Formatter;
 
-// TODO попробовать сделать RangedFieldStat<T extends Comparable<T>> в качестве базы для Date, Int и Long
-public class DateFieldStat extends AbstractFieldStat {
-    private final MinMaxStat<ChronoLocalDate> minMax;
+public class DateFieldStat extends RangedFieldStat<ChronoLocalDate> {
 
     public DateFieldStat(RecordComponent recordComponent) {
-        this(recordComponent.getName(), recordComponent.getAccessor(), new MinMaxStat<>());
+        this(recordComponent.getName(), recordComponent.getAccessor(), null);
     }
 
-    private DateFieldStat(String name, Method accessor, MinMaxStat<ChronoLocalDate> minMax) {
-        super(name, accessor, "date");
-        this.minMax = minMax;
-    }
-
-    @Override
-    public void acceptValue(Object value) {
-        minMax.update((LocalDate) value);
-    }
-
-    @Override
-    public void format(Formatter formatter) {
-        super.format(formatter);
-        minMax.format(formatter, " = %s", ", %s … %s");
+    private DateFieldStat(String name, Method accessor, @Nullable MinMaxStat<ChronoLocalDate> minMax) {
+        super(name, accessor, minMax, "date", "s");
     }
 
     @Override
@@ -35,7 +21,6 @@ public class DateFieldStat extends AbstractFieldStat {
         if (!(other instanceof DateFieldStat dateField)) {
             throw new IllegalArgumentException("Sum must be called on equal types");
         }
-
-        return new DateFieldStat(name, accessor, minMax.sum(dateField.minMax));
+        return new DateFieldStat(name, accessor, sumMinMax(dateField));
     }
 }
