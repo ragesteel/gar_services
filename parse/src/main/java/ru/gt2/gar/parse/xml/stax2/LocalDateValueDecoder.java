@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 /// Простая и наивная реализация, только для дат формата YYYY-MM-DD.
 /// По задумке — должна быть быстрой.
-/// TODO ещё как минимум нужен IntBoolValueDecoder, для преобразования 0 и 1 в bool.
-/// TODO и ещё какая-то обработка null тоже, есть в RoomType, просто нет атрибута.
 public class LocalDateValueDecoder extends TypedValueDecoder {
     public LocalDate value;
 
