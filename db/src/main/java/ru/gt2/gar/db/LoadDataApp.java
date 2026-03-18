@@ -1,5 +1,6 @@
 package ru.gt2.gar.db;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +21,8 @@ import java.time.temporal.ChronoUnit;
 @SpringBootApplication
 @Slf4j
 public class LoadDataApp implements CommandLineRunner {
+    private static final ImmutableSet<String> ALLOWED_REGIONS = ImmutableSet.of("87", "77", "50");
+
     private final XMLProcessors xmlProcessors;
     private final File zipFile;
     private final GarDataWriter garDataWriter;
@@ -41,7 +44,6 @@ public class LoadDataApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // TODO Вынести методы параллельной обработки в отдельные классы, чтобы тут тоже можно было их применить
         // TODO Вынести обработку архива, чтобы можно было не только архив, но и просто каталог с файлами обрабатывать
         try (GarZipFile garZipFile = new GarZipFile(zipFile)) {
             garZipFile.getVersion().ifPresentOrElse(
@@ -51,14 +53,13 @@ public class LoadDataApp implements CommandLineRunner {
 
             garZipFile.streamEntries().forEach(garEntry -> processGarEntry(garEntry, garZipFile));
         }
-        // TODO И наконец — всех данных по регионам
         // TODO Сохранение данных вынести в отдельный класс с интерфейсом
         //  и реализациями на BatchPreparedStatement, UNNEST и COPY
     }
 
     private void processGarEntry(GarEntry garEntry, GarZipFile garZipFile) {
         GarType garType = GarType.valueOf(garEntry.name());
-        if (!(GarType.ROOT_REFS.contains(garType) || garEntry.dir().stream().anyMatch(s -> s.equals("87")))) {
+        if (!(GarType.ROOT_REFS.contains(garType) || garEntry.dir().stream().anyMatch(ALLOWED_REGIONS::contains))) {
             return;
         }
         XMLStreamProcessor processor = xmlProcessors.get(garType);

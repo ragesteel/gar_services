@@ -1,6 +1,7 @@
 package ru.gt2.gar.parse.consumer;
 
 import java.util.Formatter;
+import java.util.Optional;
 
 /**
  * Подсчёт и преобразование в строку минимального и максимального значения.
@@ -63,5 +64,9 @@ public class MinMaxStat<T extends Comparable<T>> {
         result.hasMinMax = true;
 
         return result;
+    }
+
+    public Optional<T> getMax() {
+        return hasMinMax ? Optional.of(max) : Optional.empty();
     }
 }
