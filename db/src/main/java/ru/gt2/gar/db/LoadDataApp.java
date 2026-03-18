@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import ru.gt2.gar.domain.GarType;
+import ru.gt2.gar.parse.ParseConfiguration;
 import ru.gt2.gar.parse.xml.XMLProcessors;
 import ru.gt2.gar.parse.xml.XMLStreamProcessor;
 import ru.gt2.gar.parse.zip.GarEntry;
@@ -19,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 
 /// Загрузка данных в базу
 @SpringBootApplication
+@Import(ParseConfiguration.class)
 @Slf4j
 public class LoadDataApp implements CommandLineRunner {
     private static final ImmutableSet<String> ALLOWED_REGIONS = ImmutableSet.of("87", "77", "50");
@@ -64,6 +67,7 @@ public class LoadDataApp implements CommandLineRunner {
         }
         XMLStreamProcessor processor = xmlProcessors.get(garType);
         try (InputStream inputStream = garZipFile.getInputStream(garEntry)) {
+            log.info("Starting:  {}", garEntry);
             processor.process(inputStream, ge -> garDataWriter.writeEntities(garType, ge),
                     entitySizeLimit);
             log.info("Processed: {}", garEntry);
