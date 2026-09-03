@@ -2,6 +2,7 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost/gar
+#    url: jdbc:h2:tcp://localhost/mem:gar;DB_CLOSE_DELAY=-1
     username: gar
     password: some-gar-password
   # Тут видимо нужно определиться или мы включаем виртуальные потоки или просто пул на количество ядер

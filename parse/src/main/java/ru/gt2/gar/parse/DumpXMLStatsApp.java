@@ -23,10 +23,15 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /// Вывод статистики по архиву ГАР.
 @Slf4j
@@ -43,7 +48,9 @@ public class DumpXMLStatsApp implements CommandLineRunner {
     private final int entitySizeLimit;
     private final ProcessingMode processingMode;
 
-    private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>(); // new HashMap<>();
+    private final Map<GarType, EntityStats> stats = new ConcurrentHashMap<>();
+    private final Map<Integer, Set<GarType>> emptyRegionStats = new HashMap<>();
+    private final Map<Integer, Long> regionSize = new ConcurrentSkipListMap<>();
 
     public DumpXMLStatsApp(XMLProcessors xmlProcessors, AsyncTaskExecutor taskExecutor,
                            @Value("${gar.zip.full}") File file,
@@ -104,6 +111,19 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                     DurationFmt.format(garStats.getDuration()));
             dumpFieldStats(garStats);
         }
+        System.out.println("Regions without record(s): ");
+        synchronized (emptyRegionStats) {
+            emptyRegionStats.forEach((region, emptyTypes) ->
+                    System.out.printf("Region: %02d, empty types: %s%n", region, emptyTypes));
+        }
+
+        System.out.println("Region sizes (with all records):");
+        regionSize.forEach((region, size) -> {
+            if (emptyRegionStats.containsKey(region)) {
+                return;
+            }
+            System.out.printf("Region: %02d, Size: %d%n", region, size);
+        });
     }
 
     // Параллельная обработка файлов
@@ -138,6 +158,13 @@ public class DumpXMLStatsApp implements CommandLineRunner {
             if (pad > 0) {
                 nameWithDir += " ".repeat(pad);
             }
+            Optional<Integer> optRegion = garEntry.dir().map(Integer::parseInt);
+            optRegion.ifPresent(region -> regionSize.compute(region,
+                    (_, existing) -> garEntry.size() + (
+                            null == existing
+                                    ? 0
+                                    : existing)));
+
             int recordCount = fileStats.getCount();
             String duration = DurationFmt.format(fileStats.getDuration());
             if (recordCount > 0) {
@@ -145,6 +172,17 @@ public class DumpXMLStatsApp implements CommandLineRunner {
                 log.info("Finished processing of file: {} elapsed: {}, record(s): {}", //  (~ {} byte(s) per record)
                         nameWithDir, duration, recordCount); // , garEntry.size() / recordCount
             } else {
+                optRegion.ifPresent(region -> {
+                    synchronized (emptyRegionStats) {
+                        emptyRegionStats.compute(region, (_, existing) -> {
+                            if (null == existing) {
+                                return EnumSet.of(garType);
+                            }
+                            existing.add(garType);
+                            return existing;
+                        });
+                    }
+                });
                 log.info("Finished processing of file: {} elapsed: {}, no records",
                         nameWithDir, duration);
             }
