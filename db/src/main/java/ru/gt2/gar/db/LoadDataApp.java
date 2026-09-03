@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
 @Import(ParseConfiguration.class)
 @Slf4j
 public class LoadDataApp implements CommandLineRunner {
-    private static final ImmutableSet<String> ALLOWED_REGIONS = ImmutableSet.of("87", "77", "50");
+    private static final ImmutableSet<String> ALLOWED_REGIONS = ImmutableSet.of("17");
 
     private final XMLProcessors xmlProcessors;
     private final File zipFile;
