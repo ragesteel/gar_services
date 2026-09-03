@@ -11,7 +11,8 @@ import ru.gt2.gar.parse.xml.stax2.StAX2Processors;
 @Configuration
 public class ParseConfiguration {
     @Bean
-    public XMLProcessors xmlProcessors(@Value("${gar.parse.batch:1024}") int batchSize, @Value("${gar.xml.parse.xmlInputFactory2}") String xmlInputFactoryClass) throws ClassNotFoundException {
+    public XMLProcessors xmlProcessors(@Value("${gar.parse.batch:1024}") int batchSize,
+                                       @Value("${gar.xml.parse.xmlInputFactory2:com.ctc.wstx.stax.WstxInputFactory}") String xmlInputFactoryClass) throws ClassNotFoundException {
         Class<XMLInputFactory2> xmlInputFactory2Class = (Class<XMLInputFactory2>) Class.forName(xmlInputFactoryClass);
         return new StAX2Processors(batchSize, BeanUtils.instantiateClass(xmlInputFactory2Class));
     }
